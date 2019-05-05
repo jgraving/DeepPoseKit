@@ -10,12 +10,12 @@ You have just found DeepPoseKit.
 ------------
 DeepPoseKit is a high-level API for pose estimation with deep learning written in Python and built using [Keras](https://github.com/keras-team/keras) and [Tensorflow](https://github.com/tensorflow/tensorflow). Use DeepPoseKit if you need:
 
-- tools for selecting and annotating images or video frames with user-defined keypoints
+- tools for annotating images or video frames with user-defined keypoints
 - a straightforward but flexible data augmentation pipeline
-- a Keras-like interface for initializing, training, and evaluating pose estimation models
-- easy-to-use methods for saving and loading models and making predictions on new data 
+- a Keras-based interface for initializing, training, and evaluating pose estimation models
+- easy-to-use methods for saving and loading models and making predictions on new data
 
-DeepPoseKit was developed with a focus on usability, as being able to go from idea to result with the least possible delay is key to doing good research.
+DeepPoseKit was developed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research.
 
 The code for DeepPoseKit is *coming soon*. We are working hard to make it ready for public use. For now you can [check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
 
