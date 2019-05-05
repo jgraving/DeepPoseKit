@@ -1,4 +1,4 @@
-DeepPoseKit: pose estimation made easy (*coming soon*)
+DeepPoseKit: an API for pose estimation (*coming soon*)
 ============
 
 <p align="center">
