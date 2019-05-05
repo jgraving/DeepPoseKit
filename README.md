@@ -10,7 +10,7 @@ You have just found DeepPoseKit.
 ------------
 DeepPoseKit is a Python API for pose estimation with deep learning built on [Keras](https://github.com/keras-team/keras) and [Tensorflow](https://github.com/tensorflow/tensorflow). We provide a high-level interface with a GUI for annotating images, a pipeline for data augmentation, and a simple API for initializing, training, and evaluating pose estimation models.
 
-The code for DeepPoseKit is *coming soon*. We are working hard to make it ready for public use. For now [check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3).
+The code for DeepPoseKit is *coming soon*. We are working hard to make it ready for public use. For now you can [check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
 
     @article{graving2019fast,
              title={Fast and robust animal pose estimation},
