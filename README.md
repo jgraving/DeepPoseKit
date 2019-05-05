@@ -22,8 +22,8 @@ The code for DeepPoseKit is *coming soon*. We are working hard to make it ready 
             }
 
 <p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" height="200">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="200">
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" height="256">
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="256">
 </p>
 
 License
