@@ -2,7 +2,7 @@ DeepPoseKit: pose estimation made easy (*coming soon*)
 ============
 
 <p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" height="256">
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" max-height:256px>
 </p>
 
 
@@ -29,8 +29,8 @@ The code for DeepPoseKit is *coming soon*. We are working hard to make it ready 
             }
 
 <p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" height="256">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="256">
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" max-height:256px>
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" max-height:256px>
 </p>
 
 License
