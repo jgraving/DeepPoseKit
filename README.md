@@ -17,7 +17,9 @@ DeepPoseKit is a high-level API for 2D pose estimation with deep learning writte
 
 DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research.
 
-DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing and cropping individuals with additional tracking software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor). [Check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
+DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing and cropping individuals with additional tracking software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor).
+
+[Check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
 
 Note: This software is still in early-release development. Expect some adventures.
 
