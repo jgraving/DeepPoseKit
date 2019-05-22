@@ -17,6 +17,8 @@ DeepPoseKit is a high-level API for 2D pose estimation with deep learning writte
 
 DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research. [Check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
 
+Note: This software is still in early-release development. Expect some adventures.
+
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" max-height:256px>
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" max-height:256px>
@@ -93,4 +95,4 @@ If you experience problems with [Tensorflow](https://github.com/tensorflow/tenso
 
 Contributors
 ------------
-DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae). We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
+DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still under active development. We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
