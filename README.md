@@ -15,7 +15,9 @@ DeepPoseKit is a high-level API for 2D pose estimation with deep learning writte
 - a Keras-based interface for initializing, training, and evaluating pose estimation models
 - easy-to-use methods for saving and loading models and making predictions on new data
 
-DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research. [Check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
+DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research.
+
+DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing and cropping individuals with additional tracking software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor). [Check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
 
 Note: This software is still in early-release development. Expect some adventures.
 
@@ -95,4 +97,4 @@ If you experience problems with [Tensorflow](https://github.com/tensorflow/tenso
 
 Contributors
 ------------
-DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still under active development. We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
+DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
