@@ -28,7 +28,7 @@ class LEAP(BaseModel):
     def __init__(self, data_generator, filters=64, upsampling=False,
                  activation='relu', batchnorm=False, use_bias=True, pooling='max',
                  interpolation='bilinear', subpixel=False,
-                 initializer='glorot_uniform'):
+                 initializer='glorot_uniform', **kwargs):
         """
         Define a LEAP model from Perrera et al., 2018 [1]
         See `References` for details on the model architecture.
@@ -103,7 +103,7 @@ class LEAP(BaseModel):
         self.interpolation = interpolation
         self.subpixel = subpixel
         self.initializer = initializer
-        super(LEAP, self).__init__(data_generator, subpixel)
+        super(LEAP, self).__init__(data_generator, subpixel, **kwargs)
 
     def __init_model__(self):
         if self.data_generator.downsample_factor is not 0:

@@ -24,7 +24,7 @@ from .engine import BaseModel
 
 class DeepLabCut(BaseModel):
 
-    def __init__(self, data_generator, subpixel=True):
+    def __init__(self, data_generator, subpixel=True, **kwargs):
         """
         Define a DeepLabCut model from Mathis et al., 2018 [1]
         See `References` for details on the model architecture.
@@ -59,7 +59,7 @@ class DeepLabCut(BaseModel):
 
         """
         self.subpixel = subpixel
-        super(DeepLabCut, self).__init__(data_generator, subpixel)
+        super(DeepLabCut, self).__init__(data_generator, subpixel, **kwargs)
 
     def __init_model__(self):
 

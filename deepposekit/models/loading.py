@@ -24,22 +24,26 @@ from .layers.util import ImageNormalization, Float
 from .layers.convolutional import (UpSampling2D,
                                    SubPixelDownscaling,
                                    SubPixelUpscaling)
+from .layers.deeplabcut import ResNetPreprocess
 
 from ..io import TrainingGenerator
 from .LEAP import LEAP
 from .StackedDenseNet import StackedDenseNet
 from .StackedHourglass import StackedHourglass
+from .DeepLabCut import DeepLabCut
 
 MODELS = {'LEAP': LEAP,
           'StackedDenseNet': StackedDenseNet,
-          'StackedHourglass': StackedHourglass}
+          'StackedHourglass': StackedHourglass,
+          'DeepLabCut': DeepLabCut}
 
 
 CUSTOM_LAYERS = {'Float': Float,
                  'ImageNormalization': ImageNormalization,
                  'UpSampling2D': UpSampling2D,
                  'SubPixelDownscaling': SubPixelDownscaling,
-                 'SubPixelUpscaling': SubPixelUpscaling}
+                 'SubPixelUpscaling': SubPixelUpscaling,
+                 'ResNetPreprocess': ResNetPreprocess}
 
 
 def load_model(path, augmenter=None, custom_objects=None, datapath=None):

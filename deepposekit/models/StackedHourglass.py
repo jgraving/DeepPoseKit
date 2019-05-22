@@ -24,7 +24,6 @@ from functools import partial
 
 import numpy as np
 from ..utils import image as image_utils
-from ..io import TrainingGenerator
 from keras.layers import Conv2D, BatchNormalization, Add, MaxPool2D
 import keras.backend as K
 
