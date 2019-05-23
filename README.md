@@ -19,9 +19,9 @@ DeepPoseKit is designed with a focus on *usability* and *extensibility*, as bein
 
 DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing and cropping individuals with additional tracking software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor).
 
-[Check out our preprint](https://www.biorxiv.org/content/10.1101/620245v3) to find out more.
+[Check out our preprint](https://doi.org/10.1101/620245) to find out more.
 
-Note: This software is still in early-release development. Expect some adventures.
+**Note:** This software is still in early-release development. Expect some adventures.
 
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" max-height:256px>
@@ -68,20 +68,19 @@ Install the development version with pip:
 pip install git+https://www.github.com/jgraving/deepposekit.git
 ```
 
-To use the annotation toolkit you must install this separately (see [DeepPoseKit Annotator](https://www.github.com/jgraving/deepposekit-annotator) for details):
+To use the annotation toolkit you must install the [DeepPoseKit Annotator](https://www.github.com/jgraving/deepposekit-annotator) package:
 ```bash
 pip install git+https://www.github.com/jgraving/deepposekit-annotator.git
 ```
 
-You can download example datasets for DeepPoseKit from our [DeepPoseKit Data](https://github.com/jgraving/deepposekit-data) repository:
+You can download example datasets from our [DeepPoseKit Data](https://github.com/jgraving/deepposekit-data) repository:
 ```bash
 git clone https://www.github.com/jgraving/deepposekit-data
 ```
 
-
 Citation
 ---------
-If you use DeepPoseKit for your research please cite our preprint:
+If you use DeepPoseKit for your research please cite [our preprint](https://doi.org/10.1101/620245):
 
     @article{graving2019fast,
              title={Fast and robust animal pose estimation},
@@ -92,9 +91,6 @@ If you use DeepPoseKit for your research please cite our preprint:
              publisher={Cold Spring Harbor Laboratory}
              }
 
-License
-------------
-Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE.md) for details.
 
 Development
 -------------
@@ -105,3 +101,7 @@ If you experience problems with [Tensorflow](https://github.com/tensorflow/tenso
 Contributors
 ------------
 DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
+
+License
+------------
+Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
