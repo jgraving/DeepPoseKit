@@ -59,7 +59,7 @@ DeepPoseKit requires [Tensorflow](https://github.com/tensorflow/tensorflow) and 
 
 - [Keras Installation Instructions](https://github.com/keras-team/keras#Installation)
 - [Tensorflow Installation Instructions](https://www.tensorflow.org/install)
-- Note: [Tensorflow 2.0](https://www.tensorflow.org/alpha) is not yet supported.
+- **Note**: [Tensorflow 2.0](https://www.tensorflow.org/alpha) is not yet supported.
 
 DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended system for using the toolkit. 
 
