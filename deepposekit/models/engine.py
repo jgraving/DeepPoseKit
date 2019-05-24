@@ -16,6 +16,7 @@ limitations under the License.
 """
 import numpy as np
 from keras import Model
+import warnings
 
 from .layers.subpixel import SubpixelMaxima2D
 from .layers.convolutional import Maxima2D
@@ -85,6 +86,10 @@ class BaseModel:
 
     def fit(self, batch_size, validation_batch_size=1, callbacks=[],
             epochs=1, use_multiprocessing=False, n_workers=1, **kwargs):
+        if not self.train_model._is_compiled:
+            warnings.warn('''\nAutomatically compiling with default settings: model.compile('adam', 'mse')\n'''
+                          'Call model.compile() manually to use non-default settings.\n')
+            self.train_model.compile('adam', 'mse')
 
         train_generator = self.data_generator(self.n_outputs,
                                               batch_size,
