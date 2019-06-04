@@ -81,9 +81,9 @@ class DeepLabCut(BaseModel):
                                     )
         pretrained_features = pretrained_model(normalized)
         if self.data_generator.downsample_factor is 4:
-            x_out = Conv2D(self.data_generator.n_output_channels)(pretrained_features)
-        if self.data_generator.downsample_factor is 3:
             x = pretrained_features
+            x_out = Conv2D(self.data_generator.n_output_channels, (1, 1))(x)
+        elif self.data_generator.downsample_factor is 3:
             x_out = Conv2DTranspose(self.data_generator.n_output_channels,
                                     (3, 3), strides=(2, 2), padding='same')(x)
         elif self.data_generator.downsample_factor is 2:
