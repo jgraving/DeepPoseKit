@@ -78,6 +78,18 @@ You can download example datasets from our [DeepPoseKit Data](https://github.com
 git clone https://www.github.com/jgraving/deepposekit-data
 ```
 
+### Installing with Anaconda
+Anaconda cannot install the imgaug package using pip, therefore as a temporary workaround we recommend installing imgaug manually:
+```bash
+conda config --add channels conda-forge
+conda install imgaug
+```
+We also recommend installing DeepPoseKit from within Python rather than using the command line, either from within Jupyter or another IDE, to ensure it is installed in the correct working environment:
+```python
+import sys
+!{sys.executable} -m pip install git+https://www.github.com/jgraving/deepposekit.git git+https://www.github.com/jgraving/deepposekit-annotator.git
+```
+
 Citation
 ---------
 If you use DeepPoseKit for your research please cite [our preprint](https://doi.org/10.1101/620245):
