@@ -85,7 +85,8 @@ class BaseModel:
         self.predict_on_batch = self.predict_model.predict_on_batch
 
     def fit(self, batch_size, validation_batch_size=1, callbacks=[],
-            epochs=1, use_multiprocessing=False, n_workers=1, **kwargs):
+            epochs=1, use_multiprocessing=False, n_workers=1,
+            steps_per_epoch=None, **kwargs):
         if not self.train_model._is_compiled:
             warnings.warn('''\nAutomatically compiling with default settings: model.compile('adam', 'mse')\n'''
                           'Call model.compile() manually to use non-default settings.\n')
@@ -106,8 +107,11 @@ class BaseModel:
                     callback.pass_model(self)
                 activated_callbacks.append(callback)
 
+        if steps_per_epoch is None:
+            steps_per_epoch = len(train_generator)
+
         self.train_model.fit_generator(generator=train_generator,
-                                       steps_per_epoch=len(train_generator),
+                                       steps_per_epoch=steps_per_epoch,
                                        epochs=epochs,
                                        use_multiprocessing=use_multiprocessing,
                                        workers=n_workers,
