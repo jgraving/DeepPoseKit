@@ -24,7 +24,7 @@ from .engine import BaseModel
 
 class DeepLabCut(BaseModel):
 
-    def __init__(self, data_generator, subpixel=True, **kwargs):
+    def __init__(self, data_generator, subpixel=True, weights='imagenet', **kwargs):
         """
         Define a DeepLabCut model from Mathis et al., 2018 [1]
         See `References` for details on the model architecture.
@@ -59,6 +59,7 @@ class DeepLabCut(BaseModel):
 
         """
         self.subpixel = subpixel
+        self.weights = weights
         super(DeepLabCut, self).__init__(data_generator, subpixel, **kwargs)
 
     def __init_model__(self):
@@ -75,6 +76,7 @@ class DeepLabCut(BaseModel):
             to_float = Concatenate()([to_float, ] * 3)
         normalized = ResNetPreprocess()(to_float)
         pretrained_model = ResNet50(include_top=False,
+                                    weights=self.weights,
                                     input_shape=(self.data_generator.height,
                                                  self.data_generator.width,
                                                  3)
