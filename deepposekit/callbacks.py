@@ -31,10 +31,10 @@ class Logger(Callback):
     ----------
     filepath: str
         Name of the .h5 file.
-    batch_size: int
+    validation_batch_size: int
         Batch size for running evaluation
     '''
-    def __init__(self, filepath, batch_size=1, verbose=1, **kwargs):
+    def __init__(self, filepath, validation_batch_size=1, verbose=1, batch_size=None, **kwargs):
 
         super(Logger, self).__init__(**kwargs)
         if isinstance(filepath, str):
@@ -46,7 +46,7 @@ class Logger(Callback):
             raise TypeError('filepath must be type `str`')
 
         self.verbose = verbose
-        self.batch_size = batch_size
+        self.batch_size = validation_batch_size if batch_size is None else batch_size
 
         with h5py.File(self.filepath, 'w') as h5file:
 
