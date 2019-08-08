@@ -143,7 +143,7 @@ class Logger(Callback):
         logs['confidence'] = confidence_mean
 
         keypoint_median = np.median([euclidean, mae, mse, rmse, confidence], axis=1)
-        euclidean_median, mae_median, mse_median, rmse_median, confidence_mean = np.median(keypoint_median, axis=1)
+        euclidean_median, mae_median, mse_median, rmse_median, confidence_median = np.median(keypoint_median, axis=1)
         logs['euclidean_median'] = euclidean_median
         logs['mae_median'] = mae_median
         logs['mse_median'] = mse_median
