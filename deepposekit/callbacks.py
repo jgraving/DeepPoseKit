@@ -74,6 +74,9 @@ class Logger(Callback):
                 group.create_dataset('rmse', shape=(0, 0, 0),
                                      dtype=np.float64,
                                      maxshape=(None, None, None))
+                group.create_dataset('confidence', shape=(0, 0, 0),
+                                     dtype=np.float64,
+                                     maxshape=(None, None, None))
 
     def on_train_begin(self, logs={}):
         return
@@ -92,6 +95,7 @@ class Logger(Callback):
         mae = evaluation_dict['mae']
         mse = evaluation_dict['mse']
         rmse = evaluation_dict['rmse']
+        confidence = evaluation_dict['confidence']
 
         with h5py.File(self.filepath) as h5file:
             values = {'loss': np.array([logs.get('loss')]).reshape(1,),
@@ -101,7 +105,8 @@ class Logger(Callback):
                       'euclidean': euclidean[None, ...],
                       'mae': mae[None, ...],
                       'mse': mse[None, ...],
-                      'rmse': rmse[None, ...]}
+                      'rmse': rmse[None, ...],
+                      'confidence': confidence[None, ...]}
 
             for key, value in values.items():
                 data = h5file['logs'][key]
@@ -116,41 +121,48 @@ class Logger(Callback):
         keypoint_percentile = np.percentile([euclidean.flatten(),
                                              mae.flatten(),
                                              mse.flatten(),
-                                             rmse.flatten()],
+                                             rmse.flatten(),
+                                             confidence.flatten()],
                                             [2.5, 97.5], axis=1).T
-        euclidean_perc, mae_perc, mse_perc, rmse_perc = keypoint_percentile
+        euclidean_perc, mae_perc, mse_perc, rmse_perc, confidence_perc = keypoint_percentile
 
         logs['euclidean_upper'] = euclidean_perc[1]
         logs['mae_upper'] = mae_perc[1]
         logs['mse_upper'] = mse_perc[1]
         logs['rmse_upper'] = rmse_perc[1]
+        logs['confidence_upper'] = confidence_perc[1]
 
 
-        keypoint_mean = np.mean([euclidean, mae, mse, rmse], axis=1)
-        euclidean_mean, mae_mean, mse_mean, rmse_mean = np.mean(keypoint_mean, axis=1)
+        keypoint_mean = np.mean([euclidean, mae, mse, rmse, confidence], axis=1)
+        euclidean_mean, mae_mean, mse_mean, rmse_mean, confidence_mean = np.mean(keypoint_mean, axis=1)
 
         logs['euclidean'] = euclidean_mean
         logs['mae'] = mae_mean
         logs['mse'] = mse_mean
         logs['rmse'] = rmse_mean
+        logs['confidence'] = confidence_mean
 
-        keypoint_median = np.median([euclidean, mae, mse, rmse], axis=1)
-        euclidean_median, mae_median, mse_median, rmse_median = np.median(keypoint_median, axis=1)
+        keypoint_median = np.median([euclidean, mae, mse, rmse, confidence], axis=1)
+        euclidean_median, mae_median, mse_median, rmse_median, confidence_mean = np.median(keypoint_median, axis=1)
         logs['euclidean_median'] = euclidean_median
         logs['mae_median'] = mae_median
         logs['mse_median'] = mse_median
         logs['rmse_median'] = rmse_median
+        logs['confidence_median'] = confidence_median
 
         if self.verbose:
             print('evaluation_metrics: mean median (2.5%, 97.5%) - '
                   'euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
                   'mae: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
                   'mse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'rmse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f})'
+                  'rmse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
+                  'confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f})'
+
                   .format(euclidean_mean, euclidean_median, euclidean_perc[0], euclidean_perc[1],
                           mae_mean, mae_median, mae_perc[0], mae_perc[1],
                           mse_mean, mse_median, mse_perc[0], mse_perc[1],
-                          rmse_mean, rmse_median, rmse_perc[0], rmse_perc[1])
+                          rmse_mean, rmse_median, rmse_perc[0], rmse_perc[1],
+                          confidence_mean, confidence_median, confidence_perc[0], confidence_perc[1])
                   )
 
     def on_batch_begin(self, batch, logs={}):

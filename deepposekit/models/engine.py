@@ -133,13 +133,14 @@ class BaseModel:
             y_pred = y_pred[..., :2]
             errors = keypoint_errors(y_true, y_pred)
             y_error, euclidean, mae, mse, rmse = errors
-            metrics.append([euclidean, mae, mse, rmse])
+            confidence = y_pred[..., -1]
+            metrics.append([euclidean, mae, mse, rmse, confidence])
             keypoints.append([y_pred, y_error])
 
         metrics = np.hstack(metrics)
         keypoints = np.hstack(keypoints)
 
-        euclidean, mae, mse, rmse = metrics
+        euclidean, mae, mse, rmse, confidence = metrics
         y_pred, y_error = keypoints
 
         evaluation_dict = {'y_pred': y_pred,
@@ -147,7 +148,8 @@ class BaseModel:
                            'euclidean': euclidean,
                            'mae': mae,
                            'mse': mse,
-                           'rmse': rmse}
+                           'rmse': rmse,
+                           'confidence': confidence}
 
         return evaluation_dict
 
