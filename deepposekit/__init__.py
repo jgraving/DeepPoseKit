@@ -10,13 +10,13 @@ from . import utils
 from . import callbacks
 
 from . import augment
-from .augment import Augmenter, FlipAxis
+from .augment import FlipAxis
 
 major = sys.version_info.major
 minor = sys.version_info.minor
 
 if major >= 3 and minor >= 6:
-  ImportError = ModuleNotFoundError
+    ImportError = ModuleNotFoundError
 
 try:
     import dpk_annotator as annotation

@@ -16,10 +16,7 @@ limitations under the License.
 """
 
 import numpy as np
-try:
-    from imgaug import augmenters as iaa
-except:
-    from imgaug.imgaug import augmenters as iaa
+import imgaug.augmenters as iaa
 import six.moves as sm
 import h5py
 
