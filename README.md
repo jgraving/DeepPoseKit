@@ -1,4 +1,4 @@
-DeepPoseKit: a toolkit for pose estimation
+DeepPoseKit: a toolkit for pose estimation using deep learning
 ============
 
 <p align="center">
