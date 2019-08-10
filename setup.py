@@ -69,7 +69,7 @@ def check_dependencies():
     try:
         import imgaug
     except ImportError:
-        install_requires.append('imgaug')
+        install_requires.append('imgaug>=0.2.9')
     try:
         import keras
     except ImportError:
