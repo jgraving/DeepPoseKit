@@ -16,15 +16,12 @@ limitations under the License.
 """
 
 from keras.utils import Sequence
+import imgaug.augmenters as iaa
+
 import numpy as np
 import copy
 
 from ..utils.keypoints import draw_confidence_maps, graph_to_edges
-from ..augment.Augmenter import Augmenter
-try:
-    from imgaug import augmenters as iaa
-except:
-    from imgaug.imgaug import augmenters as iaa
 from ..utils.image import check_grayscale
 from .DataGenerator import DataGenerator
 
@@ -60,7 +57,7 @@ class TrainingGenerator(Sequence):
         as lines drawn between connected keypoints. This can help reduce
         keypoint estimation error when training the network.
     augmenter : class or list : default = None
-        A pose.Augmenter, imgaug.Augmenter, or list of imgaug.Augmenter
+        A imgaug.Augmenter, or list of imgaug.Augmenter
         for applying augmentations to images and keypoints.
         Default is None, which applies no augmentations.
     shuffle : bool, default = True
@@ -119,20 +116,20 @@ class TrainingGenerator(Sequence):
         self.on_epoch_end()
 
     def _init_augmenter(self, augmenter):
-        if isinstance(augmenter, (Augmenter, type(None))):
+        if isinstance(augmenter, type(None)):
             self.augmenter = augmenter
         elif isinstance(augmenter, iaa.Augmenter):
-            self.augmenter = Augmenter(augmenter)
+            self.augmenter = augmenter
         elif isinstance(augmenter, list):
             if isinstance(augmenter[0], iaa.Augmenter):
-                self.augmenter = Augmenter(augmenter)
+                self.augmenter = iaa.Sequential(augmenter)
             else:
                 raise TypeError('''`augmenter` must be class Augmenter
                             (imgaug.augmenters.Augmenter)
                             or list of Augmenters''')
         else:
             raise ValueError('''augmenter must be class
-                             Augmenter or None''')
+                             Augmenter, list of Augmenters, or None''')
 
     def _init_data(self, datapath, dataset):
 
@@ -215,8 +212,9 @@ class TrainingGenerator(Sequence):
         self.validation = validation
         self.confidence = confidence
         self.on_epoch_end()
-
-        return copy.deepcopy(self)
+        self_copy = copy.deepcopy(self)
+        self_copy.augmenter.reseed()
+        return self_copy
 
     def __getitem__(self, index):
         """Generate one batch of data"""
@@ -248,11 +246,27 @@ class TrainingGenerator(Sequence):
             batch_index = self.train_index[indexes]
         return self.generator[batch_index]
 
+    def augment(self, images, keypoints):
+        images_aug = []
+        keypoints_aug = []
+        for idx in range(images.shape[0]):
+            images_idx = images[idx, None]
+            keypoints_idx = keypoints[idx, None]
+            augmented_idx = self.augmenter(images=images_idx,
+                                           keypoints=keypoints_idx)
+            images_aug_idx, keypoints_aug_idx = augmented_idx
+            images_aug.append(images_aug_idx)
+            keypoints_aug.append(keypoints_aug_idx)
+
+        images_aug = np.concatenate(images_aug)
+        keypoints_aug = np.concatenate(keypoints_aug)
+        return images_aug, keypoints_aug
+
     def generate_batch(self, indexes):
         """Generates data containing batch_size samples"""
         X, y = self.load_batch(indexes)
         if self.augmenter and not self.validation:
-            X, y = self.augmenter(X, y)
+            X, y = self.augment(X, y)
         if self.confidence:
             y = draw_confidence_maps(X, y, self.graph,
                                      self.output_shape, self.use_edges,
