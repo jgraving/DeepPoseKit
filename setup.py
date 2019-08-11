@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-This setup script is Copyright (C) 2012-2018 Michael L. Waskom
-Modified by Jacob M. Graving <jgraving@gmail.com> 2015-2018
-
 Copyright 2018 Jacob M. Graving <jgraving@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,21 +18,11 @@ limitations under the License.
 import os
 import sys
 import warnings
+from setuptools import setup, find_packages
 
-major = sys.version_info.major
-minor = sys.version_info.minor
-
-if major >= 3 and minor >= 6:
-  ImportError = ModuleNotFoundError
-
-
-# temporarily redirect config directory to prevent matplotlib importing
-# testing for writeable directory which results in sandbox error
-os.environ["MPLCONFIGDIR"] = "."
-
-DESCRIPTION = "An API for pose estimation"
+DESCRIPTION = "pose estimation using deep learning"
 LONG_DESCRIPTION = """\
-An API for pose estimation
+a toolkit for pose estimation using deep learning
 """
 
 DISTNAME = 'deepposekit'
@@ -46,44 +33,8 @@ LICENSE = 'Apache 2.0'
 DOWNLOAD_URL = 'https://github.com/jgraving/deepposekit.git'
 VERSION = '0.1.dev'
 
-from setuptools import setup, find_packages
-
-def check_dependencies():
-    install_requires = []
-    try:
-        import numpy
-    except ImportError:
-        install_requires.append('numpy')
-    try:
-        import matplotlib
-    except ImportError:
-        install_requires.append('matplotlib')
-    try:
-        import pandas
-    except ImportError:
-        install_requires.append('pandas')
-    try:
-        import h5py
-    except ImportError:
-        install_requires.append('h5py')
-    try:
-        import imgaug
-    except ImportError:
-        install_requires.append('imgaug>=0.2.9')
-    try:
-        import keras
-    except ImportError:
-        install_requires.append('keras')
-    try:
-        import cv2
-    except ImportError:
-        install_requires.append('opencv-python')
-    
-    return install_requires
 
 if __name__ == "__main__":
-
-    install_requires = check_dependencies()
 
     setup(name=DISTNAME,
           author=MAINTAINER,
@@ -96,11 +47,16 @@ if __name__ == "__main__":
           url=URL,
           version=VERSION,
           download_url=DOWNLOAD_URL,
-          install_requires=install_requires,
+          install_requires=['numpy',
+                            'matplotlib',
+                            'pandas',
+                            'h5py',
+                            'imgaug>=0.2.9',
+                            'keras',
+                            'opencv-python'],
           packages=find_packages(),
           zip_safe=False,
           classifiers=['Intended Audience :: Science/Research',
-                       'Programming Language :: Python :: 2.7',
                        'Programming Language :: Python :: 3',
                        'Topic :: Scientific/Engineering :: Visualization',
                        'Topic :: Scientific/Engineering :: Image Recognition',
