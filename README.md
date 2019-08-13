@@ -8,7 +8,7 @@ DeepPoseKit: pose estimation using deep learning
 
 You have just found DeepPoseKit.
 ------------
-DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation using deep learning—written in Python and built using [Keras](https://github.com/keras-team/keras) and [Tensorflow](https://github.com/tensorflow/tensorflow). Use DeepPoseKit if you need:
+DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation of user-defined keypoints using deep learning—written in Python and built using [Keras](https://github.com/keras-team/keras) and [Tensorflow](https://github.com/tensorflow/tensorflow). Use DeepPoseKit if you need:
 
 - tools for annotating images or video frames with user-defined keypoints
 - a straightforward but flexible data augmentation pipeline using the [imgaug package](https://github.com/aleju/imgaug)
