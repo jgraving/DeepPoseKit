@@ -87,6 +87,30 @@ class BaseModel:
     def fit(self, batch_size, validation_batch_size=1, callbacks=[],
             epochs=1, use_multiprocessing=False, n_workers=1,
             steps_per_epoch=None, **kwargs):
+        """
+        Trains the model for a given number of epochs (iterations on a dataset).
+
+        Parameters
+        ----------
+        batch_size : int
+            Number of samples per training update.
+        validation_batch_size : int
+            Number of samples per validation batch used when evaluating the model.
+        callbacks : list or None
+            List of keras.callbacks.Callback instances or deepposekit callbacks.
+            List of callbacks to apply during training and validation.
+        epochs: int
+            Number of epochs to train the model. An epoch is an iteration over the entire dataset,
+            or for `steps_per_epoch` number of batches
+        use_multiprocessing: bool, default=False
+            Whether to use the multiprocessing module when generating batches of data.
+        n_workers: int
+            Number of processes to run for generating batches of data.
+        steps_per_epoch: int or None
+            Number of batches per epoch. If `None` this is automatically determined
+            based on the size of the dataset.
+        """
+
         if not self.train_model._is_compiled:
             warnings.warn('''\nAutomatically compiling with default settings: model.compile('adam', 'mse')\n'''
                           'Call model.compile() manually to use non-default settings.\n')
