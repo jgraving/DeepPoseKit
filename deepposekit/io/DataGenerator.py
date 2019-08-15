@@ -25,7 +25,24 @@ __all__ = ['DataGenerator']
 
 
 class DataGenerator(Sequence):
+
     def __init__(self, datapath, dataset, mode='annotated'):
+        """
+        Creates a data generator for accessing an annotation set.
+
+        Parameters
+        ----------
+        datapath : str
+            The path to the annotations file. Must be .h5
+            e.g. '/path/to/file.h5'
+        dataset : str
+            The key for the image dataset in the annotations file.
+            e.g. 'images'
+        mode : str
+            The mode for loading and saving data. 
+            Must be 'unannotated', 'annotated', or None (the full dataset)
+        """
+
         # Check annotations file
         if isinstance(datapath, str):
             if datapath.endswith('.h5'):
