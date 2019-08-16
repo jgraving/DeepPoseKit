@@ -116,7 +116,8 @@ class DeepLabCut(BaseModel):
     def get_config(self):
         config = {
             'name': self.__class__.__name__,
-            'subpixel': self.subpixel
+            'subpixel': self.subpixel,
+            'weights': self.weights
         }
         base_config = super(DeepLabCut, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))
