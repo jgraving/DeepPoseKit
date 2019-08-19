@@ -93,8 +93,8 @@ Citation
 ---------
 If you use DeepPoseKit for your research please cite [our preprint](https://doi.org/10.1101/620245):
 
-    @article{graving2019fast,
-             title={Fast and robust animal pose estimation},
+    @article{graving2019deepposekit,
+             title={DeepPoseKit: a software toolkit for fast and robust pose estimation using deep learning},
              author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
              journal={bioRxiv},
              pages={620245},
