@@ -15,7 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.backend import tf
+try:
+    from keras.backend import tf
+except:
+    from keras.backend import tensorflow_backend as tf
 import numpy as np
 from .utils import fftshift1d, fft2d, find_maxima, fix, radians, check_angles
 

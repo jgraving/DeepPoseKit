@@ -17,7 +17,10 @@ limitations under the License.
 
 import keras.backend as K
 from keras.backend import int_shape, permute_dimensions, dtype, floatx
-from keras.backend import tf
+try:
+    from keras.backend import tf
+except:
+    from keras.backend import tensorflow_backend as tf
 from .utils import gaussian_kernel_2d
 from .registration import _upsampled_registration, _register_rotation
 import numpy as np
