@@ -281,7 +281,7 @@ class DenseNet:
             downsampled = ConvBatchNorm2D(filters=int(np.round(self.growth_rate * self.n_layers * self.bottleneck_factor)),
                                           kernel_size=(7, 7), activation=init_activation,
                                           initializer=self.initializer, batchnorm=False,
-                                          use_bias=self.use_bias, strides=2
+                                          use_bias=self.use_bias, strides=2, separable=False,
                                           )(outputs_list[0])
             if self.squeeze_excite:
                 downsampled = squeeze_excite_block(downsampled)

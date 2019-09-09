@@ -20,7 +20,7 @@ from keras.backend import int_shape, permute_dimensions, dtype, floatx
 try:
     from keras.backend import tf
 except:
-    from keras.backend import tensorflow_backend as tf
+    from keras.backend.tensorflow_backend import tf
 from .utils import gaussian_kernel_2d
 from .registration import _upsampled_registration, _register_rotation
 import numpy as np

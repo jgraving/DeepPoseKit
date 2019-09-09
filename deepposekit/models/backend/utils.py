@@ -18,7 +18,7 @@ limitations under the License.
 try:
     from keras.backend import tf
 except:
-    from keras.backend import tensorflow_backend as tf
+    from keras.backend.tensorflow_backend import tf
 import numpy as np
 
 __all__ = ['ndims', 'fix', 'fft2d', 'find_maxima',
