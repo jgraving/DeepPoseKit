@@ -2,16 +2,13 @@
 <img src="https://github.com/jgraving/deepposekit/blob/master/assets/deepposekit_logo.png" max-height:256px>
 </p>
 
-DeepPoseKit: pose estimation using deep learning
-============
 
+You have just found DeepPoseKit.
+------------
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" max-height:256px>
 </p>
 
-
-You have just found DeepPoseKit.
-------------
 DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation of user-defined keypoints using deep learning—written in Python and built using [Keras](https://github.com/keras-team/keras) and [Tensorflow](https://github.com/tensorflow/tensorflow). Use DeepPoseKit if you need:
 
 - tools for annotating images or video frames with user-defined keypoints
