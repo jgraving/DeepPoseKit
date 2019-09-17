@@ -23,8 +23,6 @@ from .registration import _upsampled_registration
 import numpy as np
 
 __all__ = ['resize_images', 'find_maxima', 'find_subpixel_maxima',
-           'register_translation', 'register_rotation',
-           'rotate_images', 'translate_images',
            'depth_to_space', 'space_to_depth']
 
 
