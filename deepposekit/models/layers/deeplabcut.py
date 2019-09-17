@@ -28,7 +28,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-from tensorflow.keras.applications import imagenet_utils
+from tensorflow.python.keras.applications import imagenet_utils
 from tensorflow.keras.applications.resnet50 import preprocess_input
 from tensorflow.keras.layers import Layer
 
