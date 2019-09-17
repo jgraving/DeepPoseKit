@@ -27,7 +27,7 @@ def ndims(x):
 
 
 def fix(x):
-    x = tf.where(x >= 0, tf.floor(x), tf.ceil(x))
+    x = tf.where(x >= 0, tf.math.floor(x), tf.math.ceil(x))
     return x
 
 
