@@ -15,10 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-try:
-    from keras.backend import tf
-except:
-    from keras.backend.tensorflow_backend import tf
+import tensorflow as tf
 import numpy as np
 
 __all__ = ['ndims', 'fix', 'fft2d', 'find_maxima',
@@ -37,7 +34,7 @@ def fix(x):
 
 def fft2d(x):
     x = tf.cast(x, tf.complex64)
-    x = tf.spectral.fft2d(x)
+    x = tf.signal.fft2d(x)
     return x
 
 
@@ -103,33 +100,3 @@ def gaussian_kernel_2d(size, sigma):
     kernel = gaussian_kernel_1d(size, sigma)
     kernel = tf.matmul(kernel, kernel, transpose_b=True)
     return kernel
-
-
-def degrees(x):
-    x = x * (180 / np.pi)
-    return x
-
-
-def radians(x):
-    x = x * (np.pi / 180)
-    return x
-
-
-def angle_mod(x):
-    x_test = fix(x / 360.)
-    x = x - 360. * x_test
-    x = tf.where(x < 0, x + 360, x)
-    return x
-
-
-def check_angles(x, rotation_guess):
-    x = tf.reshape(x, (-1, 1))
-    x = angle_mod(x)
-    rA = radians(x)
-    rA = tf.concat([tf.cos(rA), tf.sin(rA)], axis=-1)
-    rI = tf.reshape(rotation_guess, (-1, 1))
-    rI = radians(rI)
-    rI = tf.concat([tf.cos(rI), tf.sin(rI)], axis=-1)
-    guess_test = tf.matmul(rA, rI, transpose_b=True)
-    x = tf.where(guess_test < 0, angle_mod(x - 180), x)
-    return x
