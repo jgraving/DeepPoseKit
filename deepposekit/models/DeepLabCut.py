@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras import Input, Model
-from keras.layers import Conv2DTranspose, Conv2D, Concatenate
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Conv2DTranspose, Conv2D, Concatenate
 from .layers.util import Float
 from .layers.deeplabcut import ResNet50, ResNetPreprocess
 from .engine import BaseModel

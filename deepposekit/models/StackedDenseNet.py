@@ -16,7 +16,7 @@ limitations under the License.
 """
 
 import numpy as np
-from keras import Input, Model
+from tensorflow.keras import Input, Model
 from .layers.util import ImageNormalization, Float
 from ..utils.image import n_downsample
 from .layers.densenet import DenseNet

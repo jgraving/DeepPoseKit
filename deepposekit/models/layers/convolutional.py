@@ -15,11 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.legacy import interfaces
-from keras.engine import Layer
-from keras.engine import InputSpec
+from tensorflow.keras.legacy import interfaces
+from tensorflow.keras.engine import Layer
+from tensorflow.keras.engine import InputSpec
 
-from keras.utils import conv_utils
+from tensorflow.keras.utils import conv_utils
 
 from ..backend import (resize_images, find_maxima,
                        register_translation, register_rotation,
@@ -27,9 +27,9 @@ from ..backend import (resize_images, find_maxima,
                        depth_to_space, space_to_depth)
 
 try:
-    from keras.backend import normalize_data_format
+    from tensorflow.keras.backend import normalize_data_format
 except:
-    from keras.utils.conv_utils import normalize_data_format
+    from tensorflow.keras.utils.conv_utils import normalize_data_format
 
 
 __all__ = ['UpSampling2D', 'Maxima2D', 'RegisterTranslation2D',

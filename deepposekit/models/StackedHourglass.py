@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras import Input, Model
+from tensorflow.keras import Input, Model
 
 from .engine import BaseModel
 from .layers.util import ImageNormalization, Float
@@ -24,8 +24,8 @@ from functools import partial
 
 import numpy as np
 from ..utils import image as image_utils
-from keras.layers import Conv2D, BatchNormalization, Add, MaxPool2D
-import keras.backend as K
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Add, MaxPool2D
+import tensorflow.keras.backend as K
 
 
 class ResidualBlock:

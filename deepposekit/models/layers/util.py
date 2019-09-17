@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.engine import Layer
-import keras.backend as K
+from tensorflow.keras.engine import Layer
+import tensorflow.keras.backend as K
 
 __all__ = ['Float', 'ImageNormalization']
 

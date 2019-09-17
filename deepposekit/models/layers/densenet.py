@@ -17,7 +17,7 @@ limitations under the License.
 
 import numpy as np
 
-from keras import layers
+from tensorflow.keras import layers
 
 from .convolutional import UpSampling2D
 from .util import ImageNormalization

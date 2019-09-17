@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.engine import saving
+from tensorflow.keras.engine import saving
 import h5py
 import json
 import inspect
@@ -85,7 +85,7 @@ def load_model(path, augmenter=None, custom_objects=None, datapath=None):
             raise ValueError('No pose model found in config file')
         model_name = json.loads(model_config.decode('utf-8'))['class_name']
         model_config = json.loads(model_config.decode('utf-8'))['config']
-        
+
     if datapath:
         signature = inspect.signature(TrainingGenerator.__init__)
         keys = [key for key in signature.parameters.keys()]
