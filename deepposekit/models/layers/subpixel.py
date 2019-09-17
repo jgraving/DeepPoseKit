@@ -19,7 +19,7 @@ from ..backend import find_subpixel_maxima
 from tensorflow.keras.engine import Layer
 from tensorflow.keras.engine import InputSpec
 
-from tensorflow.keras.utils.conv_utils import normalize_data_format
+from tensorflow.python.keras.utils.conv_utils import normalize_data_format
 
 
 class SubpixelMaxima2D(Layer):

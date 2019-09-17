@@ -21,7 +21,7 @@ from tensorflow.keras.layers import InputSpec
 from ..backend import (resize_images, find_maxima,
                        depth_to_space, space_to_depth)
 
-from tensorflow.keras.utils.conv_utils import normalize_data_format
+from tensorflow.python.keras.utils.conv_utils import normalize_data_format, normalize_tuple
 
 
 __all__ = ['UpSampling2D', 'Maxima2D', 'RegisterTranslation2D',
