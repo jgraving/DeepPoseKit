@@ -34,7 +34,7 @@ class Logger(Callback):
     validation_batch_size: int
         Batch size for running evaluation
     '''
-    def __init__(self, filepath, validation_batch_size=1, verbose=1, batch_size=None, **kwargs):
+    def __init__(self, filepath, validation_batch_size=1, confidence_threshold=None, verbose=1, batch_size=None, **kwargs):
 
         super(Logger, self).__init__(**kwargs)
         if isinstance(filepath, str):
@@ -47,6 +47,7 @@ class Logger(Callback):
 
         self.verbose = verbose
         self.batch_size = validation_batch_size if batch_size is None else batch_size
+        self.confidence_threshold = confidence_threshold
 
         with h5py.File(self.filepath, 'w') as h5file:
 
@@ -63,15 +64,6 @@ class Logger(Callback):
                                      dtype=np.float64,
                                      maxshape=(None, None, None, None))
                 group.create_dataset('euclidean', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('mae', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('mse', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('rmse', shape=(0, 0, 0),
                                      dtype=np.float64,
                                      maxshape=(None, None, None))
                 group.create_dataset('confidence', shape=(0, 0, 0),
@@ -92,9 +84,6 @@ class Logger(Callback):
         y_pred = evaluation_dict['y_pred']
         y_error = evaluation_dict['y_error']
         euclidean = evaluation_dict['euclidean']
-        mae = evaluation_dict['mae']
-        mse = evaluation_dict['mse']
-        rmse = evaluation_dict['rmse']
         confidence = evaluation_dict['confidence']
 
         with h5py.File(self.filepath) as h5file:
@@ -103,9 +92,6 @@ class Logger(Callback):
                       'y_pred': y_pred[None, ...],
                       'y_error': y_error[None, ...],
                       'euclidean': euclidean[None, ...],
-                      'mae': mae[None, ...],
-                      'mse': mse[None, ...],
-                      'rmse': rmse[None, ...],
                       'confidence': confidence[None, ...]}
 
             for key, value in values.items():
@@ -118,51 +104,33 @@ class Logger(Callback):
                     data.resize(data.shape[0] + 1, axis=0)
                     data[-1] = value
 
-        keypoint_percentile = np.percentile([euclidean.flatten(),
-                                             mae.flatten(),
-                                             mse.flatten(),
-                                             rmse.flatten(),
-                                             confidence.flatten()],
-                                            [2.5, 97.5], axis=1).T
-        euclidean_perc, mae_perc, mse_perc, rmse_perc, confidence_perc = keypoint_percentile
+        euclidean = euclidean.flatten()
+        confidence = confidence.flatten()
 
-        logs['euclidean_upper'] = euclidean_perc[1]
-        logs['mae_upper'] = mae_perc[1]
-        logs['mse_upper'] = mse_perc[1]
-        logs['rmse_upper'] = rmse_perc[1]
-        logs['confidence_upper'] = confidence_perc[1]
+        if self.confidence_threshold:
+            mask = confidence >= confidence_threshold
+            euclidean = euclidean[mask]
+            confidence = confidence[mask]
 
+        keypoint_percentile = np.percentile([euclidean,
+                                             confidence],
+                                            [2.5, 25, 75, 97.5], axis=1).T
+        euclidean_perc, confidence_perc = keypoint_percentile
 
-        keypoint_mean = np.mean([euclidean, mae, mse, rmse, confidence], axis=1)
-        euclidean_mean, mae_mean, mse_mean, rmse_mean, confidence_mean = np.mean(keypoint_mean, axis=1)
+        euclidean_mean, confidence_mean = np.mean([euclidean, confidence], axis=1)
 
         logs['euclidean'] = euclidean_mean
-        logs['mae'] = mae_mean
-        logs['mse'] = mse_mean
-        logs['rmse'] = rmse_mean
         logs['confidence'] = confidence_mean
 
-        keypoint_median = np.median([euclidean, mae, mse, rmse, confidence], axis=1)
-        euclidean_median, mae_median, mse_median, rmse_median, confidence_median = np.median(keypoint_median, axis=1)
-        logs['euclidean_median'] = euclidean_median
-        logs['mae_median'] = mae_median
-        logs['mse_median'] = mse_median
-        logs['rmse_median'] = rmse_median
-        logs['confidence_median'] = confidence_median
+        euclidean_median, confidence_median = np.median([euclidean, confidence], axis=1)
 
         if self.verbose:
-            print('evaluation_metrics: mean median (2.5%, 97.5%) - '
-                  'euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'mae: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'mse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'rmse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f})'
-
-                  .format(euclidean_mean, euclidean_median, euclidean_perc[0], euclidean_perc[1],
-                          mae_mean, mae_median, mae_perc[0], mae_perc[1],
-                          mse_mean, mse_median, mse_perc[0], mse_perc[1],
-                          rmse_mean, rmse_median, rmse_perc[0], rmse_perc[1],
-                          confidence_mean, confidence_median, confidence_perc[0], confidence_perc[1])
+            print('evaluation_metrics: mean median (2.5%, 25%, 75%, 97.5%) \n'
+                  'euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n'
+                  'confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n'
+                  .format(euclidean_mean, euclidean_median, euclidean_perc[0], euclidean_perc[1], euclidean_perc[2], euclidean_perc[3],
+                          confidence_mean, confidence_median, confidence_perc[0], confidence_perc[1], confidence_perc[2], confidence_perc[3]
+                          )
                   )
 
     def on_batch_begin(self, batch, logs={}):
