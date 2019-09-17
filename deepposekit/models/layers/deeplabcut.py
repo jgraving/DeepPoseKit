@@ -28,15 +28,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-from keras.applications import imagenet_utils
-from keras.applications.resnet50 import preprocess_input
-from keras.layers import Layer
+from tensorflow.keras.applications import imagenet_utils
+from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.layers import Layer
 
 # from keras.applications.imagenet_utils import decode_predictions
 
 import os
 import warnings
-import keras
+import tensorflow.keras as keras
 
 # from keras import get_submodules_from_kwargs
 
@@ -430,9 +430,9 @@ class ResNetPreprocess(Layer):
 
 if __name__ == '__main__':
 
-    from keras.applications.resnet50 import preprocess_input
-    from keras.layers import Input, Lambda
-    from keras import Model
+    from tensorflow.keras.applications.resnet50 import preprocess_input
+    from tensorflow.keras.layers import Input, Lambda
+    from tensorflow.keras import Model
 
     input_layer = Input((192, 192, 3))
     model = ResNet50(include_top=False, input_shape=(192, 192, 3))

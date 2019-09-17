@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras import layers
+from tensorflow.keras import layers
 
 __all__ = ['ConvBlock2D', 'ConvPool2D']
 

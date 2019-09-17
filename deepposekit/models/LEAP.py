@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras import Input, Model
-from keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
 from .layers.convolutional import UpSampling2D
 from .layers.util import ImageNormalization, Float
 from .layers.leap import ConvBlock2D, ConvPool2D

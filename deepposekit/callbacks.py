@@ -18,8 +18,8 @@ import numpy as np
 import h5py
 import json
 
-from keras.callbacks import Callback
-import keras.callbacks as callbacks
+from tensorflow.keras.callbacks import Callback
+import tensorflow.keras.callbacks as callbacks
 from .models.engine import BaseModel
 from .utils.io import get_json_type
 
