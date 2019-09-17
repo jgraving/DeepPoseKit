@@ -24,8 +24,7 @@ from ..backend import (resize_images, find_maxima,
 from tensorflow.python.keras.utils.conv_utils import normalize_data_format, normalize_tuple
 
 
-__all__ = ['UpSampling2D', 'Maxima2D', 'RegisterTranslation2D',
-           'RegisterRotation2D', 'Rotate2D', 'Translate2D']
+__all__ = ['UpSampling2D', 'Maxima2D', 'SubPixelUpscaling', 'SubPixelDownscaling']
 
 
 class UpSampling2D(Layer):
