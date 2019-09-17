@@ -23,15 +23,15 @@ import copy
 import pandas as pd
 import cv2
 
-__all__ = ['DLCDataGenerator']
+__all__ = ["DLCDataGenerator"]
 
 
 class DLCDataGenerator(Sequence):
-
-    def __init__(self,
-                 datapath='./deeplabcut/examples/openfield-Pranav-2018-10-30/labeled-data/m4s1/CollectedData_Pranav.h5',
-                 imagepath = './deeplabcut/examples/openfield-Pranav-2018-10-30/'
-                 ):
+    def __init__(
+        self,
+        datapath="./deeplabcut/examples/openfield-Pranav-2018-10-30/labeled-data/m4s1/CollectedData_Pranav.h5",
+        imagepath="./deeplabcut/examples/openfield-Pranav-2018-10-30/",
+    ):
         """
         Creates a data generator for accessing a DeepLabCut annotation set.
 
@@ -53,7 +53,7 @@ class DLCDataGenerator(Sequence):
             bodyparts.append(column[1])
         self.bodyparts = np.unique(bodyparts)
         self.scorer = np.unique(scorer)[0]
-        self.xy = ['x', 'y']
+        self.xy = ["x", "y"]
 
         self.n_keypoints = len(bodyparts)
         self.n_samples = self.annotations.shape[0]
@@ -68,9 +68,9 @@ class DLCDataGenerator(Sequence):
             row = self.annotations.iloc[idx]
             coords = []
             for part in self.bodyparts:
-                x = row[(self.scorer, part, 'x')]
-                y = row[(self.scorer, part, 'y')]
-                coords.append([x,y])
+                x = row[(self.scorer, part, "x")]
+                y = row[(self.scorer, part, "y")]
+                coords.append([x, y])
             coords = np.array(coords)
             image = row.name
             image = cv2.imread(self.imagepath + image)
@@ -143,6 +143,5 @@ class DLCDataGenerator(Sequence):
         idx = self._check_index(key)
         if isinstance(value, (np.ndarray, list)):
             if len(value) != len(idx):
-                raise IndexError('data shape and '
-                                 'index do not match')
+                raise IndexError("data shape and " "index do not match")
             self.set_data(idx, value)

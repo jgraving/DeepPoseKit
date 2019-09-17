@@ -19,20 +19,19 @@ import tensorflow as tf
 import numpy as np
 from .utils import fftshift1d, fft2d, find_maxima, fix
 
-__all__ = ['_upsampled_registration']
+__all__ = ["_upsampled_registration"]
 
 
-def _col_kernel(upsampled_region_size, upsample_factor,
-                axis_offsets, data_shape):
+def _col_kernel(upsampled_region_size, upsample_factor, axis_offsets, data_shape):
 
     data_shape_float = tf.cast(data_shape, tf.float32)
     col_constant = tf.cast(data_shape_float[2] * upsample_factor, tf.complex64)
-    col_constant = (-1j * 2 * np.pi / col_constant)
+    col_constant = -1j * 2 * np.pi / col_constant
 
     col_kernel_a = tf.range(0, data_shape_float[2], dtype=tf.float32)
     col_kernel_a = fftshift1d(col_kernel_a)  # TODO: replace with tf.signal.fftshift
     col_kernel_a = tf.reshape(col_kernel_a, (-1, 1))
-    col_kernel_a -= tf.floor(data_shape_float[2] / 2.)
+    col_kernel_a -= tf.floor(data_shape_float[2] / 2.0)
     col_kernel_a = tf.reshape(col_kernel_a, (1, -1))
     col_kernel_a = tf.tile(col_kernel_a, (data_shape[0], 1))
 
@@ -53,12 +52,11 @@ def _col_kernel(upsampled_region_size, upsample_factor,
     return col_kernel
 
 
-def _row_kernel(upsampled_region_size, upsample_factor,
-                axis_offsets, data_shape):
+def _row_kernel(upsampled_region_size, upsample_factor, axis_offsets, data_shape):
 
     data_shape_float = tf.cast(data_shape, tf.float32)
     row_constant = tf.cast(data_shape_float[1] * upsample_factor, tf.complex64)
-    row_constant = (-1j * 2 * np.pi / row_constant)
+    row_constant = -1j * 2 * np.pi / row_constant
 
     row_kernel_a = tf.range(0, upsampled_region_size, dtype=tf.float32)
     row_kernel_a = tf.reshape(row_kernel_a, (1, -1))
@@ -70,7 +68,7 @@ def _row_kernel(upsampled_region_size, upsample_factor,
     row_kernel_b = fftshift1d(row_kernel_b)  # TODO: replace with tf.signal.fftshift
     row_kernel_b = tf.reshape(row_kernel_b, (1, -1))
     row_kernel_b = tf.tile(row_kernel_b, (data_shape[0], 1))
-    row_kernel_b = row_kernel_b - tf.floor(data_shape_float[1] / 2.)
+    row_kernel_b = row_kernel_b - tf.floor(data_shape_float[1] / 2.0)
 
     row_kernel_a = tf.expand_dims(row_kernel_a, 1)
     row_kernel_b = tf.expand_dims(row_kernel_b, -1)
@@ -84,8 +82,7 @@ def _row_kernel(upsampled_region_size, upsample_factor,
     return row_kernel
 
 
-def _upsampled_dft(data, upsampled_region_size,
-                   upsample_factor, axis_offsets):
+def _upsampled_dft(data, upsampled_region_size, upsample_factor, axis_offsets):
     """
     Upsampled DFT by matrix multiplication.
     This code is intended to provide the same result as if the following
@@ -119,10 +116,12 @@ def _upsampled_dft(data, upsampled_region_size,
     """
     data_shape = tf.shape(data)
 
-    col_kernel = _col_kernel(upsampled_region_size, upsample_factor,
-                             axis_offsets, data_shape)
-    row_kernel = _row_kernel(upsampled_region_size, upsample_factor,
-                             axis_offsets, data_shape)
+    col_kernel = _col_kernel(
+        upsampled_region_size, upsample_factor, axis_offsets, data_shape
+    )
+    row_kernel = _row_kernel(
+        upsampled_region_size, upsample_factor, axis_offsets, data_shape
+    )
 
     upsampled_dft = tf.matmul(tf.matmul(row_kernel, data), col_kernel)
 
@@ -148,7 +147,7 @@ def _upsampled_registration(target_image, src_image, upsample_factor):
     cross_correlation = tf.signal.ifft2d(image_product)
 
     maxima = find_maxima(tf.abs(cross_correlation))
-    midpoints = fix(tf.cast(shape, tf.float32) / 2.)
+    midpoints = fix(tf.cast(shape, tf.float32) / 2.0)
 
     shifts = maxima
     shifts = tf.where(shifts > midpoints, shifts - shape, shifts)
@@ -157,12 +156,13 @@ def _upsampled_registration(target_image, src_image, upsample_factor):
     upsampled_region_size = tf.math.ceil(upsample_factor * 1.5)
     dftshift = fix(upsampled_region_size / 2.0)
     normalization = tf.cast(tf.size(src_freq[0]), tf.float32)
-    normalization *= upsample_factor**2
+    normalization *= upsample_factor ** 2
     sample_region_offset = dftshift - shifts * upsample_factor
 
     data = tf.math.conj(image_product)
-    upsampled_dft = _upsampled_dft(data, upsampled_region_size,
-                                   upsample_factor, sample_region_offset)
+    upsampled_dft = _upsampled_dft(
+        data, upsampled_region_size, upsample_factor, sample_region_offset
+    )
 
     cross_correlation = tf.math.conj(upsampled_dft)
     cross_correlation /= tf.cast(normalization, tf.complex64)

@@ -24,25 +24,28 @@ from ..utils.io import get_json_type
 def save_model(model, path, optimizer=True):
 
     if isinstance(path, str):
-        if path.endswith('.h5') or path.endswith('.hdf5'):
+        if path.endswith(".h5") or path.endswith(".hdf5"):
             filepath = path
         else:
-            raise ValueError('file must be .h5 file')
+            raise ValueError("file must be .h5 file")
     else:
-        raise TypeError('file must be type `str`')
+        raise TypeError("file must be type `str`")
 
     saving.save_model(model.train_model, path, include_optimizer=optimizer)
 
-    with h5py.File(filepath, 'r+') as h5file:
+    with h5py.File(filepath, "r+") as h5file:
 
         data_generator = model.data_generator
 
-        h5file.attrs['data_generator_config'] = json.dumps({
-            'class_name': data_generator.__class__.__name__,
-            'config': data_generator.get_config()
-        }, default=get_json_type).encode('utf8')
+        h5file.attrs["data_generator_config"] = json.dumps(
+            {
+                "class_name": data_generator.__class__.__name__,
+                "config": data_generator.get_config(),
+            },
+            default=get_json_type,
+        ).encode("utf8")
 
-        h5file.attrs['pose_model_config'] = json.dumps({
-            'class_name': model.__class__.__name__,
-            'config': model.get_config()
-        }, default=get_json_type).encode('utf8')
+        h5file.attrs["pose_model_config"] = json.dumps(
+            {"class_name": model.__class__.__name__, "config": model.get_config()},
+            default=get_json_type,
+        ).encode("utf8")

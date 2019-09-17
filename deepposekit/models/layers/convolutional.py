@@ -18,13 +18,15 @@ limitations under the License.
 from tensorflow.python.keras.engine import Layer
 from tensorflow.python.keras.engine import InputSpec
 
-from ..backend import (resize_images, find_maxima,
-                       depth_to_space, space_to_depth)
+from ..backend import resize_images, find_maxima, depth_to_space, space_to_depth
 
-from tensorflow.python.keras.utils.conv_utils import normalize_data_format, normalize_tuple
+from tensorflow.python.keras.utils.conv_utils import (
+    normalize_data_format,
+    normalize_tuple,
+)
 
 
-__all__ = ['UpSampling2D', 'Maxima2D', 'SubPixelUpscaling', 'SubPixelDownscaling']
+__all__ = ["UpSampling2D", "Maxima2D", "SubPixelUpscaling", "SubPixelDownscaling"]
 
 
 class UpSampling2D(Layer):
@@ -60,38 +62,44 @@ class UpSampling2D(Layer):
             `(batch, channels, upsampled_rows, upsampled_cols)`
     """
 
-    def __init__(self, size=(2, 2), data_format=None,
-                 interpolation='nearest', **kwargs):
+    def __init__(
+        self, size=(2, 2), data_format=None, interpolation="nearest", **kwargs
+    ):
         super(UpSampling2D, self).__init__(**kwargs)
         self.data_format = normalize_data_format(data_format)
         self.interpolation = interpolation
-        self.size = normalize_tuple(size, 2, 'size')
+        self.size = normalize_tuple(size, 2, "size")
         self.input_spec = InputSpec(ndim=4)
 
     def compute_output_shape(self, input_shape):
-        if self.data_format == 'channels_first':
-            height = self.size[0] * input_shape[2] if input_shape[2] is not None else None
-            width = self.size[1] * input_shape[3] if input_shape[3] is not None else None
-            return (input_shape[0],
-                    input_shape[1],
-                    height,
-                    width)
-        elif self.data_format == 'channels_last':
-            height = self.size[0] * input_shape[1] if input_shape[1] is not None else None
-            width = self.size[1] * input_shape[2] if input_shape[2] is not None else None
-            return (input_shape[0],
-                    height,
-                    width,
-                    input_shape[3])
+        if self.data_format == "channels_first":
+            height = (
+                self.size[0] * input_shape[2] if input_shape[2] is not None else None
+            )
+            width = (
+                self.size[1] * input_shape[3] if input_shape[3] is not None else None
+            )
+            return (input_shape[0], input_shape[1], height, width)
+        elif self.data_format == "channels_last":
+            height = (
+                self.size[0] * input_shape[1] if input_shape[1] is not None else None
+            )
+            width = (
+                self.size[1] * input_shape[2] if input_shape[2] is not None else None
+            )
+            return (input_shape[0], height, width, input_shape[3])
 
     def call(self, inputs):
-        return resize_images(inputs, self.size[0], self.size[1],
-                             self.interpolation, self.data_format)
+        return resize_images(
+            inputs, self.size[0], self.size[1], self.interpolation, self.data_format
+        )
 
     def get_config(self):
-        config = {'size': self.size,
-                  'data_format': self.data_format,
-                  'interpolation': self.interpolation}
+        config = {
+            "size": self.size,
+            "data_format": self.data_format,
+            "interpolation": self.interpolation,
+        }
         base_config = super(UpSampling2D, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
@@ -129,8 +137,14 @@ class Maxima2D(Layer):
             `(batch, index, 3)`
     """
 
-    def __init__(self, index=None, coordinate_scale=1.,
-                 confidence_scale=255., data_format=None, **kwargs):
+    def __init__(
+        self,
+        index=None,
+        coordinate_scale=1.0,
+        confidence_scale=255.0,
+        data_format=None,
+        **kwargs
+    ):
         super(Maxima2D, self).__init__(**kwargs)
         self.data_format = normalize_data_format(data_format)
         self.input_spec = InputSpec(ndim=4)
@@ -139,29 +153,30 @@ class Maxima2D(Layer):
         self.confidence_scale = confidence_scale
 
     def compute_output_shape(self, input_shape):
-        if self.data_format == 'channels_first':
+        if self.data_format == "channels_first":
             n_channels = self.index if self.index is not None else input_shape[1]
-            
-        elif self.data_format == 'channels_last':
+
+        elif self.data_format == "channels_last":
             n_channels = self.index if self.index is not None else input_shape[3]
-        return (input_shape[0],
-                n_channels,
-                3)
+        return (input_shape[0], n_channels, 3)
 
     def call(self, inputs):
-        if self.data_format == 'channels_first':
-            inputs = inputs[:, :self.index]
-        elif self.data_format == 'channels_last':
-            inputs = inputs[..., :self.index]
-        outputs = find_maxima(inputs, self.coordinate_scale,
-                              self.confidence_scale, self.data_format)
+        if self.data_format == "channels_first":
+            inputs = inputs[:, : self.index]
+        elif self.data_format == "channels_last":
+            inputs = inputs[..., : self.index]
+        outputs = find_maxima(
+            inputs, self.coordinate_scale, self.confidence_scale, self.data_format
+        )
         return outputs
 
     def get_config(self):
-        config = {'data_format': self.data_format,
-                  'index': self.index,
-                  'coordinate_scale': self.coordinate_scale,
-                  'confidence_scale': self.confidence_scale}
+        config = {
+            "data_format": self.data_format,
+            "index": self.index,
+            "coordinate_scale": self.coordinate_scale,
+            "confidence_scale": self.confidence_scale,
+        }
         base_config = super(Maxima2D, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
@@ -219,16 +234,25 @@ class SubPixelUpscaling(Layer):
         return y
 
     def compute_output_shape(self, input_shape):
-        if self.data_format == 'channels_first':
+        if self.data_format == "channels_first":
             b, k, r, c = input_shape
-            return (b, k // (self.scale_factor ** 2), r * self.scale_factor, c * self.scale_factor)
+            return (
+                b,
+                k // (self.scale_factor ** 2),
+                r * self.scale_factor,
+                c * self.scale_factor,
+            )
         else:
             b, r, c, k = input_shape
-            return (b, r * self.scale_factor, c * self.scale_factor, k // (self.scale_factor ** 2))
+            return (
+                b,
+                r * self.scale_factor,
+                c * self.scale_factor,
+                k // (self.scale_factor ** 2),
+            )
 
     def get_config(self):
-        config = {'scale_factor': self.scale_factor,
-                  'data_format': self.data_format}
+        config = {"scale_factor": self.scale_factor, "data_format": self.data_format}
         base_config = super(SubPixelUpscaling, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
@@ -286,15 +310,24 @@ class SubPixelDownscaling(Layer):
         return y
 
     def compute_output_shape(self, input_shape):
-        if self.data_format == 'channels_first':
+        if self.data_format == "channels_first":
             b, k, r, c = input_shape
-            return (b, k // (self.scale_factor ** 2), r // self.scale_factor, c // self.scale_factor)
+            return (
+                b,
+                k // (self.scale_factor ** 2),
+                r // self.scale_factor,
+                c // self.scale_factor,
+            )
         else:
             b, r, c, k = input_shape
-            return (b, r // self.scale_factor, c // self.scale_factor, k * (self.scale_factor ** 2))
+            return (
+                b,
+                r // self.scale_factor,
+                c // self.scale_factor,
+                k * (self.scale_factor ** 2),
+            )
 
     def get_config(self):
-        config = {'scale_factor': self.scale_factor,
-                  'data_format': self.data_format}
+        config = {"scale_factor": self.scale_factor, "data_format": self.data_format}
         base_config = super(SubPixelDownscaling, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
