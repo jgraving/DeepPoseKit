@@ -18,8 +18,7 @@ limitations under the License.
 from tensorflow.python.keras.engine import Layer
 from tensorflow.python.keras.engine import InputSpec
 
-from ..backend import (resize_images, find_maxima,
-                       depth_to_space, space_to_depth)
+from ..backend import resize_images, find_maxima, depth_to_space, space_to_depth
 
 from tensorflow.python.keras.utils.conv_utils import (
     normalize_data_format,

@@ -62,6 +62,7 @@ class Logger(Callback):
 
         if self.filepath is not None:
             with h5py.File(self.filepath, "w") as h5file:
+    
                 if "logs" not in h5file:
                     group = h5file.create_group("logs")
                     group.create_dataset(
@@ -94,6 +95,7 @@ class Logger(Callback):
                         dtype=np.float64,
                         maxshape=(None, None, None),
                     )
+
     def on_train_begin(self, logs={}):
         return
 
@@ -112,19 +114,19 @@ class Logger(Callback):
         if self.filepath is not None:
             with h5py.File(self.filepath) as h5file:
                 values = {
-                    "loss": np.array([logs.get("loss")]).reshape(1),
                     "val_loss": np.array([logs.get("val_loss")]).reshape(1),
+                    "loss": np.array([logs.get("loss")]).reshape(1),
                     "y_pred": y_pred[None, ...],
                     "y_error": y_error[None, ...],
                     "euclidean": euclidean[None, ...],
                     "confidence": confidence[None, ...],
-                }
     
+                }
                 for key, value in values.items():
                     data = h5file["logs"][key]
-                    if data.shape[0] == 0:
                         value = np.array(value)
                         data.resize(tuple(value.shape))
+                    if data.shape[0] == 0:
                         data[:] = value
                     else:
                         data.resize(data.shape[0] + 1, axis=0)
@@ -197,8 +199,6 @@ class Logger(Callback):
                         model.get_config(), default=get_json_type
                     ).encode("utf8")
 
-            if 'logger_config' not in h5file.attrs:
-                h5file.attrs['logger_config'] = json.dumps(model.get_config(), default=get_json_type).encode('utf8')
 
 class ModelCheckpoint(callbacks.ModelCheckpoint):
     """Save the model after every epoch.
