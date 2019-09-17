@@ -20,6 +20,7 @@ if major >= 3 and minor >= 6:
 
 try:
     import dpk_annotator as annotation
+
     Annotator = annotation.Annotator
     Skeleton = annotation.Skeleton
     KMeansSampler = annotation.KMeansSampler
@@ -27,11 +28,13 @@ try:
     VideoWriter = annotation.VideoWriter
 
 except ImportError:
-    warnings.warn('\n'
-                  '\nDeepPoseKit Annotator is not found. '
-                  '\nAnnotation functions are not available. '
-                  '\nSee https://github.com/jgraving/deepposekit-annotator for installation instructions. '
-                  '\n')
+    warnings.warn(
+        "\n"
+        "\nDeepPoseKit Annotator is not found. "
+        "\nAnnotation functions are not available. "
+        "\nSee https://github.com/jgraving/deepposekit-annotator for installation instructions. "
+        "\n"
+    )
 
 
-__version__ = '0.2.dev'
+__version__ = "0.2.dev"

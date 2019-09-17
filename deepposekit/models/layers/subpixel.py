@@ -56,9 +56,17 @@ class SubpixelMaxima2D(Layer):
             `(batch, index, 3)`
     """
 
-    def __init__(self, kernel_size, sigma, upsample_factor, index=None,
-                 coordinate_scale=1., confidence_scale=255., data_format=None,
-                 **kwargs):
+    def __init__(
+        self,
+        kernel_size,
+        sigma,
+        upsample_factor,
+        index=None,
+        coordinate_scale=1.0,
+        confidence_scale=255.0,
+        data_format=None,
+        **kwargs
+    ):
         super(SubpixelMaxima2D, self).__init__(**kwargs)
         self.data_format = normalize_data_format(data_format)
         self.input_spec = InputSpec(ndim=4)
@@ -70,31 +78,37 @@ class SubpixelMaxima2D(Layer):
         self.confidence_scale = confidence_scale
 
     def compute_output_shape(self, input_shape):
-        if self.data_format == 'channels_first':
+        if self.data_format == "channels_first":
             n_channels = self.index if self.index is not None else input_shape[1]
-        elif self.data_format == 'channels_last':
+        elif self.data_format == "channels_last":
             n_channels = self.index if self.index is not None else input_shape[3]
-        return (input_shape[0],
-                n_channels,
-                3)
+        return (input_shape[0], n_channels, 3)
 
     def call(self, inputs):
-        if self.data_format == 'channels_first':
-            inputs = inputs[:, :self.index]
-        elif self.data_format == 'channels_last':
-            inputs = inputs[..., :self.index]
-        outputs = find_subpixel_maxima(inputs, self.kernel_size, self.sigma,
-                                       self.upsample_factor, self.coordinate_scale,
-                                       self.confidence_scale, self.data_format)
+        if self.data_format == "channels_first":
+            inputs = inputs[:, : self.index]
+        elif self.data_format == "channels_last":
+            inputs = inputs[..., : self.index]
+        outputs = find_subpixel_maxima(
+            inputs,
+            self.kernel_size,
+            self.sigma,
+            self.upsample_factor,
+            self.coordinate_scale,
+            self.confidence_scale,
+            self.data_format,
+        )
         return outputs
 
     def get_config(self):
-        config = {'data_format': self.data_format,
-                  'kernel_size': self.kernel_size,
-                  'sigma': self.sigma,
-                  'upsample_factor': self.upsample_factor,
-                  'index': self.index,
-                  'coordinate_scale': self.coordinate_scale,
-                  'confidence_scale': self.confidence_scale}
+        config = {
+            "data_format": self.data_format,
+            "kernel_size": self.kernel_size,
+            "sigma": self.sigma,
+            "upsample_factor": self.upsample_factor,
+            "index": self.index,
+            "coordinate_scale": self.coordinate_scale,
+            "confidence_scale": self.confidence_scale,
+        }
         base_config = super(SubpixelMaxima2D, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))

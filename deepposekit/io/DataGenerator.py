@@ -21,12 +21,11 @@ import numpy as np
 import os
 import copy
 
-__all__ = ['DataGenerator']
+__all__ = ["DataGenerator"]
 
 
 class DataGenerator(Sequence):
-
-    def __init__(self, datapath, dataset, mode='annotated'):
+    def __init__(self, datapath, dataset, mode="annotated"):
         """
         Creates a data generator for accessing an annotation set.
 
@@ -45,69 +44,68 @@ class DataGenerator(Sequence):
 
         # Check annotations file
         if isinstance(datapath, str):
-            if datapath.endswith('.h5'):
+            if datapath.endswith(".h5"):
                 if os.path.exists(datapath):
                     self.datapath = datapath
                 else:
-                    raise ValueError('datapath file or '
-                                     'directory does not exist')
+                    raise ValueError("datapath file or " "directory does not exist")
 
             else:
-                raise ValueError('datapath must be .h5 file')
+                raise ValueError("datapath must be .h5 file")
         else:
-            raise TypeError('datapath must be type `str`')
+            raise TypeError("datapath must be type `str`")
 
         if isinstance(dataset, str):
             self.dataset = dataset
         else:
-            raise TypeError('dataset must be type `str`')
+            raise TypeError("dataset must be type `str`")
 
-        with h5py.File(self.datapath, mode='r') as h5file:
+        with h5py.File(self.datapath, mode="r") as h5file:
 
             # Check for annotations
-            if 'annotations' not in list(h5file.keys()):
-                raise KeyError('annotations not found in annotations file')
-            if 'annotated' not in list(h5file.keys()):
-                raise KeyError('annotations not found in annotations file')
-            if 'skeleton' not in list(h5file.keys()):
-                raise KeyError('skeleton not found in annotations file')
+            if "annotations" not in list(h5file.keys()):
+                raise KeyError("annotations not found in annotations file")
+            if "annotated" not in list(h5file.keys()):
+                raise KeyError("annotations not found in annotations file")
+            if "skeleton" not in list(h5file.keys()):
+                raise KeyError("skeleton not found in annotations file")
             if self.dataset not in list(h5file.keys()):
-                raise KeyError('image dataset not found in annotations file')
+                raise KeyError("image dataset not found in annotations file")
 
             # Get annotations attributes
-            if mode not in ['full', 'annotated', 'unannotated']:
-                raise ValueError('mode must be full, annotated, or unannotated')
+            if mode not in ["full", "annotated", "unannotated"]:
+                raise ValueError("mode must be full, annotated, or unannotated")
             else:
                 self.mode = mode
-            annotated = np.all(h5file['annotated'].value, axis=1)
+            annotated = np.all(h5file["annotated"].value, axis=1)
             self.annotated_index = np.where(annotated)[0]
             self.n_annotated = self.annotated_index.shape[0]
-            if self.n_annotated == 0 and self.mode is not 'unannotated':
-                raise ValueError('The number of annotated images is zero')
-            self.n_keypoints = h5file['annotations'].shape[1]
+            if self.n_annotated == 0 and self.mode is not "unannotated":
+                raise ValueError("The number of annotated images is zero")
+            self.n_keypoints = h5file["annotations"].shape[1]
             self.n_samples = h5file[self.dataset].shape[0]
             self.index = np.arange(self.n_samples)
             self.unannotated_index = np.where(~annotated)[0]
             self.n_unannotated = self.unannotated_index.shape[0]
 
             # Initialize skeleton attributes
-            self.tree = h5file['skeleton'][:, 0]
-            self.swap_index = h5file['skeleton'][:, 1]
+            self.tree = h5file["skeleton"][:, 0]
+            self.swap_index = h5file["skeleton"][:, 1]
 
     def get_data(self, indexes):
-        if self.mode is 'annotated':
+        if self.mode is "annotated":
             indexes = self.annotated_index[indexes]
-        elif self.mode is 'unannotated':
+        elif self.mode is "unannotated":
             indexes = self.unannotated_index[indexes]
         else:
             indexes = self.index[indexes]
 
         X = []
         y = []
-        with h5py.File(self.datapath, mode='r') as h5file:
+        with h5py.File(self.datapath, mode="r") as h5file:
             for idx in indexes:
                 X.append(h5file[self.dataset][idx])
-                y.append(h5file['annotations'][idx])
+                y.append(h5file["annotations"][idx])
 
         X = np.stack(X)
         y = np.stack(y)
@@ -118,35 +116,39 @@ class DataGenerator(Sequence):
         if y.shape[-1] is 3:
             y = y[..., :2]
         elif y.shape[-1] is not 2:
-            raise ValueError('data shape does not match')
-        if self.mode is 'annotated':
+            raise ValueError("data shape does not match")
+        if self.mode is "annotated":
             indexes = self.annotated_index[indexes]
-        elif self.mode is 'unannotated':
+        elif self.mode is "unannotated":
             indexes = self.unannotated_index[indexes]
         else:
             indexes = self.index[indexes]
 
-        with h5py.File(self.datapath, mode='r+') as h5file:
+        with h5py.File(self.datapath, mode="r+") as h5file:
             for idx, keypoints in zip(indexes, y):
-                h5file['annotations'][idx] = keypoints
+                h5file["annotations"][idx] = keypoints
 
-    def __call__(self, mode='annotated'):
-        if mode not in ['full', 'annotated', 'unannotated']:
-            raise ValueError('mode must be full, annotated, or unannotated')
-        elif mode is 'annotated' and self.n_annotated == 0:
-            raise ValueError('cannot return annotated samples, '
-                             'number of annotated samples is zero')
-        elif mode is 'unannotated' and self.n_unannotated == 0:
-            raise ValueError('cannot return unannotated samples, '
-                             'number of unannotated samples is zero')
+    def __call__(self, mode="annotated"):
+        if mode not in ["full", "annotated", "unannotated"]:
+            raise ValueError("mode must be full, annotated, or unannotated")
+        elif mode is "annotated" and self.n_annotated == 0:
+            raise ValueError(
+                "cannot return annotated samples, "
+                "number of annotated samples is zero"
+            )
+        elif mode is "unannotated" and self.n_unannotated == 0:
+            raise ValueError(
+                "cannot return unannotated samples, "
+                "number of unannotated samples is zero"
+            )
         else:
             self.mode = mode
         return copy.deepcopy(self)
 
     def __len__(self):
-        if self.mode is 'annotated':
+        if self.mode is "annotated":
             return self.n_annotated
-        elif self.mode is 'unannotated':
+        elif self.mode is "unannotated":
             return self.n_unannotated
         else:
             return self.n_samples
@@ -191,6 +193,5 @@ class DataGenerator(Sequence):
         idx = self._check_index(key)
         if isinstance(value, (np.ndarray, list)):
             if len(value) != len(idx):
-                raise IndexError('data shape and '
-                                 'index do not match')
+                raise IndexError("data shape and " "index do not match")
             self.set_data(idx, value)

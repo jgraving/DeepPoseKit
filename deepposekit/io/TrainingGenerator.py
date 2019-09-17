@@ -25,7 +25,7 @@ from ..utils.keypoints import draw_confidence_maps, graph_to_edges
 from ..utils.image import check_grayscale
 from .DataGenerator import DataGenerator
 
-__all__ = ['TrainingGenerator']
+__all__ = ["TrainingGenerator"]
 
 
 class TrainingGenerator(Sequence):

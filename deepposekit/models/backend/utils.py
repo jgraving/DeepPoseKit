@@ -18,8 +18,15 @@ limitations under the License.
 import tensorflow as tf
 import numpy as np
 
-__all__ = ['ndims', 'fix', 'fft2d', 'find_maxima',
-           'fftshift1d', 'gaussian_kernel_1d', 'gaussian_kernel_2d']
+__all__ = [
+    "ndims",
+    "fix",
+    "fft2d",
+    "find_maxima",
+    "fftshift1d",
+    "gaussian_kernel_1d",
+    "gaussian_kernel_2d",
+]
 
 
 def ndims(x):
@@ -57,9 +64,9 @@ def fftshift1d(x, axis=0):
     x_shape = tf.shape(x)
     x = tf.reshape(x, (-1, 1))
     n_samples = tf.cast(tf.shape(x)[0], tf.float32)
-    even = n_samples / 2.
+    even = n_samples / 2.0
     even = tf.round(even)
-    even = even * 2.
+    even = even * 2.0
     even = tf.equal(n_samples, even)
 
     def true_fn():
@@ -91,7 +98,7 @@ def gaussian_kernel_1d(size, sigma):
     sigma = tf.constant(sigma, dtype=tf.float32)
     x = tf.range(-(size // 2), (size // 2) + 1, dtype=tf.float32)
     kernel = 1 / (sigma * tf.sqrt(2 * np.pi))
-    kernel *= tf.exp(-0.5 * (x / sigma)**2)
+    kernel *= tf.exp(-0.5 * (x / sigma) ** 2)
     return tf.expand_dims(kernel, axis=-1)
 
 

@@ -53,43 +53,53 @@ class BaseModel:
             self.compile = self.train_model.compile
             self.n_outputs = len(self.train_model.outputs)
         else:
-            raise TypeError('self.train_model must be keras.Model class')
+            raise TypeError("self.train_model must be keras.Model class")
 
     def __init_model__(self):
-        raise NotImplementedError('__init_model__ method must be'
-                                  'implemented to define `self.train_model`')
+        raise NotImplementedError(
+            "__init_model__ method must be" "implemented to define `self.train_model`"
+        )
 
-    def __init_predict_model__(self, output_shape, n_keypoints,
-                               downsample_factor, output_sigma=None, **kwargs):
+    def __init_predict_model__(
+        self, output_shape, n_keypoints, downsample_factor, output_sigma=None, **kwargs
+    ):
 
         output = self.train_model.outputs[-1]
         if self.subpixel:
             kernel_size = np.min(output_shape)
-            kernel_size = (kernel_size //
-                           largest_factor(kernel_size)) + 1
+            kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
             sigma = output_sigma
-            keypoints = SubpixelMaxima2D(kernel_size,
-                                         sigma,
-                                         upsample_factor=100,
-                                         index=n_keypoints,
-                                         coordinate_scale=2**downsample_factor,
-                                         confidence_scale=255.,
-                                         )(output)
+            keypoints = SubpixelMaxima2D(
+                kernel_size,
+                sigma,
+                upsample_factor=100,
+                index=n_keypoints,
+                coordinate_scale=2 ** downsample_factor,
+                confidence_scale=255.0,
+            )(output)
         else:
-            keypoints = Maxima2D(index=n_keypoints,
-                                 coordinate_scale=2**downsample_factor,
-                                 confidence_scale=255.,
-                                 )(output)
+            keypoints = Maxima2D(
+                index=n_keypoints,
+                coordinate_scale=2 ** downsample_factor,
+                confidence_scale=255.0,
+            )(output)
         input_layer = self.train_model.inputs[0]
-        self.predict_model = Model(input_layer, keypoints,
-                                   name=self.train_model.name)
+        self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
 
-    def fit(self, batch_size, validation_batch_size=1, callbacks=[],
-            epochs=1, use_multiprocessing=False, n_workers=1,
-            steps_per_epoch=None, **kwargs):
+    def fit(
+        self,
+        batch_size,
+        validation_batch_size=1,
+        callbacks=[],
+        epochs=1,
+        use_multiprocessing=False,
+        n_workers=1,
+        steps_per_epoch=None,
+        **kwargs
+    ):
         """
         Trains the model for a given number of epochs (iterations on a dataset).
 
@@ -115,18 +125,18 @@ class BaseModel:
         """
 
         if not self.train_model._is_compiled:
-            warnings.warn('''\nAutomatically compiling with default settings: model.compile('adam', 'mse')\n'''
-                          'Call model.compile() manually to use non-default settings.\n')
-            self.train_model.compile('adam', 'mse')
+            warnings.warn(
+                """\nAutomatically compiling with default settings: model.compile('adam', 'mse')\n"""
+                "Call model.compile() manually to use non-default settings.\n"
+            )
+            self.train_model.compile("adam", "mse")
 
-        train_generator = self.data_generator(self.n_outputs,
-                                              batch_size,
-                                              validation=False,
-                                              confidence=True)
-        validation_generator = self.data_generator(self.n_outputs,
-                                                   validation_batch_size,
-                                                   validation=True,
-                                                   confidence=True)
+        train_generator = self.data_generator(
+            self.n_outputs, batch_size, validation=False, confidence=True
+        )
+        validation_generator = self.data_generator(
+            self.n_outputs, validation_batch_size, validation=True, confidence=True
+        )
         activated_callbacks = []
         if callbacks is not None:
             if len(callbacks) > 0:
@@ -138,21 +148,22 @@ class BaseModel:
         if steps_per_epoch is None:
             steps_per_epoch = len(train_generator)
 
-        self.train_model.fit_generator(generator=train_generator,
-                                       steps_per_epoch=steps_per_epoch,
-                                       epochs=epochs,
-                                       use_multiprocessing=use_multiprocessing,
-                                       workers=n_workers,
-                                       callbacks=activated_callbacks,
-                                       validation_data=validation_generator,
-                                       validation_steps=len(validation_generator),
-                                       **kwargs)
+        self.train_model.fit_generator(
+            generator=train_generator,
+            steps_per_epoch=steps_per_epoch,
+            epochs=epochs,
+            use_multiprocessing=use_multiprocessing,
+            workers=n_workers,
+            callbacks=activated_callbacks,
+            validation_data=validation_generator,
+            validation_steps=len(validation_generator),
+            **kwargs
+        )
 
     def evaluate(self, batch_size):
-        keypoint_generator = self.data_generator(n_outputs=1,
-                                                 batch_size=batch_size,
-                                                 validation=True,
-                                                 confidence=False)
+        keypoint_generator = self.data_generator(
+            n_outputs=1, batch_size=batch_size, validation=True, confidence=False
+        )
         metrics = []
         keypoints = []
         for idx in range(len(keypoint_generator)):
@@ -171,13 +182,15 @@ class BaseModel:
         euclidean, mae, mse, rmse, confidence = metrics
         y_pred, y_error = keypoints
 
-        evaluation_dict = {'y_pred': y_pred,
-                           'y_error': y_error,
-                           'euclidean': euclidean,
-                           'mae': mae,
-                           'mse': mse,
-                           'rmse': rmse,
-                           'confidence': confidence}
+        evaluation_dict = {
+            "y_pred": y_pred,
+            "y_error": y_error,
+            "euclidean": euclidean,
+            "mae": mae,
+            "mse": mse,
+            "rmse": rmse,
+            "confidence": confidence,
+        }
 
         return evaluation_dict
 

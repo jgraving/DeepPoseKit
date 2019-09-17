@@ -17,7 +17,7 @@ limitations under the License.
 
 import cv2
 
-__all__ = ['check_grayscale', 'largest_factor', 'n_downsample']
+__all__ = ["check_grayscale", "largest_factor", "n_downsample"]
 
 
 def check_grayscale(image, return_color=False):
@@ -34,12 +34,12 @@ def check_grayscale(image, return_color=False):
 
 def largest_factor(x):
     n = n_downsample(x)
-    return x // 2**n
+    return x // 2 ** n
 
 
 def n_downsample(x):
     n = 0
     while x % 2 == 0 and x > 2:
         n += 1
-        x /= 2.
+        x /= 2.0
     return n

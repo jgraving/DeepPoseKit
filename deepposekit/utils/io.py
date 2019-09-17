@@ -19,7 +19,7 @@ import numpy as np
 
 
 def get_json_type(obj):
-        """Serialize any object to a JSON-serializable structure.
+    """Serialize any object to a JSON-serializable structure.
         # Arguments
             obj: the object to serialize
         # Returns
@@ -27,26 +27,24 @@ def get_json_type(obj):
         # Raises
             TypeError: if `obj` cannot be serialized.
         """
-        # if obj is a serializable Keras class instance
-        # e.g. optimizer, layer
-        if hasattr(obj, 'get_config'):
-            return {'class_name': obj.__class__.__name__,
-                    'config': obj.get_config()}
+    # if obj is a serializable Keras class instance
+    # e.g. optimizer, layer
+    if hasattr(obj, "get_config"):
+        return {"class_name": obj.__class__.__name__, "config": obj.get_config()}
 
-        # if obj is any numpy type
-        if type(obj).__module__ == np.__name__:
-            if isinstance(obj, np.ndarray):
-                return {'type': type(obj),
-                        'value': obj.tolist()}
-            else:
-                return obj.item()
+    # if obj is any numpy type
+    if type(obj).__module__ == np.__name__:
+        if isinstance(obj, np.ndarray):
+            return {"type": type(obj), "value": obj.tolist()}
+        else:
+            return obj.item()
 
-        # misc functions (e.g. loss function)
-        if callable(obj):
-            return obj.__name__
+    # misc functions (e.g. loss function)
+    if callable(obj):
+        return obj.__name__
 
-        # if obj is a python 'type'
-        if type(obj).__name__ == type.__name__:
-            return obj.__name__
+    # if obj is a python 'type'
+    if type(obj).__name__ == type.__name__:
+        return obj.__name__
 
-        raise TypeError('Not JSON Serializable:', obj)
+    raise TypeError("Not JSON Serializable:", obj)
