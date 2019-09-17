@@ -15,7 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from tensorflow.keras.engine import saving
+from tensorflow.python.keras.engine import saving
+
 import h5py
 import json
 import inspect

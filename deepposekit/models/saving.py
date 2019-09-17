@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from tensorflow.keras.models import save_model as keras_save_model
+from tensorflow.python.keras.engine import saving
 import h5py
 import json
 from ..utils.io import get_json_type
@@ -31,7 +31,7 @@ def save_model(model, path, optimizer=True):
     else:
         raise TypeError('file must be type `str`')
 
-    keras_save_model(model.train_model, path, include_optimizer=optimizer)
+    saving.save_model(model.train_model, path, include_optimizer=optimizer)
 
     with h5py.File(filepath, 'r+') as h5file:
 
