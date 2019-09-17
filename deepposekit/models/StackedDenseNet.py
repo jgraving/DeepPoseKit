@@ -24,14 +24,26 @@ from .engine import BaseModel
 
 
 class StackedDenseNet(BaseModel):
-
-    def __init__(self, data_generator, n_stacks=1,
-                 n_transitions=-2, n_layers=1,
-                 growth_rate=48, bottleneck_factor=1, compression_factor=0.5,
-                 batchnorm=False, use_bias=True, activation='selu', pooling='max',
-                 interpolation='subpixel', subpixel=True,
-                 initializer='glorot_uniform', separable=False, squeeze_excite=False,
-                 **kwargs):
+    def __init__(
+        self,
+        data_generator,
+        n_stacks=1,
+        n_transitions=-2,
+        n_layers=1,
+        growth_rate=48,
+        bottleneck_factor=1,
+        compression_factor=0.5,
+        batchnorm=False,
+        use_bias=True,
+        activation="selu",
+        pooling="max",
+        interpolation="subpixel",
+        subpixel=True,
+        initializer="glorot_uniform",
+        separable=False,
+        squeeze_excite=False,
+        **kwargs
+    ):
         """
         Define a Stacked Fully-Convolutional DenseNet model
         for pose estimation.
@@ -131,25 +143,29 @@ class StackedDenseNet(BaseModel):
         self.growth_rate = growth_rate
         self.bottleneck_factor = bottleneck_factor
         self.compression_factor = compression_factor
-        self.batchnorm = batchnorm if activation is not 'selu' else False
+        self.batchnorm = batchnorm if activation is not "selu" else False
         self.use_bias = use_bias
         self.activation = activation
         self.pooling = pooling
         self.interpolation = interpolation
-        self.initializer = initializer if activation is not 'selu' else 'lecun_normal'
+        self.initializer = initializer if activation is not "selu" else "lecun_normal"
         self.separable = separable
         self.squeeze_excite = squeeze_excite
         self.n_transitions = n_transitions
         super(StackedDenseNet, self).__init__(data_generator, subpixel, **kwargs)
 
     def __init_model__(self):
-        max_transitions = np.min([n_downsample(self.data_generator.height),
-                                  n_downsample(self.data_generator.width)])
+        max_transitions = np.min(
+            [
+                n_downsample(self.data_generator.height),
+                n_downsample(self.data_generator.width),
+            ]
+        )
 
         n_transitions = self.n_transitions
         if isinstance(n_transitions, (int, np.integer)):
             if n_transitions == 0:
-                raise ValueError('n_transitions cannot equal zero')
+                raise ValueError("n_transitions cannot equal zero")
             if n_transitions < 0:
                 n_transitions += 1
                 n_transitions = max_transitions - np.abs(n_transitions)
@@ -157,70 +173,89 @@ class StackedDenseNet(BaseModel):
             elif 0 < n_transitions <= max_transitions:
                 self.n_transitions = n_transitions
             else:
-                raise ValueError('n_transitions must be in range {0} '
-                                 '< n_transitions <= '
-                                 '{1}'.format(-max_transitions + 1,
-                                              max_transitions))
+                raise ValueError(
+                    "n_transitions must be in range {0} "
+                    "< n_transitions <= "
+                    "{1}".format(-max_transitions + 1, max_transitions)
+                )
         else:
-            raise TypeError('n_transitions must be integer in range '
-                            '{0} < n_transitions <= '
-                            '{1}'.format(-max_transitions + 1,
-                                         max_transitions))
+            raise TypeError(
+                "n_transitions must be integer in range "
+                "{0} < n_transitions <= "
+                "{1}".format(-max_transitions + 1, max_transitions)
+            )
 
+        batch_shape = (
+            None,
+            self.data_generator.height,
+            self.data_generator.width,
+            self.data_generator.n_channels,
+        )
 
-        batch_shape = (None,
-                       self.data_generator.height,
-                       self.data_generator.width,
-                       self.data_generator.n_channels)
-
-        input_layer = Input(batch_shape=batch_shape,
-                            dtype='uint8')
+        input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
         normalized = ImageNormalization()(to_float)
-        concat_list, output0 = DenseNet(n_output_channels=self.data_generator.n_output_channels,
-                                        n_downsample=self.n_transitions,
-                                        n_upsample=self.n_transitions - self.data_generator.downsample_factor,
-                                        n_layers=self.n_layers, growth_rate=self.growth_rate,
-                                        bottleneck_factor=self.bottleneck_factor,
-                                        compression_factor=self.compression_factor,
-                                        activation=self.activation, pooling=self.pooling, interpolation=self.interpolation, batchnorm=self.batchnorm,
-                                        use_bias=self.use_bias, separable=self.separable, squeeze_excite=self.squeeze_excite,
-                                        stack_idx=0, multiplier=1)([normalized])
+        concat_list, output0 = DenseNet(
+            n_output_channels=self.data_generator.n_output_channels,
+            n_downsample=self.n_transitions,
+            n_upsample=self.n_transitions - self.data_generator.downsample_factor,
+            n_layers=self.n_layers,
+            growth_rate=self.growth_rate,
+            bottleneck_factor=self.bottleneck_factor,
+            compression_factor=self.compression_factor,
+            activation=self.activation,
+            pooling=self.pooling,
+            interpolation=self.interpolation,
+            batchnorm=self.batchnorm,
+            use_bias=self.use_bias,
+            separable=self.separable,
+            squeeze_excite=self.squeeze_excite,
+            stack_idx=0,
+            multiplier=1,
+        )([normalized])
         outputs = [output0]
         multiplier = self.n_transitions - self.data_generator.downsample_factor
         for idx in range(self.n_stacks - 1):
-            concat_list, output = DenseNet(n_output_channels=self.data_generator.n_output_channels,
-                                           n_downsample=self.n_transitions - self.data_generator.downsample_factor,
-                                           n_upsample=self.n_transitions - self.data_generator.downsample_factor,
-                                           n_layers=self.n_layers, growth_rate=self.growth_rate,
-                                           bottleneck_factor=self.bottleneck_factor,
-                                           compression_factor=self.compression_factor,
-                                           activation=self.activation, pooling=self.pooling, interpolation=self.interpolation, batchnorm=self.batchnorm,
-                                           use_bias=self.use_bias, separable=self.separable, squeeze_excite=self.squeeze_excite,
-                                           stack_idx=idx+1, multiplier=multiplier)(concat_list)
+            concat_list, output = DenseNet(
+                n_output_channels=self.data_generator.n_output_channels,
+                n_downsample=self.n_transitions - self.data_generator.downsample_factor,
+                n_upsample=self.n_transitions - self.data_generator.downsample_factor,
+                n_layers=self.n_layers,
+                growth_rate=self.growth_rate,
+                bottleneck_factor=self.bottleneck_factor,
+                compression_factor=self.compression_factor,
+                activation=self.activation,
+                pooling=self.pooling,
+                interpolation=self.interpolation,
+                batchnorm=self.batchnorm,
+                use_bias=self.use_bias,
+                separable=self.separable,
+                squeeze_excite=self.squeeze_excite,
+                stack_idx=idx + 1,
+                multiplier=multiplier,
+            )(concat_list)
             outputs.append(output)
 
-        self.train_model = Model(input_layer, outputs,
-                                 name=self.__class__.__name__)
+        self.train_model = Model(input_layer, outputs, name=self.__class__.__name__)
 
     def get_config(self):
         config = {
-            'name': self.__class__.__name__,
-            'n_stacks': self.n_stacks,
-            'n_layers': self.n_layers,
-            'n_transitions': self.n_transitions,
-            'growth_rate': self.growth_rate,
-            'bottleneck_factor': self.bottleneck_factor,
-            'compression_factor': self.compression_factor,
-            'batchnorm': self.batchnorm,
-            'use_bias': self.use_bias,
-            'activation': self.activation,
-            'pooling': self.pooling,
-            'interpolation': self.interpolation,
-            'subpixel': self.subpixel,
-            'initializer': self.initializer,
-            'separable': self.separable,
-            'squeeze_excite': self.squeeze_excite
+            "name": self.__class__.__name__,
+            "n_stacks": self.n_stacks,
+            "n_layers": self.n_layers,
+            "n_transitions": self.n_transitions,
+            "growth_rate": self.growth_rate,
+            "bottleneck_factor": self.bottleneck_factor,
+            "compression_factor": self.compression_factor,
+            "batchnorm": self.batchnorm,
+            "use_bias": self.use_bias,
+            "activation": self.activation,
+            "pooling": self.pooling,
+            "interpolation": self.interpolation,
+            "subpixel": self.subpixel,
+            "initializer": self.initializer,
+            "separable": self.separable,
+            "squeeze_excite": self.squeeze_excite,
         }
         base_config = super(StackedDenseNet, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))

@@ -33,13 +33,13 @@ class Logger(Callback):
         Name of the .h5 file.
     validation_batch_size: int
         Batch size for running evaluation
-    '''
-    def __init__(self, filepath, validation_batch_size=1, confidence_threshold=None, verbose=1, batch_size=None, **kwargs):
+    """
 
     def __init__(
         self,
-        filepath=None,
+        filepath,
         validation_batch_size=1,
+        confidence_threshold=None,
         verbose=1,
         batch_size=None,
         **kwargs
@@ -58,9 +58,10 @@ class Logger(Callback):
 
         self.verbose = verbose
         self.batch_size = validation_batch_size if batch_size is None else batch_size
-        if self.filepath is not None:
         self.confidence_threshold = confidence_threshold
 
+        if self.filepath is not None:
+            with h5py.File(self.filepath, "w") as h5file:
                 if "logs" not in h5file:
                     group = h5file.create_group("logs")
                     group.create_dataset(
@@ -88,49 +89,11 @@ class Logger(Callback):
                         maxshape=(None, None, None),
                     )
                     group.create_dataset(
-                        "mae",
-                        shape=(0, 0, 0),
-                        dtype=np.float64,
-                        maxshape=(None, None, None),
-                    )
-                    group.create_dataset(
-                        "mse",
-                        shape=(0, 0, 0),
-                        dtype=np.float64,
-                        maxshape=(None, None, None),
-                    )
-                    group.create_dataset(
-                        "rmse",
-                        shape=(0, 0, 0),
-                        dtype=np.float64,
-                        maxshape=(None, None, None),
-                    )
-                    group.create_dataset(
                         "confidence",
                         shape=(0, 0, 0),
                         dtype=np.float64,
                         maxshape=(None, None, None),
                     )
-
-                                     dtype=np.float64, maxshape=(None,))
-            if 'logs' not in h5file:
-                group = h5file.create_group('logs')
-                group.create_dataset('loss', shape=(0,),
-                group.create_dataset('val_loss', shape=(0,),
-                                     dtype=np.float64, maxshape=(None,))
-                group.create_dataset('y_pred', shape=(0, 0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None, None))
-                group.create_dataset('y_error', shape=(0, 0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None, None))
-                group.create_dataset('euclidean', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('confidence', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-
     def on_train_begin(self, logs={}):
         return
 
@@ -142,28 +105,30 @@ class Logger(Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         evaluation_dict = self.evaluation_model.evaluate(self.batch_size)
-        y_pred = evaluation_dict['y_pred']
-        y_error = evaluation_dict['y_error']
-        euclidean = evaluation_dict['euclidean']
-        confidence = evaluation_dict['confidence']
-
-        with h5py.File(self.filepath) as h5file:
-            values = {'loss': np.array([logs.get('loss')]).reshape(1,),
-                      'val_loss': np.array([logs.get('val_loss')]).reshape(1,),
-                      'y_pred': y_pred[None, ...],
-                      'y_error': y_error[None, ...],
-                      'euclidean': euclidean[None, ...],
-                      'confidence': confidence[None, ...]}
-
-              for key, value in values.items():
-                  data = h5file["logs"][key]
-                  if data.shape[0] == 0:
-                      value = np.array(value)
-                      data.resize(tuple(value.shape))
-                      data[:] = value
-                  else:
-                      data.resize(data.shape[0] + 1, axis=0)
-                      data[-1] = value
+        y_pred = evaluation_dict["y_pred"]
+        y_error = evaluation_dict["y_error"]
+        euclidean = evaluation_dict["euclidean"]
+        confidence = evaluation_dict["confidence"]
+        if self.filepath is not None:
+            with h5py.File(self.filepath) as h5file:
+                values = {
+                    "loss": np.array([logs.get("loss")]).reshape(1),
+                    "val_loss": np.array([logs.get("val_loss")]).reshape(1),
+                    "y_pred": y_pred[None, ...],
+                    "y_error": y_error[None, ...],
+                    "euclidean": euclidean[None, ...],
+                    "confidence": confidence[None, ...],
+                }
+    
+                for key, value in values.items():
+                    data = h5file["logs"][key]
+                    if data.shape[0] == 0:
+                        value = np.array(value)
+                        data.resize(tuple(value.shape))
+                        data[:] = value
+                    else:
+                        data.resize(data.shape[0] + 1, axis=0)
+                        data[-1] = value
 
         euclidean = euclidean.flatten()
         confidence = confidence.flatten()
@@ -173,26 +138,37 @@ class Logger(Callback):
             euclidean = euclidean[mask]
             confidence = confidence[mask]
 
-        keypoint_percentile = np.percentile([euclidean,
-                                             confidence],
-                                            [2.5, 25, 75, 97.5], axis=1).T
+        keypoint_percentile = np.percentile(
+            [euclidean, confidence], [2.5, 25, 75, 97.5], axis=1
+        ).T
         euclidean_perc, confidence_perc = keypoint_percentile
 
         euclidean_mean, confidence_mean = np.mean([euclidean, confidence], axis=1)
 
-        logs['euclidean'] = euclidean_mean
-        logs['confidence'] = confidence_mean
+        logs["euclidean"] = euclidean_mean
+        logs["confidence"] = confidence_mean
 
         euclidean_median, confidence_median = np.median([euclidean, confidence], axis=1)
 
         if self.verbose:
-            print('evaluation_metrics: mean median (2.5%, 25%, 75%, 97.5%) \n'
-                  'euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n'
-                  'confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n'
-                  .format(euclidean_mean, euclidean_median, euclidean_perc[0], euclidean_perc[1], euclidean_perc[2], euclidean_perc[3],
-                          confidence_mean, confidence_median, confidence_perc[0], confidence_perc[1], confidence_perc[2], confidence_perc[3]
-                          )
-                  )
+            print(
+                "evaluation_metrics: mean median (2.5%, 25%, 75%, 97.5%) \n"
+                "euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n"
+                "confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n".format(
+                    euclidean_mean,
+                    euclidean_median,
+                    euclidean_perc[0],
+                    euclidean_perc[1],
+                    euclidean_perc[2],
+                    euclidean_perc[3],
+                    confidence_mean,
+                    confidence_median,
+                    confidence_perc[0],
+                    confidence_perc[1],
+                    confidence_perc[2],
+                    confidence_perc[3],
+                )
+            )
 
     def on_batch_begin(self, batch, logs={}):
         return
@@ -221,6 +197,8 @@ class Logger(Callback):
                         model.get_config(), default=get_json_type
                     ).encode("utf8")
 
+            if 'logger_config' not in h5file.attrs:
+                h5file.attrs['logger_config'] = json.dumps(model.get_config(), default=get_json_type).encode('utf8')
 
 class ModelCheckpoint(callbacks.ModelCheckpoint):
     """Save the model after every epoch.
