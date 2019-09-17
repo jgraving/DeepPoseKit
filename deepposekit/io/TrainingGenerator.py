@@ -80,12 +80,20 @@ class TrainingGenerator(Sequence):
     random_seed : int, default = None
         set random seed for selecting validation data
     """
-    def __init__(self, datapath, dataset='images',
-                 downsample_factor=2, use_graph=True,
-                 augmenter=None,
-                 shuffle=True, sigma=5,
-                 validation_split=0.1,
-                 graph_scale=0.1, random_seed=None):
+
+    def __init__(
+        self,
+        datapath,
+        dataset="images",
+        downsample_factor=2,
+        use_graph=True,
+        augmenter=None,
+        shuffle=True,
+        sigma=5,
+        validation_split=0.1,
+        graph_scale=0.1,
+        random_seed=None,
+    ):
 
         self.random_seed = random_seed
         if self.random_seed:
@@ -97,11 +105,11 @@ class TrainingGenerator(Sequence):
             if downsample_factor >= 0:
                 self.downsample_factor = downsample_factor
             else:
-                raise ValueError('''downsample factor must be >= 0''')
+                raise ValueError("""downsample factor must be >= 0""")
         else:
-            raise TypeError('''downsample_factor must be type int''')
+            raise TypeError("""downsample_factor must be type int""")
         self.sigma = sigma
-        self.output_sigma = sigma / 2.**downsample_factor
+        self.output_sigma = sigma / 2.0 ** downsample_factor
         self.batch_size = 32
         self.n_outputs = 1
         self.use_graph = use_graph  # TODO: Update use_edges
@@ -124,12 +132,16 @@ class TrainingGenerator(Sequence):
             if isinstance(augmenter[0], iaa.Augmenter):
                 self.augmenter = iaa.Sequential(augmenter)
             else:
-                raise TypeError('''`augmenter` must be class Augmenter
+                raise TypeError(
+                    """`augmenter` must be class Augmenter
                             (imgaug.augmenters.Augmenter)
-                            or list of Augmenters''')
+                            or list of Augmenters"""
+                )
         else:
-            raise ValueError('''augmenter must be class
-                             Augmenter, list of Augmenters, or None''')
+            raise ValueError(
+                """augmenter must be class
+                             Augmenter, list of Augmenters, or None"""
+            )
 
     def _init_data(self, datapath, dataset):
 
@@ -149,20 +161,19 @@ class TrainingGenerator(Sequence):
         else:
             self.n_channels = test_image.shape[-1]
 
-        self.output_shape = (self.height // 2**self.downsample_factor,
-                             self.width // 2**self.downsample_factor)
+        self.output_shape = (
+            self.height // 2 ** self.downsample_factor,
+            self.width // 2 ** self.downsample_factor,
+        )
 
         # Training/validation split
         # indices for validation set in sample_index
         self.index = np.arange(self.n_samples)
         self.n_validation = int(self.validation_split * self.n_samples)
-        val_index = np.random.choice(self.index,
-                                     self.n_validation,
-                                     replace=False)
+        val_index = np.random.choice(self.index, self.n_validation, replace=False)
         self.val_index = self.index[val_index]
         # indices for training set in  sample_index
-        train_index = np.invert(np.isin(self.index,
-                                        self.val_index))
+        train_index = np.invert(np.isin(self.index, self.val_index))
         self.train_index = self.index[train_index]
         self.n_train = len(self.train_index)
 
@@ -173,7 +184,7 @@ class TrainingGenerator(Sequence):
         self.n_branches = np.unique(graph_to_edges(self.graph)).shape[0]
         self.on_epoch_end()
         X, y = self.__getitem__(0)
-        self.n_edges = y[..., self.n_keypoints + self.n_branches:-2].shape[-1]
+        self.n_edges = y[..., self.n_keypoints + self.n_branches : -2].shape[-1]
         self.n_output_channels = y.shape[-1]
 
     def __len__(self):
@@ -183,9 +194,7 @@ class TrainingGenerator(Sequence):
         else:
             return self.n_train // self.batch_size
 
-    def __call__(self, n_outputs=1,
-                 batch_size=32, validation=False,
-                 confidence=True):
+    def __call__(self, n_outputs=1, batch_size=32, validation=False, confidence=True):
         """ Sets the number of outputs and the batch size
 
         Parameters
@@ -206,14 +215,17 @@ class TrainingGenerator(Sequence):
         """
         self.n_outputs = n_outputs
         self.batch_size = batch_size
-        if (validation and self.validation_split == 0):
-            raise ValueError('''Cannot generate validation set
-                             with validation_split == 0.''')
+        if validation and self.validation_split == 0:
+            raise ValueError(
+                """Cannot generate validation set
+                             with validation_split == 0."""
+            )
         self.validation = validation
         self.confidence = confidence
         self.on_epoch_end()
         self_copy = copy.deepcopy(self)
-        self_copy.augmenter.reseed()
+        if self.augmenter:
+            self_copy.augmenter.reseed()
         return self_copy
 
     def __getitem__(self, index):
@@ -252,8 +264,7 @@ class TrainingGenerator(Sequence):
         for idx in range(images.shape[0]):
             images_idx = images[idx, None]
             keypoints_idx = keypoints[idx, None]
-            augmented_idx = self.augmenter(images=images_idx,
-                                           keypoints=keypoints_idx)
+            augmented_idx = self.augmenter(images=images_idx, keypoints=keypoints_idx)
             images_aug_idx, keypoints_aug_idx = augmented_idx
             images_aug.append(images_aug_idx)
             keypoints_aug.append(keypoints_aug_idx)
@@ -268,12 +279,17 @@ class TrainingGenerator(Sequence):
         if self.augmenter and not self.validation:
             X, y = self.augment(X, y)
         if self.confidence:
-            y = draw_confidence_maps(X, y, self.graph,
-                                     self.output_shape, self.use_edges,
-                                     sigma=self.output_sigma)
+            y = draw_confidence_maps(
+                X,
+                y,
+                self.graph,
+                self.output_shape,
+                self.use_edges,
+                sigma=self.output_sigma,
+            )
             y *= 255
             if self.use_edges and self.edge_scale < 1.0:
-                y[..., self.n_keypoints:] *= self.edge_scale
+                y[..., self.n_keypoints :] *= self.edge_scale
         if self.n_outputs > 1:
             y = [y for idx in range(self.n_outputs)]
 
@@ -284,19 +300,20 @@ class TrainingGenerator(Sequence):
             augmenter = True
         else:
             augmenter = False
-        config = {'shuffle': self.shuffle,
-                  'downsample_factor': self.downsample_factor,
-                  'sigma': self.sigma,
-                  'use_graph': self.use_graph,
-                  'graph_scale': self.graph_scale,
-                  'validation_split': self.validation_split,
-                  'datapath': self.datapath,
-                  'dataset': self.dataset,
-                  'output_shape': self.output_shape,
-                  'n_validation': self.n_validation,
-                  'random_seed': self.random_seed,
-                  'n_output_channels': self.n_output_channels,
-                  'augmenter': augmenter,
-                  'n_keypoints': self.n_keypoints
-                  }
+        config = {
+            "shuffle": self.shuffle,
+            "downsample_factor": self.downsample_factor,
+            "sigma": self.sigma,
+            "use_graph": self.use_graph,
+            "graph_scale": self.graph_scale,
+            "validation_split": self.validation_split,
+            "datapath": self.datapath,
+            "dataset": self.dataset,
+            "output_shape": self.output_shape,
+            "n_validation": self.n_validation,
+            "random_seed": self.random_seed,
+            "n_output_channels": self.n_output_channels,
+            "augmenter": augmenter,
+            "n_keypoints": self.n_keypoints,
+        }
         return config
