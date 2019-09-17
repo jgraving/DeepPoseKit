@@ -15,21 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from tensorflow.keras.legacy import interfaces
-from tensorflow.keras.engine import Layer
-from tensorflow.keras.engine import InputSpec
-
-from tensorflow.keras.utils import conv_utils
+from tensorflow.keras.layers import Layer
+from tensorflow.keras.layers import InputSpec
 
 from ..backend import (resize_images, find_maxima,
                        register_translation, register_rotation,
                        rotate_images, translate_images,
                        depth_to_space, space_to_depth)
 
-try:
-    from tensorflow.keras.backend import normalize_data_format
-except:
-    from tensorflow.keras.utils.conv_utils import normalize_data_format
+from tensorflow.keras.utils.conv_utils import normalize_data_format
 
 
 __all__ = ['UpSampling2D', 'Maxima2D', 'RegisterTranslation2D',
@@ -69,13 +63,12 @@ class UpSampling2D(Layer):
             `(batch, channels, upsampled_rows, upsampled_cols)`
     """
 
-    @interfaces.legacy_upsampling2d_support
     def __init__(self, size=(2, 2), data_format=None,
                  interpolation='nearest', **kwargs):
         super(UpSampling2D, self).__init__(**kwargs)
         self.data_format = normalize_data_format(data_format)
         self.interpolation = interpolation
-        self.size = conv_utils.normalize_tuple(size, 2, 'size')
+        self.size = normalize_tuple(size, 2, 'size')
         self.input_spec = InputSpec(ndim=4)
 
     def compute_output_shape(self, input_shape):
