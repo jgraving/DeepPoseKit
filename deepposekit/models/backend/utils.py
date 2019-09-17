@@ -19,8 +19,7 @@ import tensorflow as tf
 import numpy as np
 
 __all__ = ['ndims', 'fix', 'fft2d', 'find_maxima',
-           'fftshift1d', 'gaussian_kernel_1d', 'gaussian_kernel_2d',
-           'degrees', 'radians', 'angle_mod']
+           'fftshift1d', 'gaussian_kernel_1d', 'gaussian_kernel_2d']
 
 
 def ndims(x):
