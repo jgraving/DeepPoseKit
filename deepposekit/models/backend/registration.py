@@ -144,7 +144,7 @@ def _upsampled_registration(target_image, src_image, upsample_factor):
     shape = tf.reshape(tf.shape(src_freq)[1:3], (1, 2))
     shape = tf.cast(shape, tf.float32)
     shape = tf.tile(shape, (tf.shape(target_freq)[0], 1))
-    image_product = src_freq * tf.conj(target_freq)
+    image_product = src_freq * tf.math.conj(target_freq)
     cross_correlation = tf.signal.ifft2d(image_product)
 
     maxima = find_maxima(tf.abs(cross_correlation))
@@ -154,17 +154,17 @@ def _upsampled_registration(target_image, src_image, upsample_factor):
     shifts = tf.where(shifts > midpoints, shifts - shape, shifts)
     shifts = tf.round(shifts * upsample_factor) / upsample_factor
 
-    upsampled_region_size = tf.ceil(upsample_factor * 1.5)
+    upsampled_region_size = tf.math.ceil(upsample_factor * 1.5)
     dftshift = fix(upsampled_region_size / 2.0)
     normalization = tf.cast(tf.size(src_freq[0]), tf.float32)
     normalization *= upsample_factor**2
     sample_region_offset = dftshift - shifts * upsample_factor
 
-    data = tf.conj(image_product)
+    data = tf.math.conj(image_product)
     upsampled_dft = _upsampled_dft(data, upsampled_region_size,
                                    upsample_factor, sample_region_offset)
 
-    cross_correlation = tf.conj(upsampled_dft)
+    cross_correlation = tf.math.conj(upsampled_dft)
     cross_correlation /= tf.cast(normalization, tf.complex64)
     cross_correlation = tf.abs(cross_correlation)
 
