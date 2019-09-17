@@ -19,7 +19,7 @@ import tensorflow.keras.backend as K
 from tensorflow.keras.backend import int_shape, permute_dimensions, dtype, floatx
 import tensorflow as tf
 from .utils import gaussian_kernel_2d
-from .registration import _upsampled_registration, _register_rotation
+from .registration import _upsampled_registration
 import numpy as np
 
 __all__ = ['resize_images', 'find_maxima', 'find_subpixel_maxima',
