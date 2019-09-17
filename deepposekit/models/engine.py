@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 import numpy as np
-from keras import Model
+from tensorflow.keras import Model
 import warnings
 
 from .layers.subpixel import SubpixelMaxima2D

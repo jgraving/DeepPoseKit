@@ -16,15 +16,15 @@ limitations under the License.
 """
 
 from ..backend import find_subpixel_maxima
-from keras.engine import Layer
-from keras.engine import InputSpec
+from tensorflow.keras.engine import Layer
+from tensorflow.keras.engine import InputSpec
 
-from keras.utils import conv_utils
+from tensorflow.keras.utils import conv_utils
 
 try:
-    from keras.backend import normalize_data_format
+    from tensorflow.keras.backend import normalize_data_format
 except:
-    from keras.utils.conv_utils import normalize_data_format
+    from tensorflow.keras.utils.conv_utils import normalize_data_format
 
 
 

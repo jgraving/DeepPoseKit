@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.models import save_model as keras_save_model
+from tensorflow.keras.models import save_model as keras_save_model
 import h5py
 import json
 from ..utils.io import get_json_type

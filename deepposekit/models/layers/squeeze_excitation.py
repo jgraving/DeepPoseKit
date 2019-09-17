@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from keras import layers
-from keras import backend as K
+from tensorflow.keras import layers
+from tensorflow.keras import backend as K
 import numpy as np
 
 
