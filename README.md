@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/jgraving/deepposekit/blob/master/assets/deepposekit_logo.png" max-height:128px>
+<img src="https://github.com/jgraving/deepposekit/blob/master/assets/deepposekit_logo_small.png" max-height:128px>
 </p>
 
 
