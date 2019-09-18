@@ -30,18 +30,21 @@ class BaseModel:
 
         self.data_generator = data_generator
         self.subpixel = subpixel
-        if self.train_model is NotImplemented and 'skip_init' not in kwargs:
-            self.__init_model__()
-            self.__init_train_model__()
-        if self.data_generator is not None:
-            if self.subpixel:
-                output_sigma = self.data_generator.output_sigma
-            else:
-                output_sigma = None
-            self.__init_predict_model__(self.data_generator.output_shape,
-                                        self.data_generator.n_keypoints,
-                                        self.data_generator.downsample_factor,
-                                        output_sigma)
+        if "skip_init" not in kwargs:
+            if self.train_model is NotImplemented:
+                self.__init_model__()
+                self.__init_train_model__()
+            if self.data_generator is not None:
+                if self.subpixel:
+                    output_sigma = self.data_generator.output_sigma
+                else:
+                    output_sigma = None
+                self.__init_predict_model__(
+                    self.data_generator.output_shape,
+                    self.data_generator.n_keypoints,
+                    self.data_generator.downsample_factor,
+                    output_sigma,
+                )
 
     train_model = NotImplemented
 
