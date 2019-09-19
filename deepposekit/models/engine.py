@@ -128,11 +128,12 @@ class BaseModel:
                                                    validation=True,
                                                    confidence=True)
         activated_callbacks = []
-        if len(callbacks) > 0:
-            for callback in callbacks:
-                if hasattr(callback, 'pass_model'):
-                    callback.pass_model(self)
-                activated_callbacks.append(callback)
+        if callbacks is not None:
+            if len(callbacks) > 0:
+                for callback in callbacks:
+                    if hasattr(callback, 'pass_model'):
+                        callback.pass_model(self)
+                    activated_callbacks.append(callback)
 
         if steps_per_epoch is None:
             steps_per_epoch = len(train_generator)
