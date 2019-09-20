@@ -63,7 +63,7 @@ class DenseConv2D:#(layers.Layer):
         self.bottleneck_1x1 = layers.Conv2D(
             n_filters, (1, 1), padding="same", activation="selu", kernel_initializer='lecun_normal'
         )
-        self.conv_3x3 = layers.Conv2D(n_filters // 2, (3, 3), padding="same", activation="selu", kernel_initializer='lecun_normal')
+        self.conv_3x3 = layers.Conv2D(n_filters, (3, 3), padding="same", activation="selu", kernel_initializer='lecun_normal')
 
     def call(self, inputs):
         concat = self.concat(inputs)
@@ -248,13 +248,13 @@ class DenseNet:#(layers.Layer):
         self.n_filters = n_filters
         self.n_upsample = n_downsample if n_upsample is None else n_upsample
         self.compression_input = Compression()
-        self.dense_conv_down = [DenseConvBlock(n_filters, idx + 1 + downsample_factor) for idx in range(self.n_downsample)]
+        self.dense_conv_down = [DenseConvBlock(n_filters, idx + 1) for idx in range(self.n_downsample)]
         self.transition_down = [TransitionDown() for idx in range(self.n_downsample)]
         self.dense_conv_encoded = DenseConvBlock(n_filters, 1)
-        self.dense_conv_up = [DenseConvBlock(n_filters, idx + downsample_factor) for idx in range(self.n_upsample, 0, -1)]
+        self.dense_conv_up = [DenseConvBlock(n_filters, idx + 1) for idx in range(self.n_upsample)][::-1]
         self.transition_up = [TransitionUp() for idx in range(self.n_upsample)]
         self.compression_output = Compression()
-        self.dense_conv_output = DenseConvBlock(n_filters, downsample_factor)
+        self.dense_conv_output = DenseConvBlock(n_filters, 1)
     def call(self, inputs):
         outputs = self.compression_input(inputs)
         residual_outputs = []
