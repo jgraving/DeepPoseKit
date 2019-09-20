@@ -16,11 +16,11 @@ limitations under the License.
 """
 
 import numpy as np
-from tensorflow.keras import Input, Model
-from .layers.util import ImageNormalization, Float
-from ..utils.image import n_downsample
-from .layers.densenet import DenseNet
-from .engine import BaseModel
+from keras import Input, Model
+from keras.layers import BatchNormalization
+from deepposekit.models.layers.util import ImageNormalization, Float
+import deepposekit.utils.image as image_utils
+from deepposekit.models.engine import BaseModel
 
 
 class StackedDenseNet(BaseModel):
@@ -157,8 +157,8 @@ class StackedDenseNet(BaseModel):
     def __init_model__(self):
         max_transitions = np.min(
             [
-                n_downsample(self.data_generator.height),
-                n_downsample(self.data_generator.width),
+                image_utils.n_downsample(self.data_generator.height),
+                image_utils.n_downsample(self.data_generator.width),
             ]
         )
 
@@ -195,48 +195,32 @@ class StackedDenseNet(BaseModel):
         input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
         normalized = ImageNormalization()(to_float)
-        concat_list, output0 = DenseNet(
-            n_output_channels=self.data_generator.n_output_channels,
-            n_downsample=self.n_transitions,
-            n_upsample=self.n_transitions - self.data_generator.downsample_factor,
-            n_layers=self.n_layers,
-            growth_rate=self.growth_rate,
-            bottleneck_factor=self.bottleneck_factor,
-            compression_factor=self.compression_factor,
-            activation=self.activation,
-            pooling=self.pooling,
-            interpolation=self.interpolation,
-            batchnorm=self.batchnorm,
-            use_bias=self.use_bias,
-            separable=self.separable,
-            squeeze_excite=self.squeeze_excite,
-            stack_idx=0,
-            multiplier=1,
-        )([normalized])
-        outputs = [output0]
-        multiplier = self.n_transitions - self.data_generator.downsample_factor
-        for idx in range(self.n_stacks - 1):
-            concat_list, output = DenseNet(
-                n_output_channels=self.data_generator.n_output_channels,
-                n_downsample=self.n_transitions - self.data_generator.downsample_factor,
-                n_upsample=self.n_transitions - self.data_generator.downsample_factor,
-                n_layers=self.n_layers,
-                growth_rate=self.growth_rate,
-                bottleneck_factor=self.bottleneck_factor,
-                compression_factor=self.compression_factor,
-                activation=self.activation,
-                pooling=self.pooling,
-                interpolation=self.interpolation,
-                batchnorm=self.batchnorm,
-                use_bias=self.use_bias,
-                separable=self.separable,
-                squeeze_excite=self.squeeze_excite,
-                stack_idx=idx + 1,
-                multiplier=multiplier,
-            )(concat_list)
-            outputs.append(output)
+        outputs = FrontEnd(self.growth_rate, self.data_generator.downsample_factor)(
+            normalized
+        )
+        n_downsample = self.n_transitions - self.data_generator.downsample_factor
+        model_outputs = OutputChannels(
+            self.data_generator.n_output_channels, name="output_0"
+        )(outputs)
 
-        self.train_model = Model(input_layer, outputs, name=self.__class__.__name__)
+        model_outputs_list = [model_outputs]
+        outputs.append(BatchNormalization()(model_outputs))
+        for idx in range(self.n_stacks):
+            outputs = DenseNet(
+                n_downsample=self.n_transitions - self.data_generator.downsample_factor,
+                # n_layers=self.n_layers,
+                n_filters=self.growth_rate,
+                downsample_factor=self.data_generator.downsample_factor,
+            )(outputs)
+            model_outputs = OutputChannels(
+                self.data_generator.n_output_channels, name="output_" + str(idx + 1)
+            )(outputs)
+            outputs.append(BatchNormalization()(model_outputs))
+            model_outputs_list.append(model_outputs)
+
+        self.train_model = Model(
+            input_layer, model_outputs_list, name=self.__class__.__name__
+        )
 
     def get_config(self):
         config = {
