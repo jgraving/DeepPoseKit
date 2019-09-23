@@ -21,15 +21,15 @@ import h5py
 import json
 import inspect
 
-from .layers.util import ImageNormalization, Float
-from .layers.convolutional import UpSampling2D, SubPixelDownscaling, SubPixelUpscaling
-from .layers.deeplabcut import ResNetPreprocess
+from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.convolutional import UpSampling2D, SubPixelDownscaling, SubPixelUpscaling
+from deepposekit.models.layers.deeplabcut import ResNetPreprocess
 
-from ..io import TrainingGenerator
-from .LEAP import LEAP
-from .StackedDenseNet import StackedDenseNet
-from .StackedHourglass import StackedHourglass
-from .DeepLabCut import DeepLabCut
+from deepposekit.io import TrainingGenerator
+from deepposekit.models.LEAP import LEAP
+from deepposekit.models.StackedDenseNet import StackedDenseNet
+from deepposekit.models.StackedHourglass import StackedHourglass
+from deepposekit.models.DeepLabCut import DeepLabCut
 
 MODELS = {
     "LEAP": LEAP,

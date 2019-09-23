@@ -1,5 +1,5 @@
 from __future__ import absolute_import
 
-from .backend import *
-from . import utils
-from . import registration
+import deepposekit.models.backend.backend as backend
+import deepposekit.models.backend.utils as utils
+import deepposekit.models.backend.registration as registration

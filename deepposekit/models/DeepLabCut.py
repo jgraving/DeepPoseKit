@@ -17,9 +17,9 @@ limitations under the License.
 
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2DTranspose, Conv2D, Concatenate
-from .layers.util import Float
-from .layers.deeplabcut import ResNet50, ResNetPreprocess
-from .engine import BaseModel
+from deepposekit.models.layers.util import Float
+from deepposekit.models.layers.deeplabcut import ResNet50, ResNetPreprocess
+from deepposekit.models.engine import BaseModel
 
 
 class DeepLabCut(BaseModel):

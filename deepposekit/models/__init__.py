@@ -1,15 +1,15 @@
 from __future__ import absolute_import
 
-from . import layers
-from . import backend
+from deepposekit.models import layers
+from deepposekit.models import backend
 
-from .StackedDenseNet import StackedDenseNet
-from .StackedHourglass import StackedHourglass
-from .LEAP import LEAP
-from .DeepLabCut import DeepLabCut
+from deepposekit.models.StackedDenseNet import StackedDenseNet
+from deepposekit.models.StackedHourglass import StackedHourglass
+from deepposekit.models.LEAP import LEAP
+from deepposekit.models.DeepLabCut import DeepLabCut
 
-from .saving import save_model
-from . import saving
+from deepposekit.models.saving import save_model
+from deepposekit.models import saving
 
-from .loading import load_model
-from . import loading
+from deepposekit.models.loading import load_model
+from deepposekit.models import loading

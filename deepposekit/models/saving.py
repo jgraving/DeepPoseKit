@@ -18,7 +18,7 @@ limitations under the License.
 from tensorflow.python.keras.engine import saving
 import h5py
 import json
-from ..utils.io import get_json_type
+from deepposekit.utils.io import get_json_type
 
 
 def save_model(model, path, optimizer=True):

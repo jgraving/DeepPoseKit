@@ -17,7 +17,7 @@ limitations under the License.
 
 import tensorflow as tf
 import numpy as np
-from .utils import fftshift1d, fft2d, find_maxima, fix
+from deepposekit.models.backend.utils import fftshift1d, fft2d, find_maxima, fix
 
 __all__ = ["_upsampled_registration"]
 
