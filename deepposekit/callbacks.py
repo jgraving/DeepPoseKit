@@ -25,7 +25,7 @@ from .utils.io import get_json_type
 
 
 class Logger(Callback):
-    ''' Saves the loss and validation metrics during training
+    """ Saves the loss and validation metrics during training
 
     Parameters
     ----------
@@ -33,50 +33,83 @@ class Logger(Callback):
         Name of the .h5 file.
     validation_batch_size: int
         Batch size for running evaluation
-    '''
-    def __init__(self, filepath, validation_batch_size=1, verbose=1, batch_size=None, **kwargs):
+    """
+
+    def __init__(
+        self,
+        filepath=None,
+        validation_batch_size=1,
+        verbose=1,
+        batch_size=None,
+        **kwargs
+    ):
 
         super(Logger, self).__init__(**kwargs)
         if isinstance(filepath, str):
-            if filepath.endswith('.h5'):
+            if filepath.endswith(".h5"):
                 self.filepath = filepath
             else:
-                raise ValueError('filepath must be .h5 file')
+                raise ValueError("filepath must be .h5 file")
+        elif filepath is not None:
+            raise TypeError("filepath must be type `str` or None")
         else:
-            raise TypeError('filepath must be type `str`')
+            self.filepath = filepath
 
         self.verbose = verbose
         self.batch_size = validation_batch_size if batch_size is None else batch_size
+        if self.filepath is not None:
+            with h5py.File(self.filepath, "w") as h5file:
 
-        with h5py.File(self.filepath, 'w') as h5file:
-
-            if 'logs' not in h5file:
-                group = h5file.create_group('logs')
-                group.create_dataset('loss', shape=(0,),
-                                     dtype=np.float64, maxshape=(None,))
-                group.create_dataset('val_loss', shape=(0,),
-                                     dtype=np.float64, maxshape=(None,))
-                group.create_dataset('y_pred', shape=(0, 0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None, None))
-                group.create_dataset('y_error', shape=(0, 0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None, None))
-                group.create_dataset('euclidean', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('mae', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('mse', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('rmse', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
-                group.create_dataset('confidence', shape=(0, 0, 0),
-                                     dtype=np.float64,
-                                     maxshape=(None, None, None))
+                if "logs" not in h5file:
+                    group = h5file.create_group("logs")
+                    group.create_dataset(
+                        "loss", shape=(0,), dtype=np.float64, maxshape=(None,)
+                    )
+                    group.create_dataset(
+                        "val_loss", shape=(0,), dtype=np.float64, maxshape=(None,)
+                    )
+                    group.create_dataset(
+                        "y_pred",
+                        shape=(0, 0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None, None),
+                    )
+                    group.create_dataset(
+                        "y_error",
+                        shape=(0, 0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None, None),
+                    )
+                    group.create_dataset(
+                        "euclidean",
+                        shape=(0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None),
+                    )
+                    group.create_dataset(
+                        "mae",
+                        shape=(0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None),
+                    )
+                    group.create_dataset(
+                        "mse",
+                        shape=(0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None),
+                    )
+                    group.create_dataset(
+                        "rmse",
+                        shape=(0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None),
+                    )
+                    group.create_dataset(
+                        "confidence",
+                        shape=(0, 0, 0),
+                        dtype=np.float64,
+                        maxshape=(None, None, None),
+                    )
 
     def on_train_begin(self, logs={}):
         return
@@ -89,81 +122,110 @@ class Logger(Callback):
 
     def on_epoch_end(self, epoch, logs={}):
         evaluation_dict = self.evaluation_model.evaluate(self.batch_size)
-        y_pred = evaluation_dict['y_pred']
-        y_error = evaluation_dict['y_error']
-        euclidean = evaluation_dict['euclidean']
-        mae = evaluation_dict['mae']
-        mse = evaluation_dict['mse']
-        rmse = evaluation_dict['rmse']
-        confidence = evaluation_dict['confidence']
+        y_pred = evaluation_dict["y_pred"]
+        y_error = evaluation_dict["y_error"]
+        euclidean = evaluation_dict["euclidean"]
+        mae = evaluation_dict["mae"]
+        mse = evaluation_dict["mse"]
+        rmse = evaluation_dict["rmse"]
+        confidence = evaluation_dict["confidence"]
 
-        with h5py.File(self.filepath) as h5file:
-            values = {'loss': np.array([logs.get('loss')]).reshape(1,),
-                      'val_loss': np.array([logs.get('val_loss')]).reshape(1,),
-                      'y_pred': y_pred[None, ...],
-                      'y_error': y_error[None, ...],
-                      'euclidean': euclidean[None, ...],
-                      'mae': mae[None, ...],
-                      'mse': mse[None, ...],
-                      'rmse': rmse[None, ...],
-                      'confidence': confidence[None, ...]}
+        if self.filepath is not None:
+          with h5py.File(self.filepath) as h5file:
+              values = {
+                  "loss": np.array([logs.get("loss")]).reshape(1),
+                  "val_loss": np.array([logs.get("val_loss")]).reshape(1),
+                  "y_pred": y_pred[None, ...],
+                  "y_error": y_error[None, ...],
+                  "euclidean": euclidean[None, ...],
+                  "mae": mae[None, ...],
+                  "mse": mse[None, ...],
+                  "rmse": rmse[None, ...],
+                  "confidence": confidence[None, ...],
+              }
 
-            for key, value in values.items():
-                data = h5file['logs'][key]
-                if data.shape[0] == 0:
-                    value = np.array(value)
-                    data.resize(tuple(value.shape))
-                    data[:] = value
-                else:
-                    data.resize(data.shape[0] + 1, axis=0)
-                    data[-1] = value
+              for key, value in values.items():
+                  data = h5file["logs"][key]
+                  if data.shape[0] == 0:
+                      value = np.array(value)
+                      data.resize(tuple(value.shape))
+                      data[:] = value
+                  else:
+                      data.resize(data.shape[0] + 1, axis=0)
+                      data[-1] = value
 
-        keypoint_percentile = np.percentile([euclidean.flatten(),
-                                             mae.flatten(),
-                                             mse.flatten(),
-                                             rmse.flatten(),
-                                             confidence.flatten()],
-                                            [2.5, 97.5], axis=1).T
-        euclidean_perc, mae_perc, mse_perc, rmse_perc, confidence_perc = keypoint_percentile
+        keypoint_percentile = np.percentile(
+            [
+                euclidean.flatten(),
+                mae.flatten(),
+                mse.flatten(),
+                rmse.flatten(),
+                confidence.flatten(),
+            ],
+            [2.5, 97.5],
+            axis=1,
+        ).T
+        euclidean_perc, mae_perc, mse_perc, rmse_perc, confidence_perc = (
+            keypoint_percentile
+        )
 
-        logs['euclidean_upper'] = euclidean_perc[1]
-        logs['mae_upper'] = mae_perc[1]
-        logs['mse_upper'] = mse_perc[1]
-        logs['rmse_upper'] = rmse_perc[1]
-        logs['confidence_upper'] = confidence_perc[1]
-
+        logs["euclidean_upper"] = euclidean_perc[1]
+        logs["mae_upper"] = mae_perc[1]
+        logs["mse_upper"] = mse_perc[1]
+        logs["rmse_upper"] = rmse_perc[1]
+        logs["confidence_upper"] = confidence_perc[1]
 
         keypoint_mean = np.mean([euclidean, mae, mse, rmse, confidence], axis=1)
-        euclidean_mean, mae_mean, mse_mean, rmse_mean, confidence_mean = np.mean(keypoint_mean, axis=1)
+        euclidean_mean, mae_mean, mse_mean, rmse_mean, confidence_mean = np.mean(
+            keypoint_mean, axis=1
+        )
 
-        logs['euclidean'] = euclidean_mean
-        logs['mae'] = mae_mean
-        logs['mse'] = mse_mean
-        logs['rmse'] = rmse_mean
-        logs['confidence'] = confidence_mean
+        logs["euclidean"] = euclidean_mean
+        logs["mae"] = mae_mean
+        logs["mse"] = mse_mean
+        logs["rmse"] = rmse_mean
+        logs["confidence"] = confidence_mean
 
         keypoint_median = np.median([euclidean, mae, mse, rmse, confidence], axis=1)
-        euclidean_median, mae_median, mse_median, rmse_median, confidence_median = np.median(keypoint_median, axis=1)
-        logs['euclidean_median'] = euclidean_median
-        logs['mae_median'] = mae_median
-        logs['mse_median'] = mse_median
-        logs['rmse_median'] = rmse_median
-        logs['confidence_median'] = confidence_median
+        euclidean_median, mae_median, mse_median, rmse_median, confidence_median = np.median(
+            keypoint_median, axis=1
+        )
+        logs["euclidean_median"] = euclidean_median
+        logs["mae_median"] = mae_median
+        logs["mse_median"] = mse_median
+        logs["rmse_median"] = rmse_median
+        logs["confidence_median"] = confidence_median
 
         if self.verbose:
-            print('evaluation_metrics: mean median (2.5%, 97.5%) - '
-                  'euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'mae: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'mse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'rmse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - '
-                  'confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f})'
-
-                  .format(euclidean_mean, euclidean_median, euclidean_perc[0], euclidean_perc[1],
-                          mae_mean, mae_median, mae_perc[0], mae_perc[1],
-                          mse_mean, mse_median, mse_perc[0], mse_perc[1],
-                          rmse_mean, rmse_median, rmse_perc[0], rmse_perc[1],
-                          confidence_mean, confidence_median, confidence_perc[0], confidence_perc[1])
-                  )
+            print(
+                "evaluation_metrics: mean median (2.5%, 97.5%) - "
+                "euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - "
+                "mae: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - "
+                "mse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - "
+                "rmse: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}) - "
+                "confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f})".format(
+                    euclidean_mean,
+                    euclidean_median,
+                    euclidean_perc[0],
+                    euclidean_perc[1],
+                    mae_mean,
+                    mae_median,
+                    mae_perc[0],
+                    mae_perc[1],
+                    mse_mean,
+                    mse_median,
+                    mse_perc[0],
+                    mse_perc[1],
+                    rmse_mean,
+                    rmse_median,
+                    rmse_perc[0],
+                    rmse_perc[1],
+                    confidence_mean,
+                    confidence_median,
+                    confidence_perc[0],
+                    confidence_perc[1],
+                )
+            )
 
     def on_batch_begin(self, batch, logs={}):
         return
@@ -175,20 +237,22 @@ class Logger(Callback):
         if isinstance(model, BaseModel):
             self.evaluation_model = model
         else:
-            raise TypeError('model must be a deepposekit BaseModel class')
+            raise TypeError("model must be a deepposekit BaseModel class")
+        if self.filepath is not None:
+            with h5py.File(self.filepath, "r+") as h5file:
+                # create attributes for the group based on the two dicts
+                for key, value in model.get_config().items():
+                    if isinstance(value, str):
+                        value = value.encode("utf8")  # str not supported in h5py
+                    if value is None:
+                        value = "None".encode("utf8")
+                    if key not in h5file.attrs:
+                        h5file.attrs.create(key, value)
 
-        with h5py.File(self.filepath, 'r+') as h5file:
-            # create attributes for the group based on the two dicts
-            for key, value in model.get_config().items():
-                if isinstance(value, str):
-                    value = value.encode('utf8')  # str not supported in h5py
-                if value is None:
-                    value = 'None'.encode('utf8')
-                if key not in h5file.attrs:
-                    h5file.attrs.create(key, value)
-
-            if 'logger_config' not in h5file.attrs:
-                h5file.attrs['logger_config'] = json.dumps(model.get_config(), default=get_json_type).encode('utf8')
+                if "logger_config" not in h5file.attrs:
+                    h5file.attrs["logger_config"] = json.dumps(
+                        model.get_config(), default=get_json_type
+                    ).encode("utf8")
 
 
 class ModelCheckpoint(callbacks.ModelCheckpoint):
@@ -221,11 +285,24 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
         period: Interval (number of epochs) between checkpoints.
     """
 
-    def __init__(self, filepath, monitor='rmse', verbose=0,
-                 save_best_only=False, mode='auto', period=1, optimizer=True):
-        super(ModelCheckpoint, self).__init__(filepath=filepath, monitor=monitor, verbose=verbose,
-                                              save_best_only=save_best_only, mode=mode,
-                                              period=period)
+    def __init__(
+        self,
+        filepath,
+        monitor="rmse",
+        verbose=0,
+        save_best_only=False,
+        mode="auto",
+        period=1,
+        optimizer=True,
+    ):
+        super(ModelCheckpoint, self).__init__(
+            filepath=filepath,
+            monitor=monitor,
+            verbose=verbose,
+            save_best_only=save_best_only,
+            mode=mode,
+            period=period,
+        )
         self.optimizer = optimizer
 
     def on_epoch_end(self, epoch, logs=None):
@@ -237,29 +314,40 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
             if self.save_best_only:
                 current = logs.get(self.monitor)
                 if current is None:
-                    warnings.warn('Can save best model only with %s available, '
-                                  'skipping.' % (self.monitor), RuntimeWarning)
+                    warnings.warn(
+                        "Can save best model only with %s available, "
+                        "skipping." % (self.monitor),
+                        RuntimeWarning,
+                    )
                 else:
                     if self.monitor_op(current, self.best):
                         if self.verbose > 0:
-                            print('\nEpoch %05d: %s improved from %0.5f to %0.5f,'
-                                  ' saving model to %s'
-                                  % (epoch + 1, self.monitor, self.best,
-                                     current, filepath))
+                            print(
+                                "\nEpoch %05d: %s improved from %0.5f to %0.5f,"
+                                " saving model to %s"
+                                % (
+                                    epoch + 1,
+                                    self.monitor,
+                                    self.best,
+                                    current,
+                                    filepath,
+                                )
+                            )
                         self.best = current
                         self.save_model.save(filepath, optimizer=self.optimizer)
                     else:
                         if self.verbose > 0:
-                            print('\nEpoch %05d: %s did not improve from %0.5f' %
-                                  (epoch + 1, self.monitor, self.best))
+                            print(
+                                "\nEpoch %05d: %s did not improve from %0.5f"
+                                % (epoch + 1, self.monitor, self.best)
+                            )
             else:
                 if self.verbose > 0:
-                    print('\nEpoch %05d: saving model to %s' % (epoch + 1, filepath))
+                    print("\nEpoch %05d: saving model to %s" % (epoch + 1, filepath))
                 self.save_model.save(filepath, optimizer=self.optimizer)
 
     def pass_model(self, model):
         if isinstance(model, BaseModel):
             self.save_model = model
         else:
-            raise TypeError('model must be a deepposekit BaseModel class')
-
+            raise TypeError("model must be a deepposekit BaseModel class")
