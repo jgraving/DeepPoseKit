@@ -21,7 +21,6 @@ import tensorflow.keras.backend as K
 __all__ = ["Float", "ImageNormalization"]
 
 
-
 class Float(Layer):
     """
     Cast the input tensor to K.floatx()
