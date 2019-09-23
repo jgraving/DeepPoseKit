@@ -20,7 +20,7 @@ import sys
 import warnings
 from setuptools import setup, find_packages
 
-DESCRIPTION = "pose estimation using deep learning"
+DESCRIPTION = "a toolkit for pose estimation using deep learning"
 LONG_DESCRIPTION = """\
 a toolkit for pose estimation using deep learning
 """
@@ -31,7 +31,7 @@ MAINTAINER_EMAIL = 'jgraving@gmail.com'
 URL = 'https://github.com/jgraving/deepposekit'
 LICENSE = 'Apache 2.0'
 DOWNLOAD_URL = 'https://github.com/jgraving/deepposekit.git'
-VERSION = '0.1.dev'
+VERSION = '0.1.1.dev'
 
 
 if __name__ == "__main__":
