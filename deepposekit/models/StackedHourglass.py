@@ -16,16 +16,17 @@ limitations under the License.
 """
 
 from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Add, MaxPool2D
+import tensorflow.keras.backend as K
 
-from .engine import BaseModel
-from .layers.util import ImageNormalization, Float
-from .layers.convolutional import UpSampling2D
 from functools import partial
 
 import numpy as np
-from ..utils import image as image_utils
-from tensorflow.keras.layers import Conv2D, BatchNormalization, Add, MaxPool2D
-import tensorflow.keras.backend as K
+
+from deepposekit.models.engine import BaseModel
+from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.convolutional import UpSampling2D
+from deepposekit.utils import image as image_utils
 
 
 class ResidualBlock:

@@ -19,24 +19,26 @@ import numpy as np
 
 from tensorflow.keras import layers
 
-from .convolutional import UpSampling2D
-from .util import ImageNormalization
-from .convolutional import SubPixelDownscaling, SubPixelUpscaling
+from deepposekit.models.layers.convolutional import UpSampling2D
+from deepposekit.models.layers.util import ImageNormalization
+from deepposekit.models.layers.convolutional import SubPixelDownscaling, SubPixelUpscaling
 
 
 __all__ = [
     "Concatenate",
     "DenseConv2D",
-    "DenseBlock",
+    "DenseConvBlock",
+    "Compression",
     "TransitionDown",
     "TransitionUp",
     "DenseNet",
-    "OutputChannels"
+    "OutputChannels",
 ]
 
-class Concatenate:#(layers.Layer):
+
+class Concatenate:  # (layers.Layer):
     def __init__(self, **kwargs):
-        #super(Concatenate, self).__init__(self, **kwargs)
+        # super(Concatenate, self).__init__(self, **kwargs)
         self.concat = layers.Concatenate()
 
     def call(self, inputs):
@@ -48,22 +50,34 @@ class Concatenate:#(layers.Layer):
             return outputs
         else:
             return inputs
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    #def get_config(self):
+    # def get_config(self):
     #    config = {}
     #    base_config = super(Concatenate, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
 
-class DenseConv2D:#(layers.Layer):
+
+class DenseConv2D:  # (layers.Layer):
     def __init__(self, n_filters=64, **kwargs):
-        #super(DenseConv2D, self).__init__(self, **kwargs)
+        # super(DenseConv2D, self).__init__(self, **kwargs)
         self.concat = Concatenate()
         self.bottleneck_1x1 = layers.Conv2D(
-            n_filters, (1, 1), padding="same", activation="selu", kernel_initializer='lecun_normal'
+            n_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
         )
-        self.conv_3x3 = layers.Conv2D(n_filters, (3, 3), padding="same", activation="selu", kernel_initializer='lecun_normal')
+        self.conv_3x3 = layers.Conv2D(
+            n_filters,
+            (3, 3),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
 
     def call(self, inputs):
         concat = self.concat(inputs)
@@ -71,64 +85,69 @@ class DenseConv2D:#(layers.Layer):
         conv_3x3 = self.conv_3x3(bottleneck_1x1)
         outputs = [concat, conv_3x3]
         return outputs
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    #def get_config(self):
+    # def get_config(self):
     #    config = {}
     #    base_config = super(DenseConv2D, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
 
-    
-class DenseConvBlock:#(layers.Layer):
+
+class DenseConvBlock:  # (layers.Layer):
     def __init__(self, n_filters=64, n_layers=1, **kwargs):
-        #super(DenseConv2D, self).__init__(self, **kwargs)
-        self.dense_conv = [DenseConv2D(n_filters) for idx in range(n_layers)]
+        # super(DenseConv2D, self).__init__(self, **kwargs)
+        n_layers = np.minimum(n_layers, 5)
+        n_layers = np.maximum(n_layers, 1)
+        self.dense_conv = DenseConv2D(n_filters * n_layers)
 
     def call(self, inputs):
-        outputs = inputs
-        for conv in self.dense_conv:
-            outputs = conv(outputs)
-        return outputs
+        return self.dense_conv(inputs)
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    #def get_config(self):
+    # def get_config(self):
     #    config = {}
     #    base_config = super(DenseConv2D, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
-    
 
-class Compression:#(layers.Layer):
+
+class Compression:  # (layers.Layer):
     def __init__(self, compression_factor=0.5, **kwargs):
-        #super(Compression, self).__init__(self, **kwargs)
+        # super(Compression, self).__init__(self, **kwargs)
         self.concat = Concatenate()
         self.compression_factor = compression_factor
-        
+
     def call(self, inputs):
         concat = self.concat(inputs)
-        
+
         n_channels = int(concat.shape[-1])
         compression_filters = int(np.round(n_channels * self.compression_factor))
         self.compression_1x1 = layers.Conv2D(
-            compression_filters, (1, 1), padding="same", activation="selu", kernel_initializer='lecun_normal'
+            compression_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
         )
 
         outputs = self.compression_1x1(concat)
         return outputs
-    
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    
-    #def get_config(self):
+    # def get_config(self):
     #    config = {}
     #    base_config = super(Compression, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
 
-class TransitionDown:#(layers.Layer):
+
+class TransitionDown:  # (layers.Layer):
     def __init__(self, pool_size=2, compression_factor=0.5, **kwargs):
-        #super(TransitionDown, self).__init__(self, **kwargs)
+        # super(TransitionDown, self).__init__(self, **kwargs)
         self.concat = Concatenate()
         self.compression_factor = compression_factor
         self.pool = layers.MaxPool2D(pool_size)
@@ -136,38 +155,43 @@ class TransitionDown:#(layers.Layer):
     def call(self, inputs):
         concat = self.concat(inputs)
         pooled = self.pool(concat)
-        
+
         n_channels = int(concat.shape[-1])
         compression_filters = int(np.round(n_channels * self.compression_factor))
         self.compression_1x1 = layers.Conv2D(
-            compression_filters, (1, 1), padding="same", activation="selu", kernel_initializer='lecun_normal'
+            compression_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
         )
 
         compression_1x1 = self.compression_1x1(pooled)
         outputs = [compression_1x1]
         return outputs
-    
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    
-    #def get_config(self):
+    # def get_config(self):
     #    config = {}
     #    base_config = super(TransitionDown, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
 
-    
-class TransitionUp:#(layers.Layer):
+
+class TransitionUp:  # (layers.Layer):
     def __init__(self, compression_factor=0.5, **kwargs):
-        #super(TransitionDown, self).__init__(self, **kwargs)
+        # super(TransitionDown, self).__init__(self, **kwargs)
         self.concat = Concatenate()
         self.compression_factor = compression_factor
 
-        self.upsample = SubPixelUpscaling()#layers.UpSampling2D(interpolation='bilinear')
+        self.upsample = (
+            SubPixelUpscaling()
+        )  # layers.UpSampling2D(interpolation='bilinear')
 
     def call(self, inputs):
         concat = self.concat(inputs)
-        
+
         n_channels = int(concat.shape[-1])
         compression_filters = int(np.round(n_channels * self.compression_factor))
         possible_values = np.arange(0, 10000, 4)
@@ -175,34 +199,44 @@ class TransitionUp:#(layers.Layer):
         compression_filters = possible_values[idx]
 
         self.compression_1x1 = layers.Conv2D(
-            compression_filters, (1, 1), padding="same", activation="selu", kernel_initializer='lecun_normal'
+            compression_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
         )
-        
+
         compression_1x1 = self.compression_1x1(concat)
         upsampled = self.upsample(compression_1x1)
         outputs = [upsampled]
         return outputs
-    
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    
-    #def get_config(self):
+    # def get_config(self):
     #    config = {}
     #    base_config = super(TransitionDown, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
 
-    
-class FrontEnd:#(layers.Layer):
+
+class FrontEnd:  # (layers.Layer):
     def __init__(self, n_filters=64, n_downsample=1, **kwargs):
-        #super(FrontEnd, self).__init__(self, **kwargs)
+        # super(FrontEnd, self).__init__(self, **kwargs)
         self.n_filters = n_filters
         self.conv_7x7 = layers.Conv2D(
-            n_filters, (7, 7), strides=(2, 2), padding="same", activation="selu", kernel_initializer='lecun_normal'
+            n_filters,
+            (7, 7),
+            strides=(2, 2),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
         )
         self.n_downsample = n_downsample
         self.pool_input = SubPixelDownscaling()
-        self.dense_conv = [DenseConvBlock(n_filters, idx+1) for idx in range(n_downsample)]
+        self.dense_conv = [
+            DenseConvBlock(n_filters, (idx + 1)) for idx in range(n_downsample)
+        ]
         self.transition_down = [TransitionDown() for idx in range(n_downsample - 1)]
         self.pooled_outputs = [
             TransitionDown(pool_size=2 ** (n_downsample - 1 - idx))
@@ -218,49 +252,64 @@ class FrontEnd:#(layers.Layer):
             outputs = self.dense_conv[idx](outputs)
             concat_outputs = Concatenate()(outputs)
             outputs = [concat_outputs]
-            
+
+            # Pool each dense layer to match output size
             pooled_outputs = self.pooled_outputs[idx](outputs)
             residual_outputs.append(Concatenate()(pooled_outputs))
-            
+
             outputs = self.transition_down[idx](outputs)
-    
-            
+
         outputs = self.dense_conv[-1](outputs)
         outputs = Concatenate()(outputs)
         residual_outputs.append(outputs)
         residual_outputs = [Compression()(res) for res in residual_outputs]
         outputs = Concatenate()(residual_outputs)
         return [outputs]
-    
+
     def __call__(self, inputs):
         return self.call(inputs)
-    
-    #def get_config(self):
+
+    # def get_config(self):
     #    config = {'n_downsample': self.n_downsample}
     #    base_config = super(FrontEnd, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
 
-    
-class DenseNet:#(layers.Layer):
-    def __init__(self, n_filters=64, n_downsample=1, n_upsample=None, downsample_factor=0, **kwargs):
-        #super(DenseNet, self).__init__(self, **kwargs)
+
+class DenseNet:  # (layers.Layer):
+    def __init__(
+        self,
+        n_filters=64,
+        n_downsample=1,
+        n_upsample=None,
+        downsample_factor=0,
+        **kwargs
+    ):
+        # super(DenseNet, self).__init__(self, **kwargs)
         self.n_downsample = n_downsample
         self.n_filters = n_filters
         self.n_upsample = n_downsample if n_upsample is None else n_upsample
-        self.compression_input = Compression()
-        self.dense_conv_down = [DenseConvBlock(n_filters, idx + 1) for idx in range(self.n_downsample)]
-        self.transition_down = [TransitionDown() for idx in range(self.n_downsample)]
-        self.dense_conv_encoded = DenseConvBlock(n_filters, 1)
-        self.dense_conv_up = [DenseConvBlock(n_filters, idx + 1) for idx in range(self.n_upsample)][::-1]
+        self.transition_input = TransitionDown()
+        self.dense_conv_down = [
+            DenseConvBlock(n_filters, (idx + downsample_factor))
+            for idx in range(1, self.n_downsample)
+        ]
+        self.transition_down = [
+            TransitionDown() for idx in range(self.n_downsample - 1)
+        ]
+        self.dense_conv_encoded = DenseConvBlock(n_filters, downsample_factor)
+        self.dense_conv_up = [
+            DenseConvBlock(n_filters, (idx + downsample_factor))
+            for idx in range(self.n_upsample)
+        ][::-1]
         self.transition_up = [TransitionUp() for idx in range(self.n_upsample)]
-        self.compression_output = Compression()
-        self.dense_conv_output = DenseConvBlock(n_filters, 1)
+        self.dense_conv_output = DenseConvBlock(n_filters, downsample_factor)
+
     def call(self, inputs):
-        outputs = self.compression_input(inputs)
-        residual_outputs = []
-        
-        # Encoder 
-        for idx in range(self.n_downsample):
+        residual_outputs = [Concatenate()(inputs)]
+        outputs = self.transition_input(inputs)
+
+        # Encoder
+        for idx in range(self.n_downsample - 1):
             outputs = self.dense_conv_down[idx](outputs)
             concat_outputs = Concatenate()(outputs)
             outputs = [concat_outputs]
@@ -268,11 +317,11 @@ class DenseNet:#(layers.Layer):
             outputs = self.transition_down[idx](outputs)
         residual_outputs.append(Concatenate()(outputs))
         outputs = self.dense_conv_encoded(outputs)
-        
-        #Compress the feature maps for residual connections
+
+        # Compress the feature maps for residual connections
         residual_outputs = residual_outputs[::-1]
         residual_outputs = [Compression()(res) for res in residual_outputs]
-        
+
         # Decoder
         for idx in range(self.n_upsample):
             outputs.append(residual_outputs[idx])
@@ -280,22 +329,22 @@ class DenseNet:#(layers.Layer):
             outputs = self.transition_up[idx](outputs)
         outputs.append(residual_outputs[-1])
         outputs = self.dense_conv_output(outputs)
-        outputs.append(self.compression_output(inputs))
         return [Concatenate()(outputs)]
-    
+
     def __call__(self, inputs):
         return self.call(inputs)
 
-    
+
 class OutputChannels:
     def __init__(self, n_output_channels, name=None, **kwargs):
         self.output_channels = layers.Conv2D(
-                n_output_channels, (1, 1), padding="same", name=name
-            )
+            n_output_channels, (1, 1), padding="same", name=name
+        )
         self.concat = Concatenate()
+
     def call(self, inputs):
         outputs = self.concat(inputs)
         return self.output_channels(outputs)
-    
+
     def __call__(self, inputs):
         return self.call(inputs)

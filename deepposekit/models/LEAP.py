@@ -17,10 +17,11 @@ limitations under the License.
 
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
-from .layers.convolutional import UpSampling2D
-from .layers.util import ImageNormalization, Float
-from .layers.leap import ConvBlock2D, ConvPool2D
-from .engine import BaseModel
+
+from deepposekit.models.layers.convolutional import UpSampling2D
+from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.leap import ConvBlock2D, ConvPool2D
+from deepposekit.models.engine import BaseModel
 
 
 class LEAP(BaseModel):

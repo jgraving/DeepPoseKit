@@ -20,8 +20,8 @@ import json
 
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.callbacks as callbacks
-from .models.engine import BaseModel
-from .utils.io import get_json_type
+from deepposekit.models.engine import BaseModel
+from deepposekit.utils.io import get_json_type
 
 
 class Logger(Callback):

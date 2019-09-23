@@ -15,10 +15,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from ..backend import find_subpixel_maxima
+from deepposekit.models.backend.backend import find_subpixel_maxima
+
 from tensorflow.python.keras.engine import Layer
 from tensorflow.python.keras.engine import InputSpec
-
 from tensorflow.python.keras.utils.conv_utils import normalize_data_format
 
 

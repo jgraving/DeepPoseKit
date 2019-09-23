@@ -18,11 +18,11 @@ import numpy as np
 from tensorflow.keras import Model
 import warnings
 
-from .layers.subpixel import SubpixelMaxima2D
-from .layers.convolutional import Maxima2D
-from ..utils.image import largest_factor
-from ..utils.keypoints import keypoint_errors
-from .saving import save_model
+from deepposekit.models.layers.subpixel import SubpixelMaxima2D
+from deepposekit.models.layers.convolutional import Maxima2D
+from deepposekit.utils.image import largest_factor
+from deepposekit.utils.keypoints import keypoint_errors
+from deepposekit.models.saving import save_model
 
 
 class BaseModel:

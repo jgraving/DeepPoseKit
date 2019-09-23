@@ -1,4 +1,4 @@
 from __future__ import absolute_import
 
-from .DataGenerator import DataGenerator
-from .TrainingGenerator import TrainingGenerator
+from deepposekit.io.DataGenerator import DataGenerator
+from deepposekit.io.TrainingGenerator import TrainingGenerator

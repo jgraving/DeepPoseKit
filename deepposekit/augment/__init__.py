@@ -1,3 +1,3 @@
 from __future__ import absolute_import
 
-from .FlipAxis import FlipAxis
+from deepposekit.augment.FlipAxis import FlipAxis

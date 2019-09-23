@@ -18,9 +18,10 @@ limitations under the License.
 import tensorflow.keras.backend as K
 from tensorflow.keras.backend import int_shape, permute_dimensions, dtype, floatx
 import tensorflow as tf
-from .utils import gaussian_kernel_2d
-from .registration import _upsampled_registration
 import numpy as np
+
+from deepposekit.models.backend.utils import gaussian_kernel_2d
+from deepposekit.models.backend.registration import _upsampled_registration
 
 __all__ = [
     "resize_images",
