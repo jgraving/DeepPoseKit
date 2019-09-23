@@ -141,7 +141,7 @@ class Logger(Callback):
             confidence = confidence[mask]
 
         keypoint_percentile = np.percentile(
-            [euclidean, confidence], [2.5, 25, 75, 97.5], axis=1
+            [euclidean, confidence], [0, 2.5, 25, 50, 75, 97.5, 100], axis=1
         ).T
         euclidean_perc, confidence_perc = keypoint_percentile
 
@@ -150,25 +150,25 @@ class Logger(Callback):
         logs["euclidean"] = euclidean_mean
         logs["confidence"] = confidence_mean
 
-        euclidean_median, confidence_median = np.median([euclidean, confidence], axis=1)
-
         if self.verbose:
             print(
-                "evaluation_metrics: mean median (2.5%, 25%, 75%, 97.5%) \n"
-                "euclidean: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n"
-                "confidence: {:6.4f} {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n".format(
+                "evaluation_metrics: mean median (0%, 2.5%, 25%, 50%, 75%, 97.5%, 100%) \n"
+                "euclidean: {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n"
+                "confidence: {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n".format(
                     euclidean_mean,
-                    euclidean_median,
                     euclidean_perc[0],
                     euclidean_perc[1],
                     euclidean_perc[2],
                     euclidean_perc[3],
+                    euclidean_perc[4],
+                    euclidean_perc[5],
                     confidence_mean,
-                    confidence_median,
                     confidence_perc[0],
                     confidence_perc[1],
                     confidence_perc[2],
                     confidence_perc[3],
+                    confidence_perc[4],
+                    confidence_perc[5],
                 )
             )
 
