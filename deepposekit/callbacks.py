@@ -142,7 +142,7 @@ class Logger(Callback):
             confidence = confidence[mask]
 
         keypoint_percentile = np.percentile(
-            [euclidean, confidence], [0, 2.5, 25, 50, 75, 97.5, 100], axis=1
+            [euclidean, confidence], [0, 5, 25, 50, 75, 95, 100], axis=1
         ).T
         euclidean_perc, confidence_perc = keypoint_percentile
 
@@ -154,8 +154,8 @@ class Logger(Callback):
         if self.verbose:
             print(
                 "evaluation_metrics: \n"
-                "euclidean - mean: {:5.2f} (0%: {:5.2f}, 2.5%: {:5.2f}, 25%: {:5.2f}, 50%: {:5.2f}, 75%: {:5.2f}, 97.5%: {:5.2f}, 100%: {:5.2f}) \n"
-                "confidence - mean: {:5.2f} (0%: {:5.2f}, 2.5%: {:5.2f}, 25%: {:5.2f}, 50%: {:5.2f}, 75%: {:5.2f}, 97.5%: {:5.2f}, 100%: {:5.2f}) \n".format(
+                "euclidean - mean: {:5.2f} (0%: {:5.2f}, 5%: {:5.2f}, 25%: {:5.2f}, 50%: {:5.2f}, 75%: {:5.2f}, 95%: {:5.2f}, 100%: {:5.2f}) \n"
+                "confidence - mean: {:5.2f} (0%: {:5.2f}, 5%: {:5.2f}, 25%: {:5.2f}, 50%: {:5.2f}, 75%: {:5.2f}, 95%: {:5.2f}, 100%: {:5.2f}) \n".format(
                     euclidean_mean,
                     euclidean_perc[0],
                     euclidean_perc[1],
