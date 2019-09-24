@@ -52,7 +52,6 @@ if __name__ == "__main__":
                             'pandas',
                             'h5py',
                             'imgaug>=0.2.9',
-                            'keras',
                             'opencv-python'],
           packages=find_packages(),
           zip_safe=False,
