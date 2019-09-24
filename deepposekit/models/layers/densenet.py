@@ -17,354 +17,365 @@ limitations under the License.
 
 import numpy as np
 
-from keras import layers
+from tensorflow.keras import layers
 
-from .convolutional import UpSampling2D
-from .util import ImageNormalization
-from .squeeze_excitation import squeeze_excite_block
-from .convolutional import SubPixelDownscaling, SubPixelUpscaling
-
-__all__ = ['ConvBatchNorm2D', 'Concatenate',
-           'DenseConv2D', 'DenseBlock',
-           'TransitionDown', 'TransitionUp',
-           'DenseNet']
+from deepposekit.models.layers.convolutional import UpSampling2D
+from deepposekit.models.layers.util import ImageNormalization
+from deepposekit.models.layers.convolutional import (
+    SubPixelDownscaling,
+    SubPixelUpscaling,
+)
 
 
-class ConvBatchNorm2D:
-    def __init__(self, filters, kernel_size,
-                 activation, initializer='glorot_uniform',
-                 batchnorm=True, use_bias=False, name=None,
-                 strides=1, separable=False):
-        self.filters = filters
-        self.kernel_size = kernel_size
-        self.activation = activation
-        self.initializer = initializer
-        self.use_bias = use_bias
-        self.strides = strides
-        if activation != 'selu' and batchnorm:
-            self.batchnorm = True
-        else:
-            self.batchnorm = False
-        if activation.lower() == 'selu':
-            self.initializer = 'lecun_normal'
-        elif activation.lower() == 'linear':
-            self.initializer = 'glorot_uniform'
-        if separable:
-            self.conv2d = layers.SeparableConv2D(self.filters, self.kernel_size, padding='same', 
-                                                 activation=self.activation, use_bias=self.use_bias,
-                                                 strides=self.strides, depthwise_initializer=self.initializer,
-                                                 pointwise_initializer=self.initializer, name=name)
-        else:
-            self.conv2d = layers.Conv2D(self.filters, self.kernel_size,
-                                        padding='same', activation='linear',
-                                        use_bias=self.use_bias, strides=self.strides,
-                                        kernel_initializer=self.initializer,
-                                        name=name)
-        if self.batchnorm:
-            self.batch_normalization = layers.BatchNormalization()
-        self.activate = layers.Activation(self.activation)
-
-    def __call__(self, inputs):
-        if self.batchnorm:
-            inputs = self.batch_normalization(inputs)
-            if self.activation is not 'linear':
-                inputs = self.activate(inputs)
-            outputs = self.conv2d(inputs)
-        else:
-            outputs = self.conv2d(inputs)
-            if self.activation is not 'linear':
-                outputs = self.activate(outputs)
-
-        return outputs
+__all__ = [
+    "Concatenate",
+    "DenseConv2D",
+    "DenseConvBlock",
+    "Compression",
+    "TransitionDown",
+    "TransitionUp",
+    "DenseNet",
+    "OutputChannels",
+]
 
 
-class Concatenate:
-    def __init__(self):
-        pass
+class Concatenate:  # (layers.Layer):
+    def __init__(self, **kwargs):
+        # super(Concatenate, self).__init__(self, **kwargs)
+        self.concat = layers.Concatenate()
 
-    def __call__(self, inputs):
+    def call(self, inputs):
         if isinstance(inputs, list):
             if len(inputs) > 1:
-                outputs = layers.Concatenate()(inputs)
+                outputs = self.concat(inputs)
             else:
                 outputs = inputs[0]
+            return outputs
         else:
-            raise TypeError('''inputs must be a list''')
-        outputs_list = [outputs]
-        return outputs_list, outputs
+            return inputs
+
+    def __call__(self, inputs):
+        return self.call(inputs)
+
+    # def get_config(self):
+    #    config = {}
+    #    base_config = super(Concatenate, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
 
 
-class DenseConv2D:
-    def __init__(self, growth_rate, activation,
-                 bottleneck_factor,
-                 initializer, batchnorm, use_bias, separable=False):
+class DenseConv2D:  # (layers.Layer):
+    def __init__(self, growth_rate=64, bottleneck_factor=1, **kwargs):
+        # super(DenseConv2D, self).__init__(self, **kwargs)
+        self.concat = Concatenate()
+
+        bottleneck_filters = int(np.round(growth_rate * bottleneck_factor))
+
+        self.bottleneck_1x1 = layers.Conv2D(
+            bottleneck_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
+        self.conv_3x3 = layers.Conv2D(
+            growth_rate,
+            (3, 3),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
+
+    def call(self, inputs):
+        concat = self.concat(inputs)
+        bottleneck_1x1 = self.bottleneck_1x1(concat)
+        conv_3x3 = self.conv_3x3(bottleneck_1x1)
+        outputs = [concat, conv_3x3]
+        return outputs
+
+    def __call__(self, inputs):
+        return self.call(inputs)
+
+    # def get_config(self):
+    #    config = {}
+    #    base_config = super(DenseConv2D, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
+
+
+class DenseConvBlock:  # (layers.Layer):
+    def __init__(self, growth_rate=64, n_layers=1, bottleneck_factor=1, **kwargs):
+        # super(DenseConv2D, self).__init__(self, **kwargs)
+        n_layers = np.minimum(n_layers, 3)
+        n_layers = np.maximum(n_layers, 1)
+        self.dense_conv = DenseConv2D(growth_rate * n_layers, bottleneck_factor)
+
+    def call(self, inputs):
+        return self.dense_conv(inputs)
+
+    def __call__(self, inputs):
+        return self.call(inputs)
+
+    # def get_config(self):
+    #    config = {}
+    #    base_config = super(DenseConv2D, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
+
+
+class Compression:  # (layers.Layer):
+    def __init__(self, compression_factor=0.5, **kwargs):
+        # super(Compression, self).__init__(self, **kwargs)
+        self.concat = Concatenate()
+        self.compression_factor = compression_factor
+
+    def call(self, inputs):
+        concat = self.concat(inputs)
+
+        n_channels = int(concat.shape[-1])
+        compression_filters = int(np.round(n_channels * self.compression_factor))
+        self.compression_1x1 = layers.Conv2D(
+            compression_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
+
+        outputs = self.compression_1x1(concat)
+        return outputs
+
+    def __call__(self, inputs):
+        return self.call(inputs)
+
+    # def get_config(self):
+    #    config = {}
+    #    base_config = super(Compression, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
+
+
+class TransitionDown:  # (layers.Layer):
+    def __init__(self, compression_factor=0.5, pool_size=2, **kwargs):
+        # super(TransitionDown, self).__init__(self, **kwargs)
+        self.concat = Concatenate()
+        self.compression_factor = compression_factor
+        self.pool = layers.MaxPool2D(pool_size)
+
+    def call(self, inputs):
+        concat = self.concat(inputs)
+        pooled = self.pool(concat)
+
+        n_channels = int(concat.shape[-1])
+        compression_filters = int(np.round(n_channels * self.compression_factor))
+        self.compression_1x1 = layers.Conv2D(
+            compression_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
+
+        compression_1x1 = self.compression_1x1(pooled)
+        outputs = [compression_1x1]
+        return outputs
+
+    def __call__(self, inputs):
+        return self.call(inputs)
+
+    # def get_config(self):
+    #    config = {}
+    #    base_config = super(TransitionDown, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
+
+
+class TransitionUp:  # (layers.Layer):
+    def __init__(self, compression_factor=0.5, **kwargs):
+        # super(TransitionDown, self).__init__(self, **kwargs)
+        self.concat = Concatenate()
+        self.compression_factor = compression_factor
+
+        self.upsample = (
+            SubPixelUpscaling()
+        )  # layers.UpSampling2D(interpolation='bilinear')
+
+    def call(self, inputs):
+        concat = self.concat(inputs)
+
+        n_channels = int(concat.shape[-1])
+        compression_filters = int(np.round(n_channels * self.compression_factor))
+        possible_values = np.arange(0, 10000, 4)
+        idx = np.argmin(np.abs(compression_filters - possible_values))
+        compression_filters = possible_values[idx]
+
+        self.compression_1x1 = layers.Conv2D(
+            compression_filters,
+            (1, 1),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
+
+        compression_1x1 = self.compression_1x1(concat)
+        upsampled = self.upsample(compression_1x1)
+        outputs = [upsampled]
+        return outputs
+
+    def __call__(self, inputs):
+        return self.call(inputs)
+
+    # def get_config(self):
+    #    config = {}
+    #    base_config = super(TransitionDown, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
+
+
+class FrontEnd:  # (layers.Layer):
+    def __init__(
+        self,
+        growth_rate=64,
+        n_downsample=1,
+        compression_factor=0.5,
+        bottleneck_factor=1,
+        **kwargs
+    ):
+        # super(FrontEnd, self).__init__(self, **kwargs)
         self.growth_rate = growth_rate
-        self.activation = activation
+        self.compression_factor = compression_factor
         self.bottleneck_factor = bottleneck_factor
-        self.bottleneck_filters = int(np.round(growth_rate * bottleneck_factor))
-        self.initializer = initializer
-        self.batchnorm = batchnorm
-        self.use_bias = use_bias
-        self.separable = separable
-
-    def __call__(self, inputs):
-        outputs_list, inputs = Concatenate()(inputs)
-        n_channels = inputs.shape[-1]
-        bottleneck = inputs
-        if n_channels > self.bottleneck_filters:
-            bottleneck = ConvBatchNorm2D(self.bottleneck_filters, (1, 1),
-                                         self.activation, self.initializer,
-                                         self.batchnorm, self.use_bias)(bottleneck)
-        outputs = ConvBatchNorm2D(self.growth_rate, (3, 3), self.activation,
-                                  self.initializer, self.batchnorm, self.use_bias,
-                                  separable=self.separable)(bottleneck)
-
-        outputs_list.append(outputs)
-        return outputs_list
-
-
-class DenseBlock:
-    def __init__(self, n_layers, growth_rate,
-                 activation, bottleneck_factor,
-                 initializer, batchnorm, use_bias, separable=False):
-        self.n_layers = n_layers
-        self.dense_conv2d = DenseConv2D(growth_rate, activation,
-                                        bottleneck_factor,
-                                        initializer, batchnorm, use_bias,
-                                        separable)
-
-    def __call__(self, inputs):
-        outputs_list = self.dense_conv2d(inputs)
-        for idx in range(self.n_layers - 1):
-            outputs_list = self.dense_conv2d(outputs_list)
-        return outputs_list
-
-
-class TransitionDown:
-    def __init__(self, compression_factor, activation,
-                 pooling, initializer, batchnorm, use_bias,
-                 pool_size=2, squeeze_excite=False):
-        self.compression_factor = compression_factor
-        self.activation = activation
-        self.pooling = pooling
-        self.initializer = initializer
-        self.batchnorm = batchnorm
-        self.use_bias = use_bias
-        self.pool_size = pool_size
-        self.squeeze_excite = squeeze_excite
-
-    def __call__(self, inputs):
-        outputs_list, inputs = Concatenate()(inputs)
-
-        n_channels = int(inputs.shape[-1])
-        
-        if self.pooling:
-            if self.pooling.lower().startswith('average'):
-                self.pool2d = layers.AveragePooling2D(self.pool_size)
-            elif self.pooling.lower().startswith('max'):
-                self.pool2d = layers.MaxPooling2D(self.pool_size)
-            elif self.pooling.lower().startswith('subpixel'):
-                self.pool2d = SubPixelDownscaling(self.pool_size)
-            pool = self.pool2d(inputs)
-        else:
-            pool = inputs
-        if n_channels > 3:
-            compression_filters = int(np.round(n_channels * self.compression_factor))
-        else:
-            compression_filters = n_channels
-        
-        compression = pool
-        if n_channels > compression_filters:
-            compression = ConvBatchNorm2D(compression_filters, (1, 1),
-                                          self.activation, self.initializer,
-                                          self.batchnorm,
-                                          self.use_bias)(compression)
-            if self.squeeze_excite:
-                compression = squeeze_excite_block(compression)
-
-        outputs_list = [compression]
-        return outputs_list
-
-
-class TransitionUp:
-    def __init__(self, compression_factor, activation,
-                 initializer, batchnorm, use_bias,
-                 interpolation='nearest', squeeze_excite=False):
-        self.compression_factor = compression_factor
-        self.activation = activation
-        self.initializer = initializer
-        self.batchnorm = batchnorm
-        self.use_bias = use_bias
-        self.interpolation = interpolation
-        self.squeeze_excite = squeeze_excite
-        if self.interpolation is 'subpixel':
-            self.compression_factor = 1
-
-    def __call__(self, inputs):
-        outputs_list, inputs = Concatenate()(inputs)
-
-        n_channels = int(inputs.shape[-1])
-        if n_channels > 3:
-            compression_filters = int(np.round(n_channels * self.compression_factor))
-        else:
-            compression_filters = n_channels
-        if self.interpolation is 'subpixel':
-            #compression_filters *= 4
-            possible_values = np.arange(0, 10000, 4)
-            idx = np.argmin(np.abs(compression_filters - possible_values))
-            compression_filters = possible_values[idx]
-        compression = inputs
-        if n_channels != compression_filters:
-            compression = ConvBatchNorm2D(compression_filters, (1, 1),
-                                          self.activation, self.initializer,
-                                          self.batchnorm,
-                                          self.use_bias)(compression)
-            if self.squeeze_excite:
-                compression = squeeze_excite_block(compression)
-
-        if self.interpolation is 'subpixel':
-            upsampled = SubPixelUpscaling()(compression)
-        else:
-            upsampled = UpSampling2D(interpolation=self.interpolation)(compression)
-        
-        outputs_list = [upsampled]
-        return outputs_list
-
-
-class DenseNet:
-    def __init__(self, n_output_channels, n_downsample,
-                 n_upsample, n_layers, growth_rate,
-                 bottleneck_factor=4, compression_factor=1, batchnorm=True, use_bias=False,
-                 activation='relu', pooling='average', interpolation='nearest',
-                 initializer='glorot_uniform', separable=False, squeeze_excite=False,
-                 stack_idx=0, multiplier=1):
-        self.n_output_channels = n_output_channels
+        self.conv_7x7 = layers.Conv2D(
+            growth_rate,
+            (7, 7),
+            strides=(2, 2),
+            padding="same",
+            activation="selu",
+            kernel_initializer="lecun_normal",
+        )
         self.n_downsample = n_downsample
-        self.n_upsample = n_upsample
-        self.n_layers = n_layers
-        self.growth_rate = growth_rate
-        self.bottleneck_factor = bottleneck_factor
-        self.compression_factor = compression_factor
-        self.batchnorm = batchnorm
-        self.use_bias = use_bias
-        self.activation = activation
-        self.pooling = pooling
-        self.interpolation = interpolation
-        self.initializer = initializer
-        self.separable = separable
-        self.squeeze_excite = squeeze_excite
-        self.transition_down = TransitionDown(compression_factor, activation,
-                                              pooling, initializer, batchnorm,
-                                              use_bias, squeeze_excite=squeeze_excite)
-        self.transition_up = TransitionUp(compression_factor, activation,
-                                          initializer, batchnorm, use_bias,
-                                          interpolation=interpolation,
-                                          squeeze_excite=squeeze_excite)
-        if self.pooling.lower().startswith('max'):
-            self.Pooling2D = layers.MaxPooling2D
-        elif self.pooling.lower().startswith('average'):
-            self.Pooling2D = layers.AveragePooling2D
-        self.stack_idx = stack_idx
-        self.multiplier = multiplier
-        if stack_idx == 0:
-            self.n_downsample -= 1
+        self.pool_input = SubPixelDownscaling()
+        self.dense_conv = [
+            DenseConvBlock(growth_rate, (idx + 1)) for idx in range(n_downsample)
+        ]
+        self.transition_down = [
+            TransitionDown(compression_factor) for idx in range(n_downsample - 1)
+        ]
+        self.pooled_outputs = [
+            TransitionDown(compression_factor, pool_size=2 ** (n_downsample - 1 - idx))
+            for idx in range(n_downsample - 1)
+        ]
+
+    def call(self, inputs):
+        conv_7x7 = self.conv_7x7(inputs)
+        pooled_inputs = self.pool_input(inputs)
+        outputs = [pooled_inputs, conv_7x7]
+        residual_outputs = []
+        for idx in range(self.n_downsample - 1):
+            outputs = self.dense_conv[idx](outputs)
+            concat_outputs = Concatenate()(outputs)
+            outputs = [concat_outputs]
+
+            # Pool each dense layer to match output size
+            pooled_outputs = self.pooled_outputs[idx](outputs)
+            residual_outputs.append(Concatenate()(pooled_outputs))
+
+            outputs = self.transition_down[idx](outputs)
+
+        outputs = self.dense_conv[-1](outputs)
+        outputs = Concatenate()(outputs)
+        residual_outputs.append(outputs)
+        residual_outputs = [
+            Compression(self.compression_factor)(res) for res in residual_outputs
+        ]
+        outputs = Concatenate()(residual_outputs)
+        return [outputs]
 
     def __call__(self, inputs):
-        outputs_list = inputs
-        down_list = []
-        if self.stack_idx == 0:
-            down_list.append(outputs_list)
-            if self.batchnorm:
-                init_activation = 'linear'
-            else:
-                init_activation = self.activation
-            downsampled = ConvBatchNorm2D(filters=int(np.round(self.growth_rate * self.n_layers * self.bottleneck_factor)),
-                                          kernel_size=(7, 7), activation=init_activation,
-                                          initializer=self.initializer, batchnorm=False,
-                                          use_bias=self.use_bias, strides=2, separable=False,
-                                          )(outputs_list[0])
-            if self.squeeze_excite:
-                downsampled = squeeze_excite_block(downsampled)
-            outputs_list = TransitionDown(1, self.activation,
-                                          self.pooling, self.initializer,
-                                          self.batchnorm, False,
-                                          squeeze_excite=False)(outputs_list)
-            outputs_list.append(downsampled)
-            down_list.append(outputs_list)
+        return self.call(inputs)
 
-        for idx in range(self.n_downsample):
-            outputs_list = DenseBlock(self.n_layers * self.multiplier, self.growth_rate,
-                                      self.activation, self.bottleneck_factor,
-                                      self.initializer, self.batchnorm, self.use_bias,
-                                      self.separable)(outputs_list)
+    # def get_config(self):
+    #    config = {'n_downsample': self.n_downsample}
+    #    base_config = super(FrontEnd, self).get_config()
+    #    return dict(list(base_config.items()) + list(config.items()))
 
-            if self.stack_idx == 0 and idx == 0:
-                [down_list[-1].append(item) for item in outputs_list]
-            else:
-                down_list.append(outputs_list)
-            outputs_list = self.transition_down(outputs_list)
-            if self.multiplier < 1:
-                self.multiplier += 1
+
+class DenseNet:  # (layers.Layer):
+    def __init__(
+        self,
+        growth_rate=64,
+        n_downsample=1,
+        n_upsample=None,
+        downsample_factor=0,
+        compression_factor=0.5,
+        bottleneck_factor=1,
+        **kwargs
+    ):
+        # super(DenseNet, self).__init__(self, **kwargs)
+        self.n_downsample = n_downsample
+        self.growth_rate = growth_rate
+        self.compression_factor = compression_factor
+        self.bottleneck_factor = bottleneck_factor
+        self.n_upsample = n_downsample if n_upsample is None else n_upsample
+        self.transition_input = TransitionDown(compression_factor)
+        self.dense_conv_down = [
+            DenseConvBlock(growth_rate, (idx + downsample_factor), bottleneck_factor)
+            for idx in range(1, self.n_downsample)
+        ]
+        self.transition_down = [
+            TransitionDown(compression_factor) for idx in range(self.n_downsample - 1)
+        ]
+        self.dense_conv_encoded = DenseConvBlock(
+            growth_rate, downsample_factor, bottleneck_factor
+        )
+        self.dense_conv_up = [
+            DenseConvBlock(growth_rate, (idx + downsample_factor), bottleneck_factor)
+            for idx in range(self.n_upsample)
+        ][::-1]
+        self.transition_up = [
+            TransitionUp(compression_factor) for idx in range(self.n_upsample)
+        ]
+        self.dense_conv_output = DenseConvBlock(
+            growth_rate, downsample_factor, bottleneck_factor
+        )
+
+    def call(self, inputs):
+        residual_outputs = [Concatenate()(inputs)]
+        outputs = self.transition_input(inputs)
+
+        # Encoder
+        for idx in range(self.n_downsample - 1):
+            outputs = self.dense_conv_down[idx](outputs)
+            concat_outputs = Concatenate()(outputs)
+            outputs = [concat_outputs]
+            residual_outputs.append(concat_outputs)
+            outputs = self.transition_down[idx](outputs)
+        residual_outputs.append(Concatenate()(outputs))
+        outputs = self.dense_conv_encoded(outputs)
+
+        # Compress the feature maps for residual connections
+        residual_outputs = residual_outputs[::-1]
+        residual_outputs = [
+            Compression(self.compression_factor)(res) for res in residual_outputs
+        ]
+
+        # Decoder
         for idx in range(self.n_upsample):
-            outputs_list = DenseBlock(self.n_layers * self.multiplier, self.growth_rate,
-                                      self.activation, self.bottleneck_factor,
-                                      self.initializer, self.batchnorm, self.use_bias,
-                                      self.separable)(outputs_list)
-            outputs_list = self.transition_up(outputs_list)
-            if idx + 1 <= len(down_list):
-                [outputs_list.append(x) for x in
-                 TransitionDown(self.compression_factor, self.activation,
-                                None, self.initializer,
-                                self.batchnorm, self.use_bias,
-                                squeeze_excite=self.squeeze_excite
-                                )(down_list[-1 * (idx + 1)])]
-            if self.multiplier > 1:
-                self.multiplier -= 1
-        transition_diff = len(down_list) + -1 * (idx + 1)
-        for idx in range(transition_diff + 1):
-            pool_size = int(2**(transition_diff - idx))
-            if pool_size > 1:
-                [outputs_list.append(x) for x in
-                 TransitionDown(self.compression_factor, self.activation,
-                                self.pooling, self.initializer,
-                                self.batchnorm, self.use_bias,
-                                pool_size=pool_size,
-                                squeeze_excite=self.squeeze_excite
-                                )(down_list[idx])]
-            else:
-                [outputs_list.append(x) for x in
-                 TransitionDown(self.compression_factor, self.activation,
-                                None, self.initializer,
-                                self.batchnorm, self.use_bias,
-                                squeeze_excite=self.squeeze_excite
-                                )(down_list[idx])]
+            outputs.append(residual_outputs[idx])
+            outputs = self.dense_conv_up[idx](outputs)
+            outputs = self.transition_up[idx](outputs)
+        outputs.append(residual_outputs[-1])
+        outputs = self.dense_conv_output(outputs)
+        return [Concatenate()(outputs)]
 
-        outputs_list = DenseBlock(self.n_layers * self.multiplier, self.growth_rate,
-                                  self.activation, self.bottleneck_factor,
-                                  self.initializer, self.batchnorm,
-                                  self.use_bias, self.separable
-                                  )(outputs_list)
+    def __call__(self, inputs):
+        return self.call(inputs)
 
-        outputs_list = TransitionDown(self.compression_factor, self.activation,
-                                      None, self.initializer,
-                                      self.batchnorm, self.use_bias,
-                                      squeeze_excite=self.squeeze_excite
-                                      )(outputs_list)
-        outputs = outputs_list[-1]
 
-        if self.batchnorm:
-            outputs = ConvBatchNorm2D(self.n_output_channels, (1, 1),
-                                      self.activation, self.initializer,
-                                      self.batchnorm, True,
-                                      name='output_' + str(self.stack_idx)
-                                      )(outputs)
-        else:
-            outputs = ConvBatchNorm2D(self.n_output_channels, (1, 1),
-                                      'linear', self.initializer,
-                                      self.batchnorm, True,
-                                      name='output_' + str(self.stack_idx)
-                                      )(outputs)
-        normalized = ImageNormalization()(outputs)
-        outputs_list.append(normalized)
+class OutputChannels:
+    def __init__(self, n_output_channels, name=None, **kwargs):
+        self.output_channels = layers.Conv2D(
+            n_output_channels, (1, 1), padding="same", name=name
+        )
+        self.concat = Concatenate()
 
-        return outputs_list, outputs
+    def call(self, inputs):
+        outputs = self.concat(inputs)
+        return self.output_channels(outputs)
+
+    def __call__(self, inputs):
+        return self.call(inputs)

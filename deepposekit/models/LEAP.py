@@ -15,20 +15,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras import Input, Model
-from keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
-from .layers.convolutional import UpSampling2D
-from .layers.util import ImageNormalization, Float
-from .layers.leap import ConvBlock2D, ConvPool2D
-from .engine import BaseModel
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
+
+from deepposekit.models.layers.convolutional import UpSampling2D
+from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.leap import ConvBlock2D, ConvPool2D
+from deepposekit.models.engine import BaseModel
 
 
 class LEAP(BaseModel):
-
-    def __init__(self, data_generator, filters=64, upsampling=False,
-                 activation='relu', batchnorm=False, use_bias=True, pooling='max',
-                 interpolation='bilinear', subpixel=False,
-                 initializer='glorot_uniform', **kwargs):
+    def __init__(
+        self,
+        data_generator,
+        filters=64,
+        upsampling=False,
+        activation="relu",
+        batchnorm=False,
+        use_bias=True,
+        pooling="max",
+        interpolation="bilinear",
+        subpixel=False,
+        initializer="glorot_uniform",
+        **kwargs
+    ):
         """
         Define a LEAP model from Perrera et al., 2018 [1]
         See `References` for details on the model architecture.
@@ -92,7 +102,7 @@ class LEAP(BaseModel):
         self.filters = filters
         self.upsampling = upsampling
         self.activation = activation
-        if activation is 'selu':
+        if activation is "selu":
             batchnorm = False
             use_bias = False
         if batchnorm:
@@ -107,80 +117,105 @@ class LEAP(BaseModel):
 
     def __init_model__(self):
         if self.data_generator.downsample_factor is not 0:
-            raise ValueError('LEAP is only compatible with a downsample_factor of 0')
-        batch_shape = (None,
-                       self.data_generator.height,
-                       self.data_generator.width,
-                       self.data_generator.n_channels)
+            raise ValueError("LEAP is only compatible with a downsample_factor of 0")
+        batch_shape = (
+            None,
+            self.data_generator.height,
+            self.data_generator.width,
+            self.data_generator.n_channels,
+        )
 
-        input_layer = Input(batch_shape=batch_shape,
-                            dtype='uint8')
+        input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
         normalized = ImageNormalization()(to_float)
 
-        x1 = ConvPool2D(n_layers=3, filters=self.filters,
-                        kernel_size=3, pooling=self.pooling,
-                        activation=self.activation,
-                        initializer=self.initializer,
-                        batchnorm=self.batchnorm,
-                        use_bias=self.use_bias)(normalized)
-        x2 = ConvPool2D(n_layers=3, filters=self.filters * 2,
-                        kernel_size=3, pooling=self.pooling,
-                        activation=self.activation,
-                        initializer=self.initializer,
-                        batchnorm=self.batchnorm,
-                        use_bias=self.use_bias)(x1)
-        x3 = ConvBlock2D(n_layers=3, filters=self.filters * 4,
-                         kernel_size=3,
-                         activation=self.activation,
-                         initializer=self.initializer,
-                         batchnorm=self.batchnorm,
-                         use_bias=self.use_bias)(x2)
+        x1 = ConvPool2D(
+            n_layers=3,
+            filters=self.filters,
+            kernel_size=3,
+            pooling=self.pooling,
+            activation=self.activation,
+            initializer=self.initializer,
+            batchnorm=self.batchnorm,
+            use_bias=self.use_bias,
+        )(normalized)
+        x2 = ConvPool2D(
+            n_layers=3,
+            filters=self.filters * 2,
+            kernel_size=3,
+            pooling=self.pooling,
+            activation=self.activation,
+            initializer=self.initializer,
+            batchnorm=self.batchnorm,
+            use_bias=self.use_bias,
+        )(x1)
+        x3 = ConvBlock2D(
+            n_layers=3,
+            filters=self.filters * 4,
+            kernel_size=3,
+            activation=self.activation,
+            initializer=self.initializer,
+            batchnorm=self.batchnorm,
+            use_bias=self.use_bias,
+        )(x2)
 
         if self.upsampling:
             x4 = UpSampling2D(interpolation=self.interpolation)(x3)
         else:
-            x4 = Conv2DTranspose(self.filters * 2, kernel_size=3, strides=2,
-                                 padding="same", activation=self.activation,
-                                 kernel_initializer="glorot_normal",
-                                 use_bias=self.use_bias)(x3)
+            x4 = Conv2DTranspose(
+                self.filters * 2,
+                kernel_size=3,
+                strides=2,
+                padding="same",
+                activation=self.activation,
+                kernel_initializer="glorot_normal",
+                use_bias=self.use_bias,
+            )(x3)
         if self.batchnorm:
             x4 = BatchNormalization()(x4)
 
-        x4 = ConvBlock2D(n_layers=2, filters=self.filters * 2,
-                         kernel_size=3,
-                         activation=self.activation,
-                         initializer=self.initializer,
-                         batchnorm=self.batchnorm,
-                         use_bias=self.use_bias)(x4)
+        x4 = ConvBlock2D(
+            n_layers=2,
+            filters=self.filters * 2,
+            kernel_size=3,
+            activation=self.activation,
+            initializer=self.initializer,
+            batchnorm=self.batchnorm,
+            use_bias=self.use_bias,
+        )(x4)
 
         if self.upsampling:
             x_out = UpSampling2D(interpolation=self.interpolation)(x4)
-            x_out = Conv2D(self.data_generator.n_output_channels,
-                           kernel_size=3,
-                           padding="same",
-                           activation="linear")(x_out)
+            x_out = Conv2D(
+                self.data_generator.n_output_channels,
+                kernel_size=3,
+                padding="same",
+                activation="linear",
+            )(x_out)
         else:
-            x_out = Conv2DTranspose(self.data_generator.n_output_channels,
-                                    kernel_size=3, strides=2, padding="same",
-                                    activation="linear",
-                                    kernel_initializer="glorot_normal")(x4)
+            x_out = Conv2DTranspose(
+                self.data_generator.n_output_channels,
+                kernel_size=3,
+                strides=2,
+                padding="same",
+                activation="linear",
+                kernel_initializer="glorot_normal",
+            )(x4)
 
-        self.train_model = Model(input_layer, x_out,
-                                 name=self.__class__.__name__)
+        self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
 
     def get_config(self):
         config = {
-            'name': self.__class__.__name__,
-            'filters': self.filters,
-            'batchnorm': self.batchnorm,
-            'upsampling': self.upsampling,
-            'use_bias': self.use_bias,
-            'activation': self.activation,
-            'pooling': self.pooling,
-            'interpolation': self.interpolation,
-            'subpixel': self.subpixel,
-            'initializer': self.initializer,
+            "name": self.__class__.__name__,
+            "filters": self.filters,
+            "batchnorm": self.batchnorm,
+            "upsampling": self.upsampling,
+            "use_bias": self.use_bias,
+            "activation": self.activation,
+            "pooling": self.pooling,
+            "interpolation": self.interpolation,
+            "subpixel": self.subpixel,
+            "initializer": self.initializer,
         }
         base_config = super(LEAP, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))

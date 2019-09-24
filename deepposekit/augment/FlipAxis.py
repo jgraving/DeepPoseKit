@@ -20,11 +20,11 @@ import imgaug.augmenters as iaa
 import six.moves as sm
 import h5py
 
-__all__ = ['FlipAxis']
+__all__ = ["FlipAxis"]
 
 
 class FlipAxis(iaa.Flipud):
-    ''' Flips the input image and keypoints across an axis.
+    """ Flips the input image and keypoints across an axis.
 
     A generalized class for flipping images and keypoints
     either horizontally and vertically during augmentation.
@@ -63,26 +63,34 @@ class FlipAxis(iaa.Flipud):
     swap_index: array
         The keypoint indices to swap when the image is flipped
 
-    '''
-    def __init__(self, swap_index, p=0.5, axis=0,
-                 name=None, deterministic=False, random_state=None):
+    """
 
-        super(FlipAxis, self).__init__(p=p, name=name,
-                                       deterministic=deterministic,
-                                       random_state=random_state)
+    def __init__(
+        self,
+        swap_index,
+        p=0.5,
+        axis=0,
+        name=None,
+        deterministic=False,
+        random_state=None,
+    ):
+
+        super(FlipAxis, self).__init__(
+            p=p, name=name, deterministic=deterministic, random_state=random_state
+        )
 
         self.axis = axis
         if isinstance(swap_index, str):
-            if swap_index.endswith('.h5'):
-                with h5py.File(swap_index, mode='r') as h5file:
-                    self.swap_index = h5file['skeleton'][:, 1]
+            if swap_index.endswith(".h5"):
+                with h5py.File(swap_index, mode="r") as h5file:
+                    self.swap_index = h5file["skeleton"][:, 1]
             else:
-                raise ValueError('swap_index must be .h5 file')
+                raise ValueError("swap_index must be .h5 file")
         elif isinstance(swap_index, np.ndarray):
             self.swap_index = swap_index
 
     def _augment_images(self, images, random_state, parents, hooks):
-        ''' Augments the images
+        """ Augments the images
 
         Handles the augmentation over a specified axis
 
@@ -91,7 +99,7 @@ class FlipAxis(iaa.Flipud):
         images: array
             Array of augmented images.
 
-        '''
+        """
         nb_images = len(images)
         samples = self.p.draw_samples((nb_images,), random_state=random_state)
         for i in sm.xrange(nb_images):
@@ -103,9 +111,8 @@ class FlipAxis(iaa.Flipud):
         self.samples = samples
         return images
 
-    def _augment_keypoints(self, keypoints_on_images, random_state,
-                           parents, hooks):
-        ''' Augments the keypoints
+    def _augment_keypoints(self, keypoints_on_images, random_state, parents, hooks):
+        """ Augments the keypoints
 
         Handles the augmentation over a specified axis
         and swaps the keypoint labels using swap_index.
@@ -117,7 +124,7 @@ class FlipAxis(iaa.Flipud):
         keypoints_on_images: array
             Array of new coordinates of the keypoints.
 
-        '''
+        """
         nb_images = len(keypoints_on_images)
         samples = self.p.draw_samples((nb_images,), random_state=random_state)
         for i, keypoints_on_image in enumerate(keypoints_on_images):

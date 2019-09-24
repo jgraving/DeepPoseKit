@@ -15,15 +15,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
 import imgaug.augmenters as iaa
 
 import numpy as np
 import copy
 
-from ..utils.keypoints import draw_confidence_maps, graph_to_edges
-from ..utils.image import check_grayscale
-from .DataGenerator import DataGenerator
+from deepposekit.utils.keypoints import draw_confidence_maps, graph_to_edges
+from deepposekit.utils.image import check_grayscale
+from deepposekit.io.DataGenerator import DataGenerator
 
 import warnings
 

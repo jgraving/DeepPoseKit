@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
 import h5py
 import numpy as np
 import os
@@ -23,27 +23,24 @@ import copy
 import pandas as pd
 import cv2
 
-__all__ = ['DLCDataGenerator']
+__all__ = ["DLCDataGenerator"]
 
 
 class DLCDataGenerator(Sequence):
+    """
+    Creates a data generator for accessing a DeepLabCut annotation set.
 
-    def __init__(self,
-                 datapath='./deeplabcut/examples/openfield-Pranav-2018-10-30/labeled-data/m4s1/CollectedData_Pranav.h5',
-                 imagepath = './deeplabcut/examples/openfield-Pranav-2018-10-30/'
-                 ):
-        """
-        Creates a data generator for accessing a DeepLabCut annotation set.
+    Parameters
+    ----------
+    datapath : str
+        The path to the annotations file. Must be .h5
+        e.g. '/path/to/file.h5'
+    imagepath : str
+        Path to the image dataset used in the annotations file.
+        e.g. '/path/to/images/'
+    """
 
-        Parameters
-        ----------
-        datapath : str
-            The path to the annotations file. Must be .h5
-            e.g. '/path/to/file.h5'
-        imagepath : str
-            Path to the image dataset used in the annotations file.
-            e.g. '/path/to/images/'
-        """
+    def __init__(self, datapath, imagepath):
         self.annotations = pd.read_hdf(datapath)
         self.imagepath = imagepath
         scorer = []
@@ -53,7 +50,7 @@ class DLCDataGenerator(Sequence):
             bodyparts.append(column[1])
         self.bodyparts = np.unique(bodyparts)
         self.scorer = np.unique(scorer)[0]
-        self.xy = ['x', 'y']
+        self.xy = ["x", "y"]
 
         self.n_keypoints = len(bodyparts)
         self.n_samples = self.annotations.shape[0]
@@ -68,12 +65,19 @@ class DLCDataGenerator(Sequence):
             row = self.annotations.iloc[idx]
             coords = []
             for part in self.bodyparts:
-                x = row[(self.scorer, part, 'x')]
-                y = row[(self.scorer, part, 'y')]
-                coords.append([x,y])
+                x = row[(self.scorer, part, "x")]
+                y = row[(self.scorer, part, "y")]
+                if np.isnan(x) or np.isnan(y):
+                    x = -9999999999
+                    y = -9999999999
+                coords.append([x, y])
             coords = np.array(coords)
             image = row.name
             image = cv2.imread(self.imagepath + image)
+            height, width, channels = image.shape
+            # height_pad = 800 - height if 800 - height > 0 else 0
+            # width_pad = 832 - width if 800 - width > 0 else 0
+            # image = np.pad(image, ((0,height_pad), (0,width_pad), (0,0)))
             X.append(image)
             Y.append(coords)
 
@@ -83,6 +87,7 @@ class DLCDataGenerator(Sequence):
         return X, Y
 
     def set_data(self, indexes, y):
+        return NotImplementedError
         """
         if y.shape[-1] is 3:
             y = y[..., :2]
@@ -143,6 +148,12 @@ class DLCDataGenerator(Sequence):
         idx = self._check_index(key)
         if isinstance(value, (np.ndarray, list)):
             if len(value) != len(idx):
-                raise IndexError('data shape and '
-                                 'index do not match')
+                raise IndexError("data shape and " "index do not match")
             self.set_data(idx, value)
+
+
+if __name__ == "__main__":
+    data_generator = DLCDataGenerator(
+        datapath="./deeplabcut/examples/openfield-Pranav-2018-10-30/labeled-data/m4s1/CollectedData_Pranav.h5",
+        imagepath="./deeplabcut/examples/openfield-Pranav-2018-10-30/",
+    )

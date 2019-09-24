@@ -16,22 +16,32 @@ limitations under the License.
 """
 
 import numpy as np
-from keras import Input, Model
-from .layers.util import ImageNormalization, Float
-from ..utils.image import n_downsample
-from .layers.densenet import DenseNet
-from .engine import BaseModel
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import BatchNormalization
+
+import deepposekit.utils.image as image_utils
+from deepposekit.models.engine import BaseModel
+from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.densenet import (
+    FrontEnd,
+    DenseNet,
+    OutputChannels,
+    Concatenate,
+)
 
 
 class StackedDenseNet(BaseModel):
-
-    def __init__(self, data_generator, n_stacks=1,
-                 n_transitions=-2, n_layers=1,
-                 growth_rate=48, bottleneck_factor=1, compression_factor=0.5,
-                 batchnorm=False, use_bias=True, activation='selu', pooling='max',
-                 interpolation='subpixel', subpixel=True,
-                 initializer='glorot_uniform', separable=False, squeeze_excite=False,
-                 **kwargs):
+    def __init__(
+        self,
+        data_generator,
+        n_stacks=1,
+        n_transitions=-1,
+        growth_rate=48,
+        bottleneck_factor=1,
+        compression_factor=0.5,
+        subpixel=True,
+        **kwargs
+    ):
         """
         Define a Stacked Fully-Convolutional DenseNet model
         for pose estimation.
@@ -39,8 +49,8 @@ class StackedDenseNet(BaseModel):
 
         Parameters
         ----------
-        data_generator : class pose.DataGenerator
-            A pose.DataGenerator class for generating
+        data_generator : class deepposekit.TrainingGenerator
+            A deepposekit.TrainingGenerator class for generating
             images and confidence maps.
         n_stacks : int, default = 1
             The number of encoder-decoder networks to stack
@@ -54,46 +64,24 @@ class StackedDenseNet(BaseModel):
             n_transitions = max_transitions - n_transitions + 1.
             The default is -1, which uses the maximum number of
             transitions possible.
-        n_layers : int, default = 3
-            The number of convolutional blocks per dense block
-            in the model architecture.
-        growth_rate : int, default = 12
+        growth_rate : int, default = 48
             The number of channels to output from each convolutional
             block.
-        bottleneck_factor : int, default = 4
+        bottleneck_factor : int, default = 1
             The factor for determining the number of input channels
             to 3x3 convolutional layer in each convolutional block.
             Inputs are first passed through a 1x1 convolutional layer to
             reduce the number of channels to:
             growth_rate * bottleneck_factor
-        compression_factor : int, default = 1
+        compression_factor : int, default = 0.5
             The factor for determining the number of channels passed
             through a transition layer (downsampling or upsampling).
             Inputs are first passed through a 1x1 convolutional layer
             to reduce the number of channels to
             n_input_channels * compression_factor
-        batchnorm : bool, default = True
-            Whether to use batch normalization in each convolutional block.
-            If activation is 'selu' then batchnorm is automatically set to
-            False, as the network is already self-normalizing.
-        activation: str or callable, default = 'relu'
-            The activation function to use for each convolutional layer.
-        pooling: str, default = 'average'
-            The type of pooling to use during downsampling.
-            Must be either 'max' or 'average'.
-        interpolation: str, default = 'nearest'
-            The type of interpolation to use when upsampling.
-            Must be 'nearest', 'bilinear', or 'bicubic'.
-            The default is 'nearest', which is the most efficient.
         subpixel: bool, default = True
             Whether to use subpixel maxima for calculating
             keypoint coordinates in the prediction model.
-        initializer: str or callable, default='glorot_uniform'
-            The initializer for the convolutional kernels.
-            Default is 'glorot_uniform' which is the keras default.
-            If activation is 'selu', the initializer is automatically
-            changed to 'lecun_normal', which is the recommended initializer
-            for that activation function [4].
 
         Attributes
         -------
@@ -127,29 +115,24 @@ class StackedDenseNet(BaseModel):
         """
 
         self.n_stacks = n_stacks
-        self.n_layers = n_layers
         self.growth_rate = growth_rate
         self.bottleneck_factor = bottleneck_factor
         self.compression_factor = compression_factor
-        self.batchnorm = batchnorm if activation is not 'selu' else False
-        self.use_bias = use_bias
-        self.activation = activation
-        self.pooling = pooling
-        self.interpolation = interpolation
-        self.initializer = initializer if activation is not 'selu' else 'lecun_normal'
-        self.separable = separable
-        self.squeeze_excite = squeeze_excite
         self.n_transitions = n_transitions
         super(StackedDenseNet, self).__init__(data_generator, subpixel, **kwargs)
 
     def __init_model__(self):
-        max_transitions = np.min([n_downsample(self.data_generator.height),
-                                  n_downsample(self.data_generator.width)])
+        max_transitions = np.min(
+            [
+                image_utils.n_downsample(self.data_generator.height),
+                image_utils.n_downsample(self.data_generator.width),
+            ]
+        )
 
         n_transitions = self.n_transitions
         if isinstance(n_transitions, (int, np.integer)):
             if n_transitions == 0:
-                raise ValueError('n_transitions cannot equal zero')
+                raise ValueError("n_transitions cannot equal zero")
             if n_transitions < 0:
                 n_transitions += 1
                 n_transitions = max_transitions - np.abs(n_transitions)
@@ -157,70 +140,80 @@ class StackedDenseNet(BaseModel):
             elif 0 < n_transitions <= max_transitions:
                 self.n_transitions = n_transitions
             else:
-                raise ValueError('n_transitions must be in range {0} '
-                                 '< n_transitions <= '
-                                 '{1}'.format(-max_transitions + 1,
-                                              max_transitions))
+                raise ValueError(
+                    "n_transitions must be in range {0} "
+                    "< n_transitions <= "
+                    "{1}".format(-max_transitions + 1, max_transitions)
+                )
         else:
-            raise TypeError('n_transitions must be integer in range '
-                            '{0} < n_transitions <= '
-                            '{1}'.format(-max_transitions + 1,
-                                         max_transitions))
+            raise TypeError(
+                "n_transitions must be integer in range "
+                "{0} < n_transitions <= "
+                "{1}".format(-max_transitions + 1, max_transitions)
+            )
 
-
-        batch_shape = (None,
-                       self.data_generator.height,
-                       self.data_generator.width,
-                       self.data_generator.n_channels)
-
-        input_layer = Input(batch_shape=batch_shape,
-                            dtype='uint8')
+        batch_shape = (
+            None,
+            self.data_generator.height,
+            self.data_generator.width,
+            self.data_generator.n_channels,
+        )
+        
+        if self.data_generator.downsample_factor < 2:
+            raise ValueError(
+                "StackedDenseNet is only compatible with `downsample_factor` >= 2."
+                "Adjust the TrainingGenerator or choose a different model."            
+                            )
+        if n_transitions <= self.data_generator.downsample_factor:
+            raise ValueError(
+                "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
+                " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
+            )
+        input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
         normalized = ImageNormalization()(to_float)
-        concat_list, output0 = DenseNet(n_output_channels=self.data_generator.n_output_channels,
-                                        n_downsample=self.n_transitions,
-                                        n_upsample=self.n_transitions - self.data_generator.downsample_factor,
-                                        n_layers=self.n_layers, growth_rate=self.growth_rate,
-                                        bottleneck_factor=self.bottleneck_factor,
-                                        compression_factor=self.compression_factor,
-                                        activation=self.activation, pooling=self.pooling, interpolation=self.interpolation, batchnorm=self.batchnorm,
-                                        use_bias=self.use_bias, separable=self.separable, squeeze_excite=self.squeeze_excite,
-                                        stack_idx=0, multiplier=1)([normalized])
-        outputs = [output0]
-        multiplier = self.n_transitions - self.data_generator.downsample_factor
-        for idx in range(self.n_stacks - 1):
-            concat_list, output = DenseNet(n_output_channels=self.data_generator.n_output_channels,
-                                           n_downsample=self.n_transitions - self.data_generator.downsample_factor,
-                                           n_upsample=self.n_transitions - self.data_generator.downsample_factor,
-                                           n_layers=self.n_layers, growth_rate=self.growth_rate,
-                                           bottleneck_factor=self.bottleneck_factor,
-                                           compression_factor=self.compression_factor,
-                                           activation=self.activation, pooling=self.pooling, interpolation=self.interpolation, batchnorm=self.batchnorm,
-                                           use_bias=self.use_bias, separable=self.separable, squeeze_excite=self.squeeze_excite,
-                                           stack_idx=idx+1, multiplier=multiplier)(concat_list)
-            outputs.append(output)
+        front_outputs = FrontEnd(
+            growth_rate=self.growth_rate,
+            n_downsample=self.data_generator.downsample_factor,
+            compression_factor=self.compression_factor,
+            bottleneck_factor=self.bottleneck_factor
+        )(normalized)
+        n_downsample = self.n_transitions - self.data_generator.downsample_factor
+        outputs = front_outputs
+        model_outputs = OutputChannels(
+            self.data_generator.n_output_channels, name="output_0"
+        )(outputs)
 
-        self.train_model = Model(input_layer, outputs,
-                                 name=self.__class__.__name__)
+        model_outputs_list = [model_outputs]
+        outputs.append(BatchNormalization()(model_outputs))
+        for idx in range(self.n_stacks):
+            outputs = DenseNet(
+                growth_rate=self.growth_rate,
+                n_downsample=self.n_transitions - self.data_generator.downsample_factor,
+                downsample_factor=self.data_generator.downsample_factor,
+                compression_factor=self.compression_factor,
+                bottleneck_factor=self.bottleneck_factor
+            )(outputs)
+            outputs.append(Concatenate()(front_outputs))
+            outputs.append(BatchNormalization()(model_outputs))
+            model_outputs = OutputChannels(
+                self.data_generator.n_output_channels, name="output_" + str(idx + 1)
+            )(outputs)
+            model_outputs_list.append(model_outputs)
+
+        self.train_model = Model(
+            input_layer, model_outputs_list, name=self.__class__.__name__
+        )
 
     def get_config(self):
         config = {
-            'name': self.__class__.__name__,
-            'n_stacks': self.n_stacks,
-            'n_layers': self.n_layers,
-            'n_transitions': self.n_transitions,
-            'growth_rate': self.growth_rate,
-            'bottleneck_factor': self.bottleneck_factor,
-            'compression_factor': self.compression_factor,
-            'batchnorm': self.batchnorm,
-            'use_bias': self.use_bias,
-            'activation': self.activation,
-            'pooling': self.pooling,
-            'interpolation': self.interpolation,
-            'subpixel': self.subpixel,
-            'initializer': self.initializer,
-            'separable': self.separable,
-            'squeeze_excite': self.squeeze_excite
+            "name": self.__class__.__name__,
+            "n_stacks": self.n_stacks,
+            "n_transitions": self.n_transitions,
+            "growth_rate": self.growth_rate,
+            "bottleneck_factor": self.bottleneck_factor,
+            "compression_factor": self.compression_factor,
+            "subpixel": self.subpixel,
         }
         base_config = super(StackedDenseNet, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))

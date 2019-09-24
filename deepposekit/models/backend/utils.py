@@ -15,15 +15,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-try:
-    from keras.backend import tf
-except:
-    from keras.backend.tensorflow_backend import tf
+import tensorflow as tf
 import numpy as np
 
-__all__ = ['ndims', 'fix', 'fft2d', 'find_maxima',
-           'fftshift1d', 'gaussian_kernel_1d', 'gaussian_kernel_2d',
-           'degrees', 'radians', 'angle_mod']
+__all__ = [
+    "ndims",
+    "fix",
+    "fft2d",
+    "find_maxima",
+    "fftshift1d",
+    "gaussian_kernel_1d",
+    "gaussian_kernel_2d",
+]
 
 
 def ndims(x):
@@ -31,13 +34,13 @@ def ndims(x):
 
 
 def fix(x):
-    x = tf.where(x >= 0, tf.floor(x), tf.ceil(x))
+    x = tf.where(x >= 0, tf.math.floor(x), tf.math.ceil(x))
     return x
 
 
 def fft2d(x):
     x = tf.cast(x, tf.complex64)
-    x = tf.spectral.fft2d(x)
+    x = tf.signal.fft2d(x)
     return x
 
 
@@ -61,9 +64,9 @@ def fftshift1d(x, axis=0):
     x_shape = tf.shape(x)
     x = tf.reshape(x, (-1, 1))
     n_samples = tf.cast(tf.shape(x)[0], tf.float32)
-    even = n_samples / 2.
+    even = n_samples / 2.0
     even = tf.round(even)
-    even = even * 2.
+    even = even * 2.0
     even = tf.equal(n_samples, even)
 
     def true_fn():
@@ -95,7 +98,7 @@ def gaussian_kernel_1d(size, sigma):
     sigma = tf.constant(sigma, dtype=tf.float32)
     x = tf.range(-(size // 2), (size // 2) + 1, dtype=tf.float32)
     kernel = 1 / (sigma * tf.sqrt(2 * np.pi))
-    kernel *= tf.exp(-0.5 * (x / sigma)**2)
+    kernel *= tf.exp(-0.5 * (x / sigma) ** 2)
     return tf.expand_dims(kernel, axis=-1)
 
 
@@ -103,33 +106,3 @@ def gaussian_kernel_2d(size, sigma):
     kernel = gaussian_kernel_1d(size, sigma)
     kernel = tf.matmul(kernel, kernel, transpose_b=True)
     return kernel
-
-
-def degrees(x):
-    x = x * (180 / np.pi)
-    return x
-
-
-def radians(x):
-    x = x * (np.pi / 180)
-    return x
-
-
-def angle_mod(x):
-    x_test = fix(x / 360.)
-    x = x - 360. * x_test
-    x = tf.where(x < 0, x + 360, x)
-    return x
-
-
-def check_angles(x, rotation_guess):
-    x = tf.reshape(x, (-1, 1))
-    x = angle_mod(x)
-    rA = radians(x)
-    rA = tf.concat([tf.cos(rA), tf.sin(rA)], axis=-1)
-    rI = tf.reshape(rotation_guess, (-1, 1))
-    rI = radians(rI)
-    rI = tf.concat([tf.cos(rI), tf.sin(rI)], axis=-1)
-    guess_test = tf.matmul(rA, rI, transpose_b=True)
-    x = tf.where(guess_test < 0, angle_mod(x - 180), x)
-    return x

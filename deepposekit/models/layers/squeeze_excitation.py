@@ -14,8 +14,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 """
-from keras import layers
-from keras import backend as K
+from tensorflow.keras import layers
+from tensorflow.keras import backend as K
 import numpy as np
 
 
@@ -30,14 +30,24 @@ def channel_squeeze_excite_block(input, ratio=0.25):
     ratio_filters = int(np.round(filters * ratio))
     if ratio_filters < 1:
         ratio_filters += 1
-    cse = layers.Conv2D(ratio_filters, (1, 1), padding='same',
-                        activation='relu', kernel_initializer='he_normal',
-                        use_bias=False)(cse)
+    cse = layers.Conv2D(
+        ratio_filters,
+        (1, 1),
+        padding="same",
+        activation="relu",
+        kernel_initializer="he_normal",
+        use_bias=False,
+    )(cse)
     cse = layers.BatchNormalization()(cse)
-    cse = layers.Conv2D(filters, (1, 1), activation='sigmoid',
-                        kernel_initializer='he_normal', use_bias=False)(cse)
+    cse = layers.Conv2D(
+        filters,
+        (1, 1),
+        activation="sigmoid",
+        kernel_initializer="he_normal",
+        use_bias=False,
+    )(cse)
 
-    if K.image_data_format() == 'channels_first':
+    if K.image_data_format() == "channels_first":
         cse = layers.Permute((3, 1, 2))(cse)
 
     cse = layers.Multiply()([init, cse])
@@ -45,9 +55,14 @@ def channel_squeeze_excite_block(input, ratio=0.25):
 
 
 def spatial_squeeze_excite_block(input):
-    sse = layers.Conv2D(1, (1, 1), activation='sigmoid',
-                        padding='same', kernel_initializer='he_normal',
-                        use_bias=False)(input)
+    sse = layers.Conv2D(
+        1,
+        (1, 1),
+        activation="sigmoid",
+        padding="same",
+        kernel_initializer="he_normal",
+        use_bias=False,
+    )(input)
     sse = layers.Multiply()([input, sse])
 
     return sse

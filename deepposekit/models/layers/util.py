@@ -15,10 +15,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from keras.engine import Layer
-import keras.backend as K
+from tensorflow.python.keras.engine import Layer
+import tensorflow.keras.backend as K
 
-__all__ = ['Float', 'ImageNormalization']
+__all__ = ["Float", "ImageNormalization"]
+
 
 class Float(Layer):
     """
@@ -56,7 +57,7 @@ class ImageNormalization(Layer):
         super(ImageNormalization, self).__init__(**kwargs)
 
     def call(self, inputs):
-        return inputs * (2.0 / 255.) - 1.0
+        return inputs * (2.0 / 255.0) - 1.0
 
     def compute_output_shape(self, input_shape):
         return input_shape
