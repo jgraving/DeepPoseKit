@@ -198,7 +198,7 @@ class SubPixelDownscaling(Layer):
     ```python
         # A standard subpixel upscaling block
         x = Convolution2D(256, 3, 3, padding='same', activation='relu')(...)
-        u = SubPixelUpscaling(scale_factor=2)(x)
+        u = SubPixelDownscaling(scale_factor=2)(x)
         [Optional]
         x = Convolution2D(256, 3, 3, padding='same', activation='relu')(u)
     ```
