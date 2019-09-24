@@ -21,7 +21,10 @@ from tensorflow.keras import layers
 
 from deepposekit.models.layers.convolutional import UpSampling2D
 from deepposekit.models.layers.util import ImageNormalization
-from deepposekit.models.layers.convolutional import SubPixelDownscaling, SubPixelUpscaling
+from deepposekit.models.layers.convolutional import (
+    SubPixelDownscaling,
+    SubPixelUpscaling,
+)
 
 
 __all__ = [
@@ -61,18 +64,21 @@ class Concatenate:  # (layers.Layer):
 
 
 class DenseConv2D:  # (layers.Layer):
-    def __init__(self, n_filters=64, **kwargs):
+    def __init__(self, growth_rate=64, bottleneck_factor=1, **kwargs):
         # super(DenseConv2D, self).__init__(self, **kwargs)
         self.concat = Concatenate()
+
+        bottleneck_filters = int(np.round(growth_rate * bottleneck_factor))
+
         self.bottleneck_1x1 = layers.Conv2D(
-            n_filters,
+            bottleneck_filters,
             (1, 1),
             padding="same",
             activation="selu",
             kernel_initializer="lecun_normal",
         )
         self.conv_3x3 = layers.Conv2D(
-            n_filters,
+            growth_rate,
             (3, 3),
             padding="same",
             activation="selu",
@@ -96,11 +102,11 @@ class DenseConv2D:  # (layers.Layer):
 
 
 class DenseConvBlock:  # (layers.Layer):
-    def __init__(self, n_filters=64, n_layers=1, **kwargs):
+    def __init__(self, growth_rate=64, n_layers=1, bottleneck_factor=1, **kwargs):
         # super(DenseConv2D, self).__init__(self, **kwargs)
-        n_layers = np.minimum(n_layers, 5)
+        n_layers = np.minimum(n_layers, 3)
         n_layers = np.maximum(n_layers, 1)
-        self.dense_conv = DenseConv2D(n_filters * n_layers)
+        self.dense_conv = DenseConv2D(growth_rate * n_layers, bottleneck_factor)
 
     def call(self, inputs):
         return self.dense_conv(inputs)
@@ -146,7 +152,7 @@ class Compression:  # (layers.Layer):
 
 
 class TransitionDown:  # (layers.Layer):
-    def __init__(self, pool_size=2, compression_factor=0.5, **kwargs):
+    def __init__(self, compression_factor=0.5, pool_size=2, **kwargs):
         # super(TransitionDown, self).__init__(self, **kwargs)
         self.concat = Concatenate()
         self.compression_factor = compression_factor
@@ -221,11 +227,20 @@ class TransitionUp:  # (layers.Layer):
 
 
 class FrontEnd:  # (layers.Layer):
-    def __init__(self, n_filters=64, n_downsample=1, **kwargs):
+    def __init__(
+        self,
+        growth_rate=64,
+        n_downsample=1,
+        compression_factor=0.5,
+        bottleneck_factor=1,
+        **kwargs
+    ):
         # super(FrontEnd, self).__init__(self, **kwargs)
-        self.n_filters = n_filters
+        self.growth_rate = growth_rate
+        self.compression_factor = compression_factor
+        self.bottleneck_factor = bottleneck_factor
         self.conv_7x7 = layers.Conv2D(
-            n_filters,
+            growth_rate,
             (7, 7),
             strides=(2, 2),
             padding="same",
@@ -235,11 +250,13 @@ class FrontEnd:  # (layers.Layer):
         self.n_downsample = n_downsample
         self.pool_input = SubPixelDownscaling()
         self.dense_conv = [
-            DenseConvBlock(n_filters, (idx + 1)) for idx in range(n_downsample)
+            DenseConvBlock(growth_rate, (idx + 1)) for idx in range(n_downsample)
         ]
-        self.transition_down = [TransitionDown() for idx in range(n_downsample - 1)]
+        self.transition_down = [
+            TransitionDown(compression_factor) for idx in range(n_downsample - 1)
+        ]
         self.pooled_outputs = [
-            TransitionDown(pool_size=2 ** (n_downsample - 1 - idx))
+            TransitionDown(compression_factor, pool_size=2 ** (n_downsample - 1 - idx))
             for idx in range(n_downsample - 1)
         ]
 
@@ -262,7 +279,9 @@ class FrontEnd:  # (layers.Layer):
         outputs = self.dense_conv[-1](outputs)
         outputs = Concatenate()(outputs)
         residual_outputs.append(outputs)
-        residual_outputs = [Compression()(res) for res in residual_outputs]
+        residual_outputs = [
+            Compression(self.compression_factor)(res) for res in residual_outputs
+        ]
         outputs = Concatenate()(residual_outputs)
         return [outputs]
 
@@ -278,31 +297,41 @@ class FrontEnd:  # (layers.Layer):
 class DenseNet:  # (layers.Layer):
     def __init__(
         self,
-        n_filters=64,
+        growth_rate=64,
         n_downsample=1,
         n_upsample=None,
         downsample_factor=0,
+        compression_factor=0.5,
+        bottleneck_factor=1,
         **kwargs
     ):
         # super(DenseNet, self).__init__(self, **kwargs)
         self.n_downsample = n_downsample
-        self.n_filters = n_filters
+        self.growth_rate = growth_rate
+        self.compression_factor = compression_factor
+        self.bottleneck_factor = bottleneck_factor
         self.n_upsample = n_downsample if n_upsample is None else n_upsample
-        self.transition_input = TransitionDown()
+        self.transition_input = TransitionDown(compression_factor)
         self.dense_conv_down = [
-            DenseConvBlock(n_filters, (idx + downsample_factor))
+            DenseConvBlock(growth_rate, (idx + downsample_factor), bottleneck_factor)
             for idx in range(1, self.n_downsample)
         ]
         self.transition_down = [
-            TransitionDown() for idx in range(self.n_downsample - 1)
+            TransitionDown(compression_factor) for idx in range(self.n_downsample - 1)
         ]
-        self.dense_conv_encoded = DenseConvBlock(n_filters, downsample_factor)
+        self.dense_conv_encoded = DenseConvBlock(
+            growth_rate, downsample_factor, bottleneck_factor
+        )
         self.dense_conv_up = [
-            DenseConvBlock(n_filters, (idx + downsample_factor))
+            DenseConvBlock(growth_rate, (idx + downsample_factor), bottleneck_factor)
             for idx in range(self.n_upsample)
         ][::-1]
-        self.transition_up = [TransitionUp() for idx in range(self.n_upsample)]
-        self.dense_conv_output = DenseConvBlock(n_filters, downsample_factor)
+        self.transition_up = [
+            TransitionUp(compression_factor) for idx in range(self.n_upsample)
+        ]
+        self.dense_conv_output = DenseConvBlock(
+            growth_rate, downsample_factor, bottleneck_factor
+        )
 
     def call(self, inputs):
         residual_outputs = [Concatenate()(inputs)]
@@ -320,7 +349,9 @@ class DenseNet:  # (layers.Layer):
 
         # Compress the feature maps for residual connections
         residual_outputs = residual_outputs[::-1]
-        residual_outputs = [Compression()(res) for res in residual_outputs]
+        residual_outputs = [
+            Compression(self.compression_factor)(res) for res in residual_outputs
+        ]
 
         # Decoder
         for idx in range(self.n_upsample):
