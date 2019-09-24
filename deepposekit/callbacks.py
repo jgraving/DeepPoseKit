@@ -20,6 +20,8 @@ import json
 
 from tensorflow.keras.callbacks import Callback
 import tensorflow.keras.callbacks as callbacks
+from tensorflow.python.platform import tf_logging as logging
+
 from deepposekit.models.engine import BaseModel
 from deepposekit.utils.io import get_json_type
 
@@ -37,7 +39,7 @@ class Logger(Callback):
 
     def __init__(
         self,
-        filepath,
+        filepath=None,
         validation_batch_size=1,
         confidence_threshold=None,
         verbose=1,
@@ -62,7 +64,6 @@ class Logger(Callback):
 
         if self.filepath is not None:
             with h5py.File(self.filepath, "w") as h5file:
-    
                 if "logs" not in h5file:
                     group = h5file.create_group("logs")
                     group.create_dataset(
@@ -96,16 +97,17 @@ class Logger(Callback):
                         maxshape=(None, None, None),
                     )
 
-    def on_train_begin(self, logs={}):
+    def on_train_begin(self, logs):
         return
 
-    def on_train_end(self, logs={}):
+    def on_train_end(self, logs):
         return
 
-    def on_epoch_begin(self, epoch, logs={}):
+    def on_epoch_begin(self, epoch, logs):
         return
 
-    def on_epoch_end(self, epoch, logs={}):
+    def on_epoch_end(self, epoch, logs):
+        logs = logs or {}
         evaluation_dict = self.evaluation_model.evaluate(self.batch_size)
         y_pred = evaluation_dict["y_pred"]
         y_error = evaluation_dict["y_error"]
@@ -120,12 +122,11 @@ class Logger(Callback):
                     "y_error": y_error[None, ...],
                     "euclidean": euclidean[None, ...],
                     "confidence": confidence[None, ...],
-    
                 }
                 for key, value in values.items():
                     data = h5file["logs"][key]
-                        value = np.array(value)
-                        data.resize(tuple(value.shape))
+                    value = np.array(value)
+                    data.resize(tuple(value.shape))
                     if data.shape[0] == 0:
                         data[:] = value
                     else:
@@ -152,9 +153,9 @@ class Logger(Callback):
 
         if self.verbose:
             print(
-                "evaluation_metrics: mean median (0%, 2.5%, 25%, 50%, 75%, 97.5%, 100%) \n"
-                "euclidean: {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n"
-                "confidence: {:6.4f} ({:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}, {:6.4f}) \n".format(
+                "evaluation_metrics: \n"
+                "euclidean - mean: {:5.2f} (0%: {:5.2f}, 2.5%: {:5.2f}, 25%: {:5.2f}, 50%: {:5.2f}, 75%: {:5.2f}, 97.5%: {:5.2f}, 100%: {:5.2f}) \n"
+                "confidence - mean: {:5.2f} (0%: {:5.2f}, 2.5%: {:5.2f}, 25%: {:5.2f}, 50%: {:5.2f}, 75%: {:5.2f}, 97.5%: {:5.2f}, 100%: {:5.2f}) \n".format(
                     euclidean_mean,
                     euclidean_perc[0],
                     euclidean_perc[1],
@@ -162,6 +163,7 @@ class Logger(Callback):
                     euclidean_perc[3],
                     euclidean_perc[4],
                     euclidean_perc[5],
+                    euclidean_perc[6],
                     confidence_mean,
                     confidence_perc[0],
                     confidence_perc[1],
@@ -169,13 +171,14 @@ class Logger(Callback):
                     confidence_perc[3],
                     confidence_perc[4],
                     confidence_perc[5],
+                    confidence_perc[6],
                 )
             )
 
-    def on_batch_begin(self, batch, logs={}):
+    def on_batch_begin(self, batch, logs):
         return
 
-    def on_batch_end(self, batch, logs={}):
+    def on_batch_end(self, batch, logs):
         return
 
     def pass_model(self, model):
@@ -212,7 +215,6 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
     the validation loss in the filename.
 
     # Arguments
-        model: pose.BaseModel class, a pose model to save
         filepath: string, path to save the model file.
         monitor: quantity to monitor.
         verbose: verbosity mode, 0 or 1.
@@ -227,18 +229,30 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
             this should be `max`, for `val_loss` this should
             be `min`, etc. In `auto` mode, the direction is
             automatically inferred from the name of the monitored quantity.
-        period: Interval (number of epochs) between checkpoints.
+        save_freq: `'epoch'` or integer. When using `'epoch'`, the callback saves
+            the model after each epoch. When using integer, the callback saves the
+            model at end of a batch at which this many samples have been seen since
+            last saving. Note that if the saving isn't aligned to epochs, the
+            monitored metric may potentially be less reliable (it could reflect as
+            little as 1 batch, since the metrics get reset every epoch). Defaults to
+            `'epoch'`
+        optimizer: bool, default is True.
+            Whether to save the optimizer with the model at each checkpoint.
+            This allows the model to resume training when loaded, but takes
+            longer to save and load.
+
     """
 
     def __init__(
         self,
         filepath,
-        monitor="rmse",
+        monitor="val_loss",
         verbose=0,
-        save_best_only=False,
+        save_best_only=True,
         mode="auto",
-        period=1,
+        save_freq="epoch",
         optimizer=True,
+        **kwargs
     ):
         super(ModelCheckpoint, self).__init__(
             filepath=filepath,
@@ -246,23 +260,31 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
             verbose=verbose,
             save_best_only=save_best_only,
             mode=mode,
-            period=period,
+            save_freq=save_freq,
+            **kwargs
         )
         self.optimizer = optimizer
 
-    def on_epoch_end(self, epoch, logs=None):
+    def _save_model(self, epoch, logs):
+        """Saves the model.
+        Arguments:
+            epoch: the epoch this iteration is in.
+            logs: the `logs` dict passed in to `on_batch_end` or `on_epoch_end`.
+        """
         logs = logs or {}
-        self.epochs_since_last_save += 1
-        if self.epochs_since_last_save >= self.period:
+        if (
+            isinstance(self.save_freq, int)
+            or self.epochs_since_last_save >= self.period
+        ):
             self.epochs_since_last_save = 0
-            filepath = self.filepath.format(epoch=epoch + 1, **logs)
+            file_handle, filepath = self._get_file_handle_and_path(epoch, logs)
+
             if self.save_best_only:
                 current = logs.get(self.monitor)
                 if current is None:
-                    warnings.warn(
-                        "Can save best model only with %s available, "
-                        "skipping." % (self.monitor),
-                        RuntimeWarning,
+                    logging.warning(
+                        "Can save best model only with %s available, " "skipping.",
+                        self.monitor,
                     )
                 else:
                     if self.monitor_op(current, self.best):
@@ -290,6 +312,8 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
                 if self.verbose > 0:
                     print("\nEpoch %05d: saving model to %s" % (epoch + 1, filepath))
                 self.save_model.save(filepath, optimizer=self.optimizer)
+
+            self._maybe_remove_file(file_handle, filepath)
 
     def pass_model(self, model):
         if isinstance(model, BaseModel):

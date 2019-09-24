@@ -138,14 +138,12 @@ class BaseModel:
             self.n_outputs, validation_batch_size, validation=True, confidence=True
         )
         validation_generator = (
-            None if len(validation_generator) is 0 else validation_generator
+            None if len(validation_generator) == 0 else validation_generator
         )
-        validation_steps = (
-            None if validation_generator is None else len(validation_generator)
-        )
-
-        if steps_per_epoch is None:
-            steps_per_epoch = len(train_generator)
+        if validation_generator is None:
+            warnings.warn(
+                "No validation set detected, so validation step will not be run and `val_loss` will not be available."
+            )
 
         activated_callbacks = self.activate_callbacks(callbacks)
 
@@ -157,7 +155,6 @@ class BaseModel:
             workers=n_workers,
             callbacks=activated_callbacks,
             validation_data=validation_generator,
-            validation_steps=validation_steps,
             **kwargs
         )
 
