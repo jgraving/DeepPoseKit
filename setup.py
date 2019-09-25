@@ -25,42 +25,55 @@ LONG_DESCRIPTION = """\
 a toolkit for pose estimation using deep learning
 """
 
-DISTNAME = 'deepposekit'
-MAINTAINER = 'Jacob Graving <jgraving@gmail.com>'
-MAINTAINER_EMAIL = 'jgraving@gmail.com'
-URL = 'https://github.com/jgraving/deepposekit'
-LICENSE = 'Apache 2.0'
-DOWNLOAD_URL = 'https://github.com/jgraving/deepposekit.git'
-VERSION = '0.2.0.dev'
+DISTNAME = "deepposekit"
+MAINTAINER = "Jacob Graving <jgraving@gmail.com>"
+MAINTAINER_EMAIL = "jgraving@gmail.com"
+URL = "https://github.com/jgraving/deepposekit"
+LICENSE = "Apache 2.0"
+DOWNLOAD_URL = "https://github.com/jgraving/deepposekit.git"
+VERSION = "0.2.0.dev"
 
 
 if __name__ == "__main__":
 
-    setup(name=DISTNAME,
-          author=MAINTAINER,
-          author_email=MAINTAINER_EMAIL,
-          maintainer=MAINTAINER,
-          maintainer_email=MAINTAINER_EMAIL,
-          description=DESCRIPTION,
-          long_description=LONG_DESCRIPTION,
-          license=LICENSE,
-          url=URL,
-          version=VERSION,
-          download_url=DOWNLOAD_URL,
-          install_requires=['numpy',
-                            'matplotlib',
-                            'pandas',
-                            'h5py',
-                            'imgaug>=0.2.9',
-                            'opencv-python'],
-          packages=find_packages(),
-          zip_safe=False,
-          classifiers=['Intended Audience :: Science/Research',
-                       'Programming Language :: Python :: 3',
-                       'Topic :: Scientific/Engineering :: Visualization',
-                       'Topic :: Scientific/Engineering :: Image Recognition',
-                       'Topic :: Scientific/Engineering :: Information Analysis',
-                       'Topic :: Multimedia :: Video'
-                       'Operating System :: POSIX',
-                       'Operating System :: Unix',
-                       'Operating System :: MacOS'])
+    setup(
+        name=DISTNAME,
+        author=MAINTAINER,
+        author_email=MAINTAINER_EMAIL,
+        maintainer=MAINTAINER,
+        maintainer_email=MAINTAINER_EMAIL,
+        description=DESCRIPTION,
+        long_description=LONG_DESCRIPTION,
+        license=LICENSE,
+        url=URL,
+        version=VERSION,
+        download_url=DOWNLOAD_URL,
+        install_requires=[
+            "numpy",
+            "matplotlib",
+            "pandas",
+            "h5py",
+            "imgaug>=0.2.9",
+            "opencv-python",
+        ],
+        packages=[
+            "deepposekit.augment",
+            "deepposekit.io.dlc",
+            "deepposekit.io",
+            "deepposekit.models",
+            "deepposekit.models.backend",
+            "deepposekit.models.layers",
+            "deepposekit.utils",
+        ],
+        zip_safe=False,
+        classifiers=[
+            "Intended Audience :: Science/Research",
+            "Programming Language :: Python :: 3",
+            "Topic :: Scientific/Engineering :: Visualization",
+            "Topic :: Scientific/Engineering :: Image Recognition",
+            "Topic :: Scientific/Engineering :: Information Analysis",
+            "Topic :: Multimedia :: Video" "Operating System :: POSIX",
+            "Operating System :: Unix",
+            "Operating System :: MacOS",
+        ],
+    )
