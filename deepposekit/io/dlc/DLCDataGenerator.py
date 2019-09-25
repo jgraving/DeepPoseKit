@@ -15,18 +15,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from tensorflow.keras.utils import Sequence
-import h5py
 import numpy as np
-import os
-import copy
 import pandas as pd
 import cv2
+
+from deepposekit.io.Generator import BaseGenerator
 
 __all__ = ["DLCDataGenerator"]
 
 
-class DLCDataGenerator(Sequence):
+class DLCDataGenerator(BaseGenerator):
     """
     Creates a data generator for accessing a DeepLabCut annotation set.
 
@@ -52,15 +50,30 @@ class DLCDataGenerator(Sequence):
         self.scorer = np.unique(scorer)[0]
         self.xy = ["x", "y"]
 
-        self.n_keypoints = len(bodyparts)
+        self.n_keypoints = len(self.bodyparts)
         self.n_samples = self.annotations.shape[0]
         self.index = np.arange(self.n_samples)
 
-    def get_data(self, indexes):
-        indexes = self.index[indexes]
+    def compute_image_shape(self):
+        return self.get_images([0]).shape[1:]
 
-        X = []
-        Y = []
+    def compute_keypoints_shape(self):
+        return (self.n_keypoints, 2)
+
+    def get_images(self, indexes):
+        indexes = self.index[indexes]
+        images = []
+        for idx in indexes:
+            row = self.annotations.iloc[idx]
+            image = row.name
+            image = cv2.imread(self.imagepath + image)
+            height, width, channels = image.shape
+            images.append(image)
+        return np.stack(images)
+
+    def get_keypoints(self, indexes):
+        indexes = self.index[indexes]
+        keypoints = []
         for idx in indexes:
             row = self.annotations.iloc[idx]
             coords = []
@@ -68,88 +81,15 @@ class DLCDataGenerator(Sequence):
                 x = row[(self.scorer, part, "x")]
                 y = row[(self.scorer, part, "y")]
                 if np.isnan(x) or np.isnan(y):
-                    x = -9999999999
-                    y = -9999999999
+                    x = -1e10
+                    y = -1e10
                 coords.append([x, y])
             coords = np.array(coords)
-            image = row.name
-            image = cv2.imread(self.imagepath + image)
-            height, width, channels = image.shape
-            # height_pad = 800 - height if 800 - height > 0 else 0
-            # width_pad = 832 - width if 800 - width > 0 else 0
-            # image = np.pad(image, ((0,height_pad), (0,width_pad), (0,0)))
-            X.append(image)
-            Y.append(coords)
-
-        X = np.stack(X)
-        Y = np.stack(Y)
-
-        return X, Y
-
-    def set_data(self, indexes, y):
-        return NotImplementedError
-        """
-        if y.shape[-1] is 3:
-            y = y[..., :2]
-        elif y.shape[-1] is not 2:
-            raise ValueError('data shape does not match')
-        if self.mode is 'annotated':
-            indexes = self.annotated_index[indexes]
-        elif self.mode is 'unannotated':
-            indexes = self.unannotated_index[indexes]
-        else:
-            indexes = self.index[indexes]
-
-        with h5py.File(self.datapath, mode='r+') as h5file:
-            for idx, keypoints in zip(indexes, y):
-                h5file['annotations'][idx] = keypoints
-        """
+            keypoints.append(coords)
+        return np.stack(keypoints)
 
     def __len__(self):
         return self.n_samples
-
-    def _check_index(self, key):
-        if isinstance(key, slice):
-            start = key.start
-            stop = key.stop
-            if start is None:
-                start = 0
-            if stop is None:
-                stop = len(self)
-            if stop <= len(self):
-                idx = range(start, stop)
-            else:
-                raise IndexError
-        elif isinstance(key, (int, np.integer)):
-            if key < len(self):
-                idx = [key]
-            else:
-                raise IndexError
-        elif isinstance(key, np.ndarray):
-            if np.max(key) < len(self):
-                idx = key.tolist()
-            else:
-                raise IndexError
-        elif isinstance(key, list):
-            if max(key) < len(self):
-                idx = key
-            else:
-                raise IndexError
-        else:
-            raise IndexError
-        return idx
-
-    def __getitem__(self, key):
-        idx = self._check_index(key)
-        return self.get_data(idx)
-
-    def __setitem__(self, key, value):
-
-        idx = self._check_index(key)
-        if isinstance(value, (np.ndarray, list)):
-            if len(value) != len(idx):
-                raise IndexError("data shape and " "index do not match")
-            self.set_data(idx, value)
 
 
 if __name__ == "__main__":
