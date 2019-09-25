@@ -17,6 +17,7 @@ limitations under the License.
 
 import numpy as np
 import pandas as pd
+import os
 import cv2
 
 from deepposekit.io.Generator import BaseGenerator
@@ -40,6 +41,7 @@ class DLCDataGenerator(BaseGenerator):
 
     def __init__(self, datapath, imagepath):
         self.annotations = pd.read_hdf(datapath)
+        self.datapath = datapath
         self.imagepath = imagepath
         scorer = []
         bodyparts = []
@@ -48,7 +50,6 @@ class DLCDataGenerator(BaseGenerator):
             bodyparts.append(column[1])
         self.bodyparts = np.unique(bodyparts)
         self.scorer = np.unique(scorer)[0]
-        self.xy = ["x", "y"]
 
         self.n_keypoints = len(self.bodyparts)
         self.n_samples = self.annotations.shape[0]
@@ -65,10 +66,12 @@ class DLCDataGenerator(BaseGenerator):
         images = []
         for idx in indexes:
             row = self.annotations.iloc[idx]
-            image = row.name
-            image = cv2.imread(self.imagepath + image)
-            height, width, channels = image.shape
-            images.append(image)
+            image_name = row.name
+            filepath = self.imagepath + image_name
+            if os.path.exists(filepath):
+                images.append(cv2.imread(filepath))
+            else:
+                raise IndexError("image `{}` does not exist".format(image_name))
         return np.stack(images)
 
     def get_keypoints(self, indexes):

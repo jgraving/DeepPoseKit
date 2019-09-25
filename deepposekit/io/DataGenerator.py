@@ -27,22 +27,23 @@ __all__ = ["DataGenerator"]
 
 
 class DataGenerator(BaseGenerator):
-    def __init__(self, datapath, dataset="images", mode="annotated", **kwargs):
-        """
-        Creates a data generator for accessing an annotation set.
+    """
+    Creates a data generator for accessing an annotation set.
 
-        Parameters
-        ----------
-        datapath : str
-            The path to the annotations file. Must be .h5
-            e.g. '/path/to/file.h5'
-        dataset : str
-            The key for the image dataset in the annotations file.
-            e.g. 'images'
-        mode : str
-            The mode for loading and saving data. 
-            Must be 'unannotated', 'annotated', or None (the full dataset)
-        """
+    Parameters
+    ----------
+    datapath : str
+        The path to the annotations file. Must be .h5
+        e.g. '/path/to/file.h5'
+    dataset : str
+        The key for the image dataset in the annotations file.
+        e.g. 'images'
+    mode : str
+        The mode for loading and saving data.
+        Must be 'unannotated', 'annotated', or "full"
+    """
+
+    def __init__(self, datapath, dataset="images", mode="annotated", **kwargs):
 
         super(DataGenerator, self).__init__(**kwargs)
 
@@ -78,11 +79,11 @@ class DataGenerator(BaseGenerator):
 
             # Get annotations attributes
             if mode not in ["full", "annotated", "unannotated"]:
-                raise ValueError("mode must be full, annotated, or unannotated")
+                raise ValueError("mode must be 'full', 'annotated', or 'unannotated'")
             else:
                 self.mode = mode
-            annotated = np.all(h5file["annotated"].value, axis=1)
-            self.annotated_index = np.where(annotated)[0]
+            self.annotated = np.all(h5file["annotated"].value, axis=1)
+            self.annotated_index = np.where(self.annotated)[0]
             self.n_annotated = self.annotated_index.shape[0]
             if self.n_annotated == 0 and self.mode is not "unannotated":
                 raise ValueError("The number of annotated images is zero")
