@@ -5,29 +5,10 @@ import warnings
 from deepposekit.io import TrainingGenerator, DataGenerator
 from deepposekit.augment.FlipAxis import FlipAxis
 
-major = sys.version_info.major
-minor = sys.version_info.minor
+from deepposekit.annotation.gui.Annotator import Annotator
+from deepposekit.annotation.gui.Skeleton import Skeleton
+from deepposekit.annotation.KMeansSampler import KMeansSampler
 
-if major >= 3 and minor >= 6:
-    ImportError = ModuleNotFoundError
+from deepposekit.io.video import VideoReader, VideoWriter
 
-try:
-    import dpk_annotator as annotation
-
-    Annotator = annotation.Annotator
-    Skeleton = annotation.Skeleton
-    KMeansSampler = annotation.KMeansSampler
-    VideoReader = annotation.VideoReader
-    VideoWriter = annotation.VideoWriter
-
-except ImportError:
-    warnings.warn(
-        "\n"
-        "\nDeepPoseKit Annotator is not found. "
-        "\nAnnotation functions are not available. "
-        "\nSee https://github.com/jgraving/deepposekit-annotator for installation instructions. "
-        "\n"
-    )
-
-
-__version__ = "0.2.0.dev"
+__version__ = "0.3.0.dev"
