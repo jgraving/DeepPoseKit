@@ -250,7 +250,8 @@ class FrontEnd:  # (layers.Layer):
         self.n_downsample = n_downsample
         self.pool_input = SubPixelDownscaling()
         self.dense_conv = [
-            DenseConvBlock(growth_rate, (idx + 1)) for idx in range(n_downsample)
+            DenseConvBlock(growth_rate, (idx + 1), bottleneck_factor)
+            for idx in range(n_downsample)
         ]
         self.transition_down = [
             TransitionDown(compression_factor) for idx in range(n_downsample - 1)
