@@ -2,15 +2,9 @@ from __future__ import absolute_import
 import sys
 import warnings
 
-from deepposekit import io
 from deepposekit.io import TrainingGenerator, DataGenerator
 
-from deepposekit import models
-from deepposekit import utils
-from deepposekit import callbacks
-
-from deepposekit import augment
-from deepposekit.augment import FlipAxis
+from deepposekit.augment.FlipAxis import FlipAxis
 
 major = sys.version_info.major
 minor = sys.version_info.minor
