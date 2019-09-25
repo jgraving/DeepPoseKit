@@ -3,7 +3,6 @@ import sys
 import warnings
 
 from deepposekit.io import TrainingGenerator, DataGenerator
-
 from deepposekit.augment.FlipAxis import FlipAxis
 
 major = sys.version_info.major

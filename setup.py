@@ -56,15 +56,7 @@ if __name__ == "__main__":
             "imgaug>=0.2.9",
             "opencv-python",
         ],
-        packages=[
-            "deepposekit.augment",
-            "deepposekit.io.dlc",
-            "deepposekit.io",
-            "deepposekit.models",
-            "deepposekit.models.backend",
-            "deepposekit.models.layers",
-            "deepposekit.utils",
-        ],
+        packages=find_packages(),
         zip_safe=False,
         classifiers=[
             "Intended Audience :: Science/Research",
