@@ -21,11 +21,13 @@ import numpy as np
 import os
 import copy
 
+from deepposekit.io.Generator import BaseGenerator
+
 __all__ = ["DataGenerator"]
 
 
-class DataGenerator(Sequence):
-    def __init__(self, datapath, dataset, mode="annotated"):
+class DataGenerator(BaseGenerator):
+    def __init__(self, datapath, dataset="images", mode="annotated", **kwargs):
         """
         Creates a data generator for accessing an annotation set.
 
@@ -41,6 +43,8 @@ class DataGenerator(Sequence):
             The mode for loading and saving data. 
             Must be 'unannotated', 'annotated', or None (the full dataset)
         """
+
+        super(DataGenerator, self).__init__(**kwargs)
 
         # Check annotations file
         if isinstance(datapath, str):
@@ -92,40 +96,48 @@ class DataGenerator(Sequence):
             self.tree = h5file["skeleton"][:, 0]
             self.swap_index = h5file["skeleton"][:, 1]
 
-    def get_data(self, indexes):
+    def compute_keypoints_shape(self):
+        with h5py.File(self.datapath, mode="r") as h5file:
+            return h5file["annotations"].shape[1:]
+
+    def compute_image_shape(self):
+        with h5py.File(self.datapath, mode="r") as h5file:
+            return h5file[self.dataset].shape[1:]
+
+    def get_indexes(self, indexes):
         if self.mode is "annotated":
             indexes = self.annotated_index[indexes]
         elif self.mode is "unannotated":
             indexes = self.unannotated_index[indexes]
         else:
             indexes = self.index[indexes]
+        return indexes
 
-        X = []
-        y = []
+    def get_images(self, indexes):
+        indexes = self.get_indexes(indexes)
+        images = []
         with h5py.File(self.datapath, mode="r") as h5file:
             for idx in indexes:
-                X.append(h5file[self.dataset][idx])
-                y.append(h5file["annotations"][idx])
+                images.append(h5file[self.dataset][idx])
+        return np.stack(images)
 
-        X = np.stack(X)
-        y = np.stack(y)
+    def get_keypoints(self, indexes):
+        indexes = self.get_indexes(indexes)
+        keypoints = []
+        with h5py.File(self.datapath, mode="r") as h5file:
+            for idx in indexes:
+                keypoints.append(h5file["annotations"][idx])
+        return np.stack(keypoints)
 
-        return X, y
-
-    def set_data(self, indexes, y):
+    def set_keypoints(self, indexes, keypoints):
         if y.shape[-1] is 3:
             y = y[..., :2]
         elif y.shape[-1] is not 2:
-            raise ValueError("data shape does not match")
-        if self.mode is "annotated":
-            indexes = self.annotated_index[indexes]
-        elif self.mode is "unannotated":
-            indexes = self.unannotated_index[indexes]
-        else:
-            indexes = self.index[indexes]
+            raise ValueError("data shape does not match annotations")
+        indexes = self.get_indexes(indexes)
 
         with h5py.File(self.datapath, mode="r+") as h5file:
-            for idx, keypoints in zip(indexes, y):
+            for idx, keypoints in zip(indexes, keypoints):
                 h5file["annotations"][idx] = keypoints
 
     def __call__(self, mode="annotated"):
@@ -152,46 +164,3 @@ class DataGenerator(Sequence):
             return self.n_unannotated
         else:
             return self.n_samples
-
-    def _check_index(self, key):
-        if isinstance(key, slice):
-            start = key.start
-            stop = key.stop
-            if start is None:
-                start = 0
-            if stop is None:
-                stop = len(self)
-            if stop <= len(self):
-                idx = range(start, stop)
-            else:
-                raise IndexError
-        elif isinstance(key, (int, np.integer)):
-            if key < len(self):
-                idx = [key]
-            else:
-                raise IndexError
-        elif isinstance(key, np.ndarray):
-            if np.max(key) < len(self):
-                idx = key.tolist()
-            else:
-                raise IndexError
-        elif isinstance(key, list):
-            if max(key) < len(self):
-                idx = key
-            else:
-                raise IndexError
-        else:
-            raise IndexError
-        return idx
-
-    def __getitem__(self, key):
-        idx = self._check_index(key)
-        return self.get_data(idx)
-
-    def __setitem__(self, key, value):
-
-        idx = self._check_index(key)
-        if isinstance(value, (np.ndarray, list)):
-            if len(value) != len(idx):
-                raise IndexError("data shape and " "index do not match")
-            self.set_data(idx, value)
