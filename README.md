@@ -67,11 +67,6 @@ Install the development version with pip:
 pip install git+https://www.github.com/jgraving/deepposekit.git
 ```
 
-To use the annotation toolkit you must install the [DeepPoseKit Annotator](https://www.github.com/jgraving/deepposekit-annotator) package:
-```bash
-pip install git+https://www.github.com/jgraving/deepposekit-annotator.git
-```
-
 You can download example datasets from our [DeepPoseKit Data](https://github.com/jgraving/deepposekit-data) repository:
 ```bash
 git clone https://www.github.com/jgraving/deepposekit-data
@@ -92,7 +87,6 @@ We also recommend installing DeepPoseKit from within Python rather than using th
 ```python
 import sys
 !{sys.executable} -m pip install git+https://www.github.com/jgraving/deepposekit.git
-!{sys.executable} -m pip install git+https://www.github.com/jgraving/deepposekit-annotator.git
 ```
 
 Citation

@@ -64,3 +64,5 @@ examples/\.ipynb_checkpoints/
 tmp\.txt
 
 tmp2\.txt
+
+examples/deepposekit-data/
