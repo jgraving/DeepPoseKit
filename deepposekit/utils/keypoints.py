@@ -88,7 +88,8 @@ def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth
                 resized = cv2.resize(blurred, (out_width, out_height)) + MACHINE_EPSILON
                 edge_confidence[..., jdx] = resized
         edge_confidence = edge_confidence[..., 1:]
-        confidence[..., idx] = edge_confidence.sum(-1)
+        edge_confidence = edge_confidence.sum(-1, keepdims=True)
+        confidence[..., idx] = edge_confidence[..., 0]
         confidence = np.concatenate((confidence, edge_confidence), -1)
     return confidence
 

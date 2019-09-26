@@ -94,28 +94,12 @@ class DeepLabCut(BaseModel):
             )(x)
         elif self.train_generator.downsample_factor is 2:
             x = pretrained_features
-            x = Conv2DTranspose(512, (3, 3), strides=(2, 2), padding="same")(x)
-            x_out = Conv2DTranspose(
-                self.train_generator.n_output_channels,
+            x = Conv2DTranspose(
+                self.train_generator.n_output_channels * 2,
                 (3, 3),
                 strides=(2, 2),
                 padding="same",
             )(x)
-        elif self.train_generator.downsample_factor is 1:
-            x = pretrained_features
-            x = Conv2DTranspose(512, (3, 3), strides=(2, 2), padding="same")(x)
-            x = Conv2DTranspose(256, (3, 3), strides=(2, 2), padding="same")(x)
-            x_out = Conv2DTranspose(
-                self.train_generator.n_output_channels,
-                (3, 3),
-                strides=(2, 2),
-                padding="same",
-            )(x)
-        elif self.train_generator.downsample_factor is 0:
-            x = pretrained_features
-            x = Conv2DTranspose(512, (3, 3), strides=(2, 2), padding="same")(x)
-            x = Conv2DTranspose(256, (3, 3), strides=(2, 2), padding="same")(x)
-            x = Conv2DTranspose(128, (3, 3), strides=(2, 2), padding="same")(x)
             x_out = Conv2DTranspose(
                 self.train_generator.n_output_channels,
                 (3, 3),
@@ -123,7 +107,9 @@ class DeepLabCut(BaseModel):
                 padding="same",
             )(x)
         else:
-            raise ValueError("This downsample factor is not supported for DeepLabCut")
+            raise ValueError(
+                "`downsample_factor={}` is not supported for DeepLabCut. Adjust your TrainingGenerator".format(self.train_generator.downsample_factor)
+            )
 
         self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
 

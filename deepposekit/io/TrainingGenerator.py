@@ -88,7 +88,7 @@ class TrainingGenerator(Sequence):
         augmenter=None,
         shuffle=True,
         sigma=5,
-        validation_split=0.,
+        validation_split=0.0,
         graph_scale=1.0,
         random_seed=None,
     ):
@@ -303,7 +303,7 @@ class TrainingGenerator(Sequence):
                 sigma=self.output_sigma,
             )
             y *= 255
-            if self.use_graph and self.graph_scale < 1.0:
+            if self.use_graph:
                 y[..., self.n_keypoints :] *= self.graph_scale
         if self.n_outputs > 1:
             y = [y for idx in range(self.n_outputs)]

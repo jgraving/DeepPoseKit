@@ -368,9 +368,9 @@ class DenseNet:  # (layers.Layer):
 
 
 class OutputChannels:
-    def __init__(self, n_output_channels, name=None, **kwargs):
+    def __init__(self, n_output_channels, activation='linear', name=None, **kwargs):
         self.output_channels = layers.Conv2D(
-            n_output_channels, (1, 1), padding="same", name=name
+            n_output_channels, (1, 1), padding="same", activation=activation, name=name
         )
         self.concat = Concatenate()
 

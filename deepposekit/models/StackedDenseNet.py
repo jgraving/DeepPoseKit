@@ -158,12 +158,12 @@ class StackedDenseNet(BaseModel):
             self.train_generator.width,
             self.train_generator.n_channels,
         )
-        
+
         if self.train_generator.downsample_factor < 2:
             raise ValueError(
                 "StackedDenseNet is only compatible with `downsample_factor` >= 2."
-                "Adjust the TrainingGenerator or choose a different model."            
-                            )
+                "Adjust the TrainingGenerator or choose a different model."
+            )
         if n_transitions <= self.train_generator.downsample_factor:
             raise ValueError(
                 "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
@@ -176,7 +176,7 @@ class StackedDenseNet(BaseModel):
             growth_rate=self.growth_rate,
             n_downsample=self.train_generator.downsample_factor,
             compression_factor=self.compression_factor,
-            bottleneck_factor=self.bottleneck_factor
+            bottleneck_factor=self.bottleneck_factor,
         )(normalized)
         n_downsample = self.n_transitions - self.train_generator.downsample_factor
         outputs = front_outputs
@@ -189,10 +189,11 @@ class StackedDenseNet(BaseModel):
         for idx in range(self.n_stacks):
             outputs = DenseNet(
                 growth_rate=self.growth_rate,
-                n_downsample=self.n_transitions - self.train_generator.downsample_factor,
+                n_downsample=self.n_transitions
+                - self.train_generator.downsample_factor,
                 downsample_factor=self.train_generator.downsample_factor,
                 compression_factor=self.compression_factor,
-                bottleneck_factor=self.bottleneck_factor
+                bottleneck_factor=self.bottleneck_factor,
             )(outputs)
             outputs.append(Concatenate()(front_outputs))
             outputs.append(BatchNormalization()(model_outputs))

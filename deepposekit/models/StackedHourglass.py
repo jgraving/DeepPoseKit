@@ -367,6 +367,11 @@ class StackedHourglass(BaseModel):
                 "{0} < n_transitions <= "
                 "{1}".format(-max_transitions + 1, max_transitions)
             )
+        if n_transitions <= self.train_generator.downsample_factor:
+            raise ValueError(
+                "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
+                " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
+            )
 
         batch_shape = (
             None,
