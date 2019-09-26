@@ -75,13 +75,13 @@ class BaseModel:
                 upsample_factor=100,
                 index=n_keypoints,
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.0,
+                confidence_scale=1.0,
             )(output)
         else:
             keypoints = Maxima2D(
                 index=n_keypoints,
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.0,
+                confidence_scale=1.0,
             )(output)
         input_layer = self.train_model.inputs[0]
         self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)

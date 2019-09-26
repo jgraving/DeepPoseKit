@@ -307,7 +307,6 @@ class TrainingGenerator(Sequence):
                 self.use_edges,
                 sigma=self.output_sigma,
             )
-            y *= 255
             if self.use_edges and self.edge_scale < 1.0:
                 y[..., self.n_keypoints :] *= self.edge_scale
         if self.n_outputs > 1:

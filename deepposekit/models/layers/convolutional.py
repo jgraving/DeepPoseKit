@@ -67,7 +67,7 @@ class Maxima2D(Layer):
         self,
         index=None,
         coordinate_scale=1.0,
-        confidence_scale=255.0,
+        confidence_scale=1.0,
         data_format=None,
         **kwargs
     ):
