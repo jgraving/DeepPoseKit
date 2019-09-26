@@ -97,7 +97,8 @@ class DeepLabCut(BaseModel):
             to_float = Concatenate()([to_float] * 3)
         if self.mobile:
             normalized = MobileNetPreprocess()(to_float)
-        normalized = ResNetPreprocess()(to_float)
+        else:
+            normalized = ResNetPreprocess()(to_float)
         if self.mobile:
             backbone = MobileNetV2
         else:
