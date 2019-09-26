@@ -19,13 +19,15 @@ from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2DTranspose, Conv2D, Concatenate
 from deepposekit.models.layers.util import Float
 from deepposekit.models.layers.deeplabcut import ResNet50, ResNetPreprocess
+from deepposekit.models.layers.deeplabcut_mobile import MobileNetV2, MobileNetPreprocess
+
 from deepposekit.models.engine import BaseModel
 
 
 class DeepLabCut(BaseModel):
-    def __init__(self, train_generator, subpixel=True, weights="imagenet", **kwargs):
+    def __init__(self, train_generator, subpixel=True, weights="imagenet", mobile=False, alpha=1.0, **kwargs):
         """
-        Define a DeepLabCut model from Mathis et al., 2018 [1]
+        Define a DeepLabCut model from Mathis et al., 2018 [1][2]
         See `References` for details on the model architecture.
 
         Parameters
@@ -36,6 +38,15 @@ class DeepLabCut(BaseModel):
         subpixel: bool, default = True
             Whether to use subpixel maxima for calculating
             keypoint coordinates in the prediction model.
+        weights: "imagnet" or None, default is "imagenet"
+            Which weights to use for initialization. "imagenet" uses
+            weights pretrained on imagenet. None uses randomly initialized
+            weights.
+        mobile: bool, default is False
+            Whether to use MobileNetV2 as a backbone. See [3].
+        alpha: float, default is 1.0
+            Which MobileNetV2 to use. Must be one of:
+            [0.35, 0.50, 0.75, 1.0, 1.3, 1.4]
 
         Attributes
         -------
@@ -55,10 +66,20 @@ class DeepLabCut(BaseModel):
             Mathis, M. W., & Bethge, M. (2018). DeepLabCut: markerless pose
             estimation of user-defined body parts with deep learning (p. 1).
             Nature Publishing Group.
+        [2] Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
+            & Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
+            pose estimation across species and behaviors. Nature protocols,
+            14(7), 2152-2176.
+        [3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
+            Pretraining boosts out-of-domain-robustenss for pose estimation.
+            arXiv cs.CV https://arxiv.org/abs/1909.11229
+
 
         """
         self.subpixel = subpixel
         self.weights = weights
+        self.mobile = mobile
+        self.alpha = alpha
         super(DeepLabCut, self).__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
@@ -74,11 +95,18 @@ class DeepLabCut(BaseModel):
         to_float = Float()(input_layer)
         if batch_shape[-1] is 1:
             to_float = Concatenate()([to_float] * 3)
+        if self.mobile:
+            normalized = MobileNetPreprocess()(to_float)
         normalized = ResNetPreprocess()(to_float)
-        pretrained_model = ResNet50(
+        if self.mobile:
+            backbone = MobileNetV2
+        else:
+            backbone = ResNet50
+        pretrained_model = backbone(
             include_top=False,
             weights=self.weights,
             input_shape=(self.train_generator.height, self.train_generator.width, 3),
+            alpha=self.alpha
         )
         pretrained_features = pretrained_model(normalized)
         if self.train_generator.downsample_factor is 4:
@@ -118,6 +146,7 @@ class DeepLabCut(BaseModel):
             "name": self.__class__.__name__,
             "subpixel": self.subpixel,
             "weights": self.weights,
+            "mobile": self.mobile
         }
         base_config = super(DeepLabCut, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))

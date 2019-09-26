@@ -268,6 +268,7 @@ def ResNet50(
     input_shape=None,
     pooling=None,
     classes=1000,
+    alpha=None,
     **kwargs
 ):
     """Instantiates the ResNet50 architecture.
