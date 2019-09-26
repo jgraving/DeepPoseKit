@@ -23,7 +23,7 @@ import copy
 
 from deepposekit.utils.keypoints import draw_confidence_maps, graph_to_edges
 from deepposekit.utils.image import check_grayscale
-from deepposekit.io.DataGenerator import DataGenerator
+from deepposekit.io.BaseGenerator import BaseGenerator
 
 import warnings
 
@@ -32,22 +32,19 @@ __all__ = ["TrainingGenerator"]
 
 class TrainingGenerator(Sequence):
     """
-    Generates training data with augmentation.
-
+    Generates data for training a model.
+    
     Automatically loads annotated data and produces
     augmented images and confidence maps for each keypoint.
 
-    Only uses data that has been marked as annotated
-    in the datapath file.
-
     Parameters
     ----------
-    datapath : str
-        The path to the annotations file. Must be .h5
-        e.g. '/path/to/file.h5'
-    dataset : str
-        The key for the image dataset in the annotations file.
-        e.g. 'images'
+    generator: deepposekit.io.BaseGenerator
+        An instance of BaseGenerator (deepposekit.io.BaseGenerator) object.
+        The output of the generator must be `(images, keypoints)`, where images
+        are a numpy array of shape (n_images, height, width, channels), and 
+        keypoints are a numpy array of shape (n_images, n_keypoints, 2), where
+        2 is the row, column coordinates of the keypoints in each image.
     downsample_factor : int, default = 0
         The factor for determining the output shape of the confidence
         maps for estimating keypoints. This is determined as
@@ -58,7 +55,7 @@ class TrainingGenerator(Sequence):
         Whether to generate confidence maps for the parent graph
         as lines drawn between connected keypoints. This can help reduce
         keypoint estimation error when training the network.
-    augmenter : class or list : default = None
+    augmenter : class or list, default = None
         A imgaug.Augmenter, or list of imgaug.Augmenter
         for applying augmentations to images and keypoints.
         Default is None, which applies no augmentations.
@@ -85,8 +82,7 @@ class TrainingGenerator(Sequence):
 
     def __init__(
         self,
-        datapath,
-        dataset="images",
+        generator,
         downsample_factor=2,
         use_graph=True,
         augmenter=None,
@@ -114,10 +110,9 @@ class TrainingGenerator(Sequence):
         self.output_sigma = sigma / 2.0 ** downsample_factor
         self.batch_size = 32
         self.n_outputs = 1
-        self.use_graph = use_graph  # TODO: Update use_edges
-        self.use_edges = use_graph
+        self.use_graph = use_graph
         self.graph_scale = graph_scale
-        self.edge_scale = graph_scale
+
         if 0 <= validation_split < 1:
             self.validation_split = validation_split
         else:
@@ -125,7 +120,7 @@ class TrainingGenerator(Sequence):
         self.validation = False
         self.confidence = True
         self._init_augmenter(augmenter)
-        self._init_data(datapath, dataset)
+        self._init_data(generator)
         self.on_epoch_end()
 
     def _init_augmenter(self, augmenter):
@@ -148,25 +143,26 @@ class TrainingGenerator(Sequence):
                              Augmenter, list of Augmenters, or None"""
             )
 
-    def _init_data(self, datapath, dataset):
+    def _init_data(self, generator):
 
-        self.generator = DataGenerator(datapath, dataset)
-        self.datapath = datapath
-        self.dataset = dataset
+        if isinstance(generator, BaseGenerator):
+            self.generator = generator
+        else:
+            raise TypeError(
+                "`generator` must be a subclass of `deepposekit.io.BaseGenerator`"
+                " such as `deepposekit.io.DataGenerator` or `deepposekit.io.DLCDataGenerator`."
+            )
         self.n_samples = len(self.generator)
         if self.n_samples <= 0:
-            raise AttributeError("`n_samples` is 0. `datapath` or `dataset` appears to be empty")
+            raise AttributeError(
+                "`n_samples` is 0. `datapath` or `dataset` appears to be empty"
+            )
 
         # Get image attributes and
         # define output shape
-        test_image = self.generator[0][0][0]
-        self.height = test_image.shape[0]
-        self.width = test_image.shape[1]
-        image, grayscale = check_grayscale(test_image)
-        if grayscale or test_image.ndim == 2:
-            self.n_channels = 1
-        else:
-            self.n_channels = test_image.shape[-1]
+        self.height = self.generator.image_shape[0]
+        self.width = self.generator.image_shape[1]
+        self.n_channels = self.generator.image_shape[2]
 
         self.output_shape = (
             self.height // 2 ** self.downsample_factor,
@@ -188,15 +184,14 @@ class TrainingGenerator(Sequence):
         train_index = np.invert(np.isin(self.index, self.val_index))
         self.train_index = self.index[train_index]
         self.n_train = len(self.train_index)
+        self.n_keypoints = self.generator.keypoints_shape[0]
 
         # Initialize skeleton attributes
         self.graph = self.generator.tree
         self.swap_index = self.generator.swap_index
-        self.n_keypoints = self.generator.n_keypoints
-        self.n_branches = np.unique(graph_to_edges(self.graph)).shape[0]
+
         self.on_epoch_end()
         X, y = self.__getitem__(0)
-        self.n_edges = y[..., self.n_keypoints + self.n_branches : -2].shape[-1]
         self.n_output_channels = y.shape[-1]
 
     def __len__(self):
@@ -231,13 +226,13 @@ class TrainingGenerator(Sequence):
             if self.n_validation is 0 and self.validation_split is 0:
                 warnings.warn(
                     "`validation_split` is 0, so there will be no validation step. "
-                    "callbacks that rely on `val_loss` should be switched to `loss` or removed.",
+                    "callbacks that rely on `val_loss` should be switched to `loss` or removed."
                 )
             if self.n_validation is 0 and self.validation_split is not 0:
                 warnings.warn(
                     "`validation_split` is too small, so there will be no validation step. "
                     "`validation_split` should be increased or "
-                    "callbacks that rely on `val_loss` should be switched to 'loss' or removed.",
+                    "callbacks that rely on `val_loss` should be switched to 'loss' or removed."
                 )
 
         self.validation = validation
@@ -304,11 +299,12 @@ class TrainingGenerator(Sequence):
                 y,
                 self.graph,
                 self.output_shape,
-                self.use_edges,
+                self.use_graph,
                 sigma=self.output_sigma,
             )
-            if self.use_edges and self.edge_scale < 1.0:
-                y[..., self.n_keypoints :] *= self.edge_scale
+            y *= 255
+            if self.use_graph and self.graph_scale < 1.0:
+                y[..., self.n_keypoints :] *= self.graph_scale
         if self.n_outputs > 1:
             y = [y for idx in range(self.n_outputs)]
 
@@ -320,20 +316,18 @@ class TrainingGenerator(Sequence):
         else:
             augmenter = False
         config = {
-            "shuffle": self.shuffle,
+            "n_train": self.n_train,
+            "n_validation": self.n_validation,
+            "validation_split": self.validation_split,
             "downsample_factor": self.downsample_factor,
+            "output_shape": self.output_shape,
+            "n_output_channels": self.n_output_channels,
+            "shuffle": self.shuffle,
             "sigma": self.sigma,
             "use_graph": self.use_graph,
             "graph_scale": self.graph_scale,
-            "validation_split": self.validation_split,
-            "datapath": self.datapath,
-            "dataset": self.dataset,
-            "output_shape": self.output_shape,
-            "n_train": self.n_train,
-            "n_validation": self.n_validation,
             "random_seed": self.random_seed,
-            "n_output_channels": self.n_output_channels,
             "augmenter": augmenter,
-            "n_keypoints": self.n_keypoints,
         }
-        return config
+        base_config = self.generator.get_config()
+        return dict(list(config.items()) + list(base_config.items()))

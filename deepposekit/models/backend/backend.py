@@ -143,7 +143,7 @@ def find_maxima(x, coordinate_scale=1, confidence_scale=255.0, data_format=None)
 
 
 def _find_subpixel_maxima(
-    x, kernel_size, sigma, upsample_factor, coordinate_scale=1, confidence_scale=255.0
+    x, kernel_size, sigma, upsample_factor, coordinate_scale=1.0, confidence_scale=1.0
 ):
 
     kernel = gaussian_kernel_2d(kernel_size, sigma)
@@ -180,8 +180,8 @@ def find_subpixel_maxima(
     kernel_size,
     sigma,
     upsample_factor,
-    coordinate_scale=1,
-    confidence_scale=255.0,
+    coordinate_scale=1.0,
+    confidence_scale=1.0,
     data_format=None,
 ):
     """Finds the 2D maxima contained in a 4D tensor.

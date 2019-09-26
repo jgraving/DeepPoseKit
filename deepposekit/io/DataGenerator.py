@@ -21,7 +21,7 @@ import numpy as np
 import os
 import copy
 
-from deepposekit.io.Generator import BaseGenerator
+from deepposekit.io.BaseGenerator import BaseGenerator
 
 __all__ = ["DataGenerator"]
 
@@ -44,8 +44,6 @@ class DataGenerator(BaseGenerator):
     """
 
     def __init__(self, datapath, dataset="images", mode="annotated", **kwargs):
-
-        super(DataGenerator, self).__init__(**kwargs)
 
         # Check annotations file
         if isinstance(datapath, str):
@@ -90,12 +88,14 @@ class DataGenerator(BaseGenerator):
             self.n_keypoints = h5file["annotations"].shape[1]
             self.n_samples = h5file[self.dataset].shape[0]
             self.index = np.arange(self.n_samples)
-            self.unannotated_index = np.where(~annotated)[0]
+            self.unannotated_index = np.where(~self.annotated)[0]
             self.n_unannotated = self.unannotated_index.shape[0]
 
             # Initialize skeleton attributes
             self.tree = h5file["skeleton"][:, 0]
             self.swap_index = h5file["skeleton"][:, 1]
+
+        super(DataGenerator, self).__init__(**kwargs)
 
     def compute_keypoints_shape(self):
         with h5py.File(self.datapath, mode="r") as h5file:
@@ -165,3 +165,13 @@ class DataGenerator(BaseGenerator):
             return self.n_unannotated
         else:
             return self.n_samples
+
+    def get_config(self):
+        config = {
+            "datapath": self.datapath,
+            "dataset": self.dataset,
+        }
+        base_config = super(DataGenerator, self).get_config()
+        return dict(list(config.items()) + list(base_config.items()))
+
+

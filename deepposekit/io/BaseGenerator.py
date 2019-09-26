@@ -25,7 +25,7 @@ class BaseGenerator(Sequence):
     def __init__(self, **kwargs):
         if not hasattr(self, 'tree'):
             self.tree = -np.ones(self.keypoints_shape[0])
-        if not hasattr(self, 'swap_index')::
+        if not hasattr(self, 'swap_index'):
             self.swap_index = -np.ones(self.keypoints_shape[0]) 
         return
 
@@ -108,3 +108,13 @@ class BaseGenerator(Sequence):
         if len(value) != len(indexes):
             raise IndexError("data shape and index do not match")
         self.set_data(indexes, keypoints)
+
+    def get_config(self):
+        config = {
+            "generator": self.__class__.__name__,
+            "n_samples": len(self),
+            "image_shape": self.image_shape,
+            "keypoints_shape": self.keypoints_shape,
+        }
+        return config
+

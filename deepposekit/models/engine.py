@@ -75,13 +75,13 @@ class BaseModel:
                 upsample_factor=100,
                 index=n_keypoints,
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=1.0,
+                confidence_scale=255.0,
             )(output)
         else:
             keypoints = Maxima2D(
                 index=n_keypoints,
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=1.0,
+                confidence_scale=255.0,
             )(output)
         input_layer = self.train_model.inputs[0]
         self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
@@ -182,32 +182,32 @@ class BaseModel:
             keypoint_generator = self.data_generator(
                 n_outputs=1, batch_size=batch_size, validation=False, confidence=False
             )
-
-        metrics = []
-        keypoints = []
+        y_pred_list = []
+        confidence_list = []
+        y_error_list = []
+        euclidean_list = []
         for idx in range(len(keypoint_generator)):
             X, y_true = keypoint_generator[idx]
+
             y_pred = self.predict_model.predict_on_batch(X)
             y_pred = y_pred[..., :2]
+            y_pred_list.append(y_pred)
+            confidence_list.append(y_pred[..., -1])
+
             errors = keypoint_errors(y_true, y_pred)
             y_error, euclidean, mae, mse, rmse = errors
-            confidence = y_pred[..., -1]
-            metrics.append([euclidean, mae, mse, rmse, confidence])
-            keypoints.append([y_pred, y_error])
+            y_error_list.append(y_error)
+            euclidean_list.append(euclidean)
 
-        metrics = np.hstack(metrics)
-        keypoints = np.hstack(keypoints)
-
-        euclidean, mae, mse, rmse, confidence = metrics
-        y_pred, y_error = keypoints
+        y_pred = np.concatenate(y_pred_list)
+        confidence = np.concatenate(confidence_list)
+        y_error = np.concatenate(y_error_list)
+        euclidean = np.concatenate(euclidean_list)
 
         evaluation_dict = {
             "y_pred": y_pred,
             "y_error": y_error,
             "euclidean": euclidean,
-            "mae": mae,
-            "mse": mse,
-            "rmse": rmse,
             "confidence": confidence,
         }
 

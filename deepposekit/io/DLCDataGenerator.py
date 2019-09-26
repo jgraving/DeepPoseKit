@@ -20,7 +20,7 @@ import pandas as pd
 import os
 import cv2
 
-from deepposekit.io.Generator import BaseGenerator
+from deepposekit.io.BaseGenerator import BaseGenerator
 
 __all__ = ["DLCDataGenerator"]
 
@@ -54,6 +54,8 @@ class DLCDataGenerator(BaseGenerator):
         self.n_keypoints = len(self.bodyparts)
         self.n_samples = self.annotations.shape[0]
         self.index = np.arange(self.n_samples)
+
+        super(DLCDataGenerator, self).__init__(**kwargs)
 
     def compute_image_shape(self):
         return self.get_images([0]).shape[1:]
@@ -93,6 +95,14 @@ class DLCDataGenerator(BaseGenerator):
 
     def __len__(self):
         return self.n_samples
+
+    def get_config(self):
+        config = {
+            "datapath": self.datapath,
+            "imagepath": self.imagepath,
+        }
+        base_config = super(DLCDataGenerator, self).get_config()
+        return dict(list(config.items()) + list(base_config.items()))
 
 
 if __name__ == "__main__":
