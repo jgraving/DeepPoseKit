@@ -59,6 +59,17 @@ This file contains building code for MobileNetV2, based on
 Tests comparing this model to the existing Tensorflow model can be
 found at [mobilenet_v2_keras]
 (https://github.com/JonathanCMitchell/mobilenet_v2_keras)
+
+Modified by Jacob M. Graving from:
+https://github.com/keras-team/keras-applications/blob/
+master/keras_applications/mobilenet_v2.py
+
+to match the stride 16 ResNet found here:
+https://github.com/tensorflow/tensorflow/blob/
+master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
+
+All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
+
 """
 from __future__ import print_function
 from __future__ import absolute_import
@@ -67,12 +78,17 @@ from __future__ import division
 import os
 import warnings
 import numpy as np
+import tensorflow.keras as keras
 
 from tensorflow.python.keras.applications import imagenet_utils
 from tensorflow.python.keras.applications.imagenet_utils import decode_predictions
 from tensorflow.keras.layers import Layer
+from tensorflow.python.keras.applications import keras_applications
+from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
 
-import tensorflow.keras as keras
+correct_pad = keras_applications.correct_pad
+_obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape
+
 
 # TODO Change path to v1.1
 BASE_WEIGHT_PATH = (
@@ -83,171 +99,6 @@ backend = keras.backend
 layers = keras.layers
 models = keras.models
 keras_utils = keras.utils
-
-_KERAS_BACKEND = keras.backend
-_KERAS_LAYERS = keras.layers
-_KERAS_MODELS = keras.models
-_KERAS_UTILS = keras.utils
-
-
-def _obtain_input_shape(
-    input_shape, default_size, min_size, data_format, require_flatten, weights=None
-):
-    """Internal utility to compute/validate a model's input shape.
-    # Arguments
-        input_shape: Either None (will return the default network input shape),
-            or a user-provided shape to be validated.
-        default_size: Default input width/height for the model.
-        min_size: Minimum input width/height accepted by the model.
-        data_format: Image data format to use.
-        require_flatten: Whether the model is expected to
-            be linked to a classifier via a Flatten layer.
-        weights: One of `None` (random initialization)
-            or 'imagenet' (pre-training on ImageNet).
-            If weights='imagenet' input channels must be equal to 3.
-    # Returns
-        An integer shape tuple (may include None entries).
-    # Raises
-        ValueError: In case of invalid argument values.
-    """
-    if weights != "imagenet" and input_shape and len(input_shape) == 3:
-        if data_format == "channels_first":
-            if input_shape[0] not in {1, 3}:
-                warnings.warn(
-                    "This model usually expects 1 or 3 input channels. "
-                    "However, it was passed an input_shape with "
-                    + str(input_shape[0])
-                    + " input channels."
-                )
-            default_shape = (input_shape[0], default_size, default_size)
-        else:
-            if input_shape[-1] not in {1, 3}:
-                warnings.warn(
-                    "This model usually expects 1 or 3 input channels. "
-                    "However, it was passed an input_shape with "
-                    + str(input_shape[-1])
-                    + " input channels."
-                )
-            default_shape = (default_size, default_size, input_shape[-1])
-    else:
-        if data_format == "channels_first":
-            default_shape = (3, default_size, default_size)
-        else:
-            default_shape = (default_size, default_size, 3)
-    if weights == "imagenet" and require_flatten:
-        if input_shape is not None:
-            if input_shape != default_shape:
-                raise ValueError(
-                    "When setting `include_top=True` "
-                    "and loading `imagenet` weights, "
-                    "`input_shape` should be " + str(default_shape) + "."
-                )
-        return default_shape
-    if input_shape:
-        if data_format == "channels_first":
-            if input_shape is not None:
-                if len(input_shape) != 3:
-                    raise ValueError("`input_shape` must be a tuple of three integers.")
-                if input_shape[0] != 3 and weights == "imagenet":
-                    raise ValueError(
-                        "The input must have 3 channels; got "
-                        "`input_shape=" + str(input_shape) + "`"
-                    )
-                if (input_shape[1] is not None and input_shape[1] < min_size) or (
-                    input_shape[2] is not None and input_shape[2] < min_size
-                ):
-                    raise ValueError(
-                        "Input size must be at least "
-                        + str(min_size)
-                        + "x"
-                        + str(min_size)
-                        + "; got `input_shape="
-                        + str(input_shape)
-                        + "`"
-                    )
-        else:
-            if input_shape is not None:
-                if len(input_shape) != 3:
-                    raise ValueError("`input_shape` must be a tuple of three integers.")
-                if input_shape[-1] != 3 and weights == "imagenet":
-                    raise ValueError(
-                        "The input must have 3 channels; got "
-                        "`input_shape=" + str(input_shape) + "`"
-                    )
-                if (input_shape[0] is not None and input_shape[0] < min_size) or (
-                    input_shape[1] is not None and input_shape[1] < min_size
-                ):
-                    raise ValueError(
-                        "Input size must be at least "
-                        + str(min_size)
-                        + "x"
-                        + str(min_size)
-                        + "; got `input_shape="
-                        + str(input_shape)
-                        + "`"
-                    )
-    else:
-        if require_flatten:
-            input_shape = default_shape
-        else:
-            if data_format == "channels_first":
-                input_shape = (3, None, None)
-            else:
-                input_shape = (None, None, 3)
-    if require_flatten:
-        if None in input_shape:
-            raise ValueError(
-                "If `include_top` is True, "
-                "you should specify a static `input_shape`. "
-                "Got `input_shape=" + str(input_shape) + "`"
-            )
-    return input_shape
-
-
-def get_submodules_from_kwargs(kwargs):
-    backend = kwargs.get("backend", _KERAS_BACKEND)
-    layers = kwargs.get("layers", _KERAS_LAYERS)
-    models = kwargs.get("models", _KERAS_MODELS)
-    utils = kwargs.get("utils", _KERAS_UTILS)
-    for key in kwargs.keys():
-        if key not in ["backend", "layers", "models", "utils"]:
-            raise TypeError("Invalid keyword argument: %s", key)
-    return backend, layers, models, utils
-
-
-def correct_pad(backend, inputs, kernel_size):
-    """Returns a tuple for zero-padding for 2D convolution with downsampling.
-    # Arguments
-        input_size: An integer or tuple/list of 2 integers.
-        kernel_size: An integer or tuple/list of 2 integers.
-    # Returns
-        A tuple.
-    """
-    img_dim = 2 if backend.image_data_format() == "channels_first" else 1
-    input_size = backend.int_shape(inputs)[img_dim : (img_dim + 2)]
-
-    if isinstance(kernel_size, int):
-        kernel_size = (kernel_size, kernel_size)
-
-    if input_size[0] is None:
-        adjust = (1, 1)
-    else:
-        adjust = (1 - input_size[0] % 2, 1 - input_size[1] % 2)
-
-    correct = (kernel_size[0] // 2, kernel_size[1] // 2)
-
-    return ((correct[0] - adjust[0], correct[0]), (correct[1] - adjust[1], correct[1]))
-
-
-def preprocess_input(x, **kwargs):
-    """Preprocesses a numpy array encoding a batch of images.
-    # Arguments
-        x: a 4D numpy array consists of RGB values within [0, 255].
-    # Returns
-        Preprocessed array.
-    """
-    return imagenet_utils.preprocess_input(x, mode="tf", **kwargs)
-
 
 # This function is taken from the original tf repo.
 # It ensures that all layers have a channel number that is divisible by 8
@@ -326,9 +177,6 @@ def MobileNetV2(
             or invalid input shape or invalid alpha, rows when
             weights='imagenet'
     """
-    global backend, layers, models, keras_utils
-    backend, layers, models, keras_utils = get_submodules_from_kwargs(kwargs)
-
     if not (weights in {"imagenet", None} or os.path.exists(weights)):
         raise ValueError(
             "The `weights` argument should be either "
@@ -703,14 +551,12 @@ class MobileNetPreprocess(Layer):
 
 if __name__ == "__main__":
 
-    from tensorflow.keras.applications.resnet50 import preprocess_input
-    from tensorflow.keras.layers import Input, Lambda
+    from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
+    from tensorflow.keras.layers import Input
     from tensorflow.keras import Model
 
     input_layer = Input((192, 192, 3))
-    model = ResNet50(include_top=False, input_shape=(192, 192, 3))
-    # for layer in model.layers:
-    #    layer.trainable = False
-    normalized = ResNetPreprocess()(input_layer)
+    model = MobileNetV2(include_top=False)
+    normalized = MobileNetPreprocess()(input_layer)
     pretrained_output = model(normalized)
     model = Model(inputs=input_layer, outputs=pretrained_output)

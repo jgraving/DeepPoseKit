@@ -13,7 +13,7 @@ to match the stride 16 ResNet found here:
 https://github.com/tensorflow/tensorflow/blob/
 master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
 
-All modifications are Copyright 2018 Jacob M. Graving <jgraving@gmail.com>
+All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -28,107 +28,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 """
-from tensorflow.python.keras.applications import imagenet_utils
-from tensorflow.keras.applications.resnet50 import preprocess_input
-from tensorflow.keras.layers import Layer
-
-# from keras.applications.imagenet_utils import decode_predictions
-
 import os
 import warnings
 import tensorflow.keras as keras
 
-# from keras import get_submodules_from_kwargs
+from tensorflow.python.keras.applications import imagenet_utils
+from tensorflow.keras.applications.resnet50 import preprocess_input
+from tensorflow.keras.layers import Layer
 
-_KERAS_BACKEND = keras.backend
-_KERAS_LAYERS = keras.layers
-_KERAS_MODELS = keras.models
-_KERAS_UTILS = keras.utils
+from tensorflow.python.keras.applications import keras_applications
 
-
-def set_keras_submodules(
-    backend=None, layers=None, models=None, utils=None, engine=None
-):
-    # Deprecated, will be removed in the future.
-    global _KERAS_BACKEND
-    global _KERAS_LAYERS
-    global _KERAS_MODELS
-    global _KERAS_UTILS
-    _KERAS_BACKEND = backend
-    _KERAS_LAYERS = layers
-    _KERAS_MODELS = models
-    _KERAS_UTILS = utils
-
-
-def get_keras_submodule(name):
-    # Deprecated, will be removed in the future.
-    if name not in {"backend", "layers", "models", "utils"}:
-        raise ImportError(
-            'Can only retrieve one of "backend", '
-            '"layers", "models", or "utils". '
-            "Requested: %s" % name
-        )
-    if _KERAS_BACKEND is None:
-        raise ImportError(
-            "You need to first `import keras` "
-            "in order to use `keras_applications`. "
-            "For instance, you can do:\n\n"
-            "```\n"
-            "import keras\n"
-            "from keras_applications import vgg16\n"
-            "```\n\n"
-            "Or, preferably, this equivalent formulation:\n\n"
-            "```\n"
-            "from keras import applications\n"
-            "```\n"
-        )
-    if name == "backend":
-        return _KERAS_BACKEND
-    elif name == "layers":
-        return _KERAS_LAYERS
-    elif name == "models":
-        return _KERAS_MODELS
-    elif name == "utils":
-        return _KERAS_UTILS
-
-
-def get_submodules_from_kwargs(kwargs):
-    backend = kwargs.get("backend", _KERAS_BACKEND)
-    layers = kwargs.get("layers", _KERAS_LAYERS)
-    models = kwargs.get("models", _KERAS_MODELS)
-    utils = kwargs.get("utils", _KERAS_UTILS)
-    for key in kwargs.keys():
-        if key not in ["backend", "layers", "models", "utils"]:
-            raise TypeError("Invalid keyword argument: %s", key)
-    return backend, layers, models, utils
-
-
-def correct_pad(backend, inputs, kernel_size):
-    """Returns a tuple for zero-padding for 2D convolution with downsampling.
-    # Arguments
-        input_size: An integer or tuple/list of 2 integers.
-        kernel_size: An integer or tuple/list of 2 integers.
-    # Returns
-        A tuple.
-    """
-    img_dim = 2 if backend.image_data_format() == "channels_first" else 1
-    input_size = backend.int_shape(inputs)[img_dim : (img_dim + 2)]
-
-    if isinstance(kernel_size, int):
-        kernel_size = (kernel_size, kernel_size)
-
-    if input_size[0] is None:
-        adjust = (1, 1)
-    else:
-        adjust = (1 - input_size[0] % 2, 1 - input_size[1] % 2)
-
-    correct = (kernel_size[0] // 2, kernel_size[1] // 2)
-
-    return ((correct[0] - adjust[0], correct[0]), (correct[1] - adjust[1], correct[1]))
-
-
+correct_pad = keras_applications.correct_pad
 _obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape
-preprocess_input = imagenet_utils.preprocess_input
 
 WEIGHTS_PATH = (
     "https://github.com/fchollet/deep-learning-models/"
@@ -141,10 +52,10 @@ WEIGHTS_PATH_NO_TOP = (
     "resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"
 )
 
-backend = None
-layers = None
-models = None
-keras_utils = None
+backend = keras.backend
+layers = keras.layers
+models = keras.models
+keras_utils = keras.utils
 
 
 def identity_block(input_tensor, kernel_size, filters, stage, block):
@@ -262,13 +173,13 @@ def conv_block(input_tensor, kernel_size, filters, stage, block, strides=(2, 2))
 
 
 def ResNet50(
-    include_top=True,
+    include_top=False,
     weights="imagenet",
     input_tensor=None,
     input_shape=None,
     pooling=None,
     classes=1000,
-    alpha=None,
+    alpha=None,  # dummy arg for mobile version
     **kwargs
 ):
     """Instantiates the ResNet50 architecture.
@@ -310,8 +221,6 @@ def ResNet50(
         ValueError: in case of invalid argument for `weights`,
             or invalid input shape.
     """
-    global backend, layers, models, keras_utils
-    backend, layers, models, keras_utils = get_submodules_from_kwargs(kwargs)
 
     if not (weights in {"imagenet", None} or os.path.exists(weights)):
         raise ValueError(
@@ -464,13 +373,11 @@ class ResNetPreprocess(Layer):
 if __name__ == "__main__":
 
     from tensorflow.keras.applications.resnet50 import preprocess_input
-    from tensorflow.keras.layers import Input, Lambda
+    from tensorflow.keras.layers import Input
     from tensorflow.keras import Model
 
     input_layer = Input((192, 192, 3))
     model = ResNet50(include_top=False, input_shape=(192, 192, 3))
-    # for layer in model.layers:
-    #    layer.trainable = False
     normalized = ResNetPreprocess()(input_layer)
     pretrained_output = model(normalized)
     model = Model(inputs=input_layer, outputs=pretrained_output)
