@@ -33,13 +33,14 @@ How to use DeepPoseKit
 ------------
 DeepPoseKit is designed for easy use. For example, training and saving a model requires only a few lines of code:
 ```python
-from deepposekit import TrainingGenerator
+from deepposekit.io import DataGenerator, TrainingGenerator
 from deepposekit.models import StackedDenseNet
 
-train_generator = TrainingGenerator('/path/to/data.h5')
+data_generator = DataGenerator('/path/to/data.h5')
+train_generator = TrainingGenerator(data_generator)
 model = StackedDenseNet(train_generator)
 model.fit(batch_size=16, n_workers=8)
-model.save('/path/to/model.h5')
+model.save('/path/to/model.h5')0
 ```
 Loading a trained model and running predictions on new data is also straightforward:
 ```python

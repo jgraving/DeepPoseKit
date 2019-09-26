@@ -18,7 +18,7 @@ limitations under the License.
 import numpy as np
 import os
 
-__all__ = ["initialize_image_set"]
+__all__ = ["initialize_image_set", "merge_new_images"]
 
 
 def initialize_image_set(datapath, images, dataset="images", overwrite=False):
