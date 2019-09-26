@@ -27,7 +27,7 @@ from deepposekit.models.engine import BaseModel
 class LEAP(BaseModel):
     def __init__(
         self,
-        data_generator,
+        train_generator,
         filters=64,
         upsampling=False,
         activation="relu",
@@ -45,8 +45,8 @@ class LEAP(BaseModel):
 
         Parameters
         ----------
-        data_generator : class pose.DataGenerator
-            A pose.DataGenerator class for generating
+        train_generator : class deepposekit.io.TrainingGenerator
+            A deepposekit.io.TrainingGenerator class for generating
             images and confidence maps.
         filters : int, default = 64
             The base number of channels to output from each
@@ -113,16 +113,16 @@ class LEAP(BaseModel):
         self.interpolation = interpolation
         self.subpixel = subpixel
         self.initializer = initializer
-        super(LEAP, self).__init__(data_generator, subpixel, **kwargs)
+        super(LEAP, self).__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
-        if self.data_generator.downsample_factor is not 0:
+        if self.train_generator.downsample_factor is not 0:
             raise ValueError("LEAP is only compatible with a downsample_factor of 0")
         batch_shape = (
             None,
-            self.data_generator.height,
-            self.data_generator.width,
-            self.data_generator.n_channels,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
         )
 
         input_layer = Input(batch_shape=batch_shape, dtype="uint8")
@@ -187,14 +187,14 @@ class LEAP(BaseModel):
         if self.upsampling:
             x_out = UpSampling2D(interpolation=self.interpolation)(x4)
             x_out = Conv2D(
-                self.data_generator.n_output_channels,
+                self.train_generator.n_output_channels,
                 kernel_size=3,
                 padding="same",
                 activation="linear",
             )(x_out)
         else:
             x_out = Conv2DTranspose(
-                self.data_generator.n_output_channels,
+                self.train_generator.n_output_channels,
                 kernel_size=3,
                 strides=2,
                 padding="same",

@@ -324,6 +324,7 @@ class TrainingGenerator(Sequence):
             "n_output_channels": self.n_output_channels,
             "shuffle": self.shuffle,
             "sigma": self.sigma,
+            "output_sigma": self.output_sigma,
             "use_graph": self.use_graph,
             "graph_scale": self.graph_scale,
             "random_seed": self.random_seed,

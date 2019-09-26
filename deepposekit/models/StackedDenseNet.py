@@ -33,7 +33,7 @@ from deepposekit.models.layers.densenet import (
 class StackedDenseNet(BaseModel):
     def __init__(
         self,
-        data_generator,
+        train_generator,
         n_stacks=1,
         n_transitions=-1,
         growth_rate=48,
@@ -49,8 +49,8 @@ class StackedDenseNet(BaseModel):
 
         Parameters
         ----------
-        data_generator : class deepposekit.TrainingGenerator
-            A deepposekit.TrainingGenerator class for generating
+        train_generator : class deepposekit.io.TrainingGenerator
+            A deepposekit.io.TrainingGenerator class for generating
             images and confidence maps.
         n_stacks : int, default = 1
             The number of encoder-decoder networks to stack
@@ -119,13 +119,13 @@ class StackedDenseNet(BaseModel):
         self.bottleneck_factor = bottleneck_factor
         self.compression_factor = compression_factor
         self.n_transitions = n_transitions
-        super(StackedDenseNet, self).__init__(data_generator, subpixel, **kwargs)
+        super(StackedDenseNet, self).__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
         max_transitions = np.min(
             [
-                image_utils.n_downsample(self.data_generator.height),
-                image_utils.n_downsample(self.data_generator.width),
+                image_utils.n_downsample(self.train_generator.height),
+                image_utils.n_downsample(self.train_generator.width),
             ]
         )
 
@@ -154,17 +154,17 @@ class StackedDenseNet(BaseModel):
 
         batch_shape = (
             None,
-            self.data_generator.height,
-            self.data_generator.width,
-            self.data_generator.n_channels,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
         )
         
-        if self.data_generator.downsample_factor < 2:
+        if self.train_generator.downsample_factor < 2:
             raise ValueError(
                 "StackedDenseNet is only compatible with `downsample_factor` >= 2."
                 "Adjust the TrainingGenerator or choose a different model."            
                             )
-        if n_transitions <= self.data_generator.downsample_factor:
+        if n_transitions <= self.train_generator.downsample_factor:
             raise ValueError(
                 "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
                 " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
@@ -174,14 +174,14 @@ class StackedDenseNet(BaseModel):
         normalized = ImageNormalization()(to_float)
         front_outputs = FrontEnd(
             growth_rate=self.growth_rate,
-            n_downsample=self.data_generator.downsample_factor,
+            n_downsample=self.train_generator.downsample_factor,
             compression_factor=self.compression_factor,
             bottleneck_factor=self.bottleneck_factor
         )(normalized)
-        n_downsample = self.n_transitions - self.data_generator.downsample_factor
+        n_downsample = self.n_transitions - self.train_generator.downsample_factor
         outputs = front_outputs
         model_outputs = OutputChannels(
-            self.data_generator.n_output_channels, name="output_0"
+            self.train_generator.n_output_channels, name="output_0"
         )(outputs)
 
         model_outputs_list = [model_outputs]
@@ -189,15 +189,15 @@ class StackedDenseNet(BaseModel):
         for idx in range(self.n_stacks):
             outputs = DenseNet(
                 growth_rate=self.growth_rate,
-                n_downsample=self.n_transitions - self.data_generator.downsample_factor,
-                downsample_factor=self.data_generator.downsample_factor,
+                n_downsample=self.n_transitions - self.train_generator.downsample_factor,
+                downsample_factor=self.train_generator.downsample_factor,
                 compression_factor=self.compression_factor,
                 bottleneck_factor=self.bottleneck_factor
             )(outputs)
             outputs.append(Concatenate()(front_outputs))
             outputs.append(BatchNormalization()(model_outputs))
             model_outputs = OutputChannels(
-                self.data_generator.n_output_channels, name="output_" + str(idx + 1)
+                self.train_generator.n_output_channels, name="output_" + str(idx + 1)
             )(outputs)
             model_outputs_list.append(model_outputs)
 

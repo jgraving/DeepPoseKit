@@ -26,24 +26,25 @@ from deepposekit.models.saving import save_model
 
 
 class BaseModel:
-    def __init__(self, data_generator=None, subpixel=False, **kwargs):
+    def __init__(self, train_generator=None, subpixel=False, **kwargs):
 
-        self.data_generator = data_generator
+        self.train_generator = train_generator
         self.subpixel = subpixel
         if "skip_init" not in kwargs:
             if self.train_model is NotImplemented:
                 self.__init_model__()
                 self.__init_train_model__()
-            if self.data_generator is not None:
+            if self.train_generator is not None:
+                config = self.train_generator.get_config()
                 if self.subpixel:
-                    output_sigma = self.data_generator.output_sigma
+                    output_sigma = config['output_sigma']
                 else:
                     output_sigma = None
                 self.__init_predict_model__(
-                    self.data_generator.output_shape,
-                    self.data_generator.n_keypoints,
-                    self.data_generator.downsample_factor,
-                    output_sigma,
+                    config['output_shape'],
+                    config['keypoints_shape'],
+                    config['downsample_factor'],
+                    config['output_sigma'],
                 )
 
     train_model = NotImplemented
@@ -61,7 +62,7 @@ class BaseModel:
         )
 
     def __init_predict_model__(
-        self, output_shape, n_keypoints, downsample_factor, output_sigma=None, **kwargs
+        self, output_shape, keypoints_shape, downsample_factor, output_sigma=None, **kwargs
     ):
 
         output = self.train_model.outputs[-1]
@@ -73,13 +74,13 @@ class BaseModel:
                 kernel_size,
                 sigma,
                 upsample_factor=100,
-                index=n_keypoints,
+                index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.,
             )(output)
         else:
             keypoints = Maxima2D(
-                index=n_keypoints,
+                index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.,
             )(output)
@@ -131,10 +132,10 @@ class BaseModel:
             )
             self.train_model.compile("adam", "mse")
 
-        train_generator = self.data_generator(
+        train_generator = self.train_generator(
             self.n_outputs, batch_size, validation=False, confidence=True
         )
-        validation_generator = self.data_generator(
+        validation_generator = self.train_generator(
             self.n_outputs, validation_batch_size, validation=True, confidence=True
         )
         validation_generator = (
@@ -170,16 +171,16 @@ class BaseModel:
 
     def evaluate(self, batch_size):
 
-        if self.data_generator.n_validation > 0:
-            keypoint_generator = self.data_generator(
+        if self.train_generator.n_validation > 0:
+            keypoint_generator = self.train_generator(
                 n_outputs=1, batch_size=batch_size, validation=True, confidence=False
             )
 
-        elif self.data_generator.n_validation == 0:
+        elif self.train_generator.n_validation == 0:
             warnings.warn(
                 "`n_validation` is 0, so the training set will be used for model evaluation"
             )
-            keypoint_generator = self.data_generator(
+            keypoint_generator = self.train_generator(
                 n_outputs=1, batch_size=batch_size, validation=False, confidence=False
             )
         y_pred_list = []
@@ -218,8 +219,8 @@ class BaseModel:
 
     def get_config(self):
         config = {}
-        if self.data_generator:
-            base_config = self.data_generator.get_config()
+        if self.train_generator:
+            base_config = self.train_generator.get_config()
             return dict(list(base_config.items()) + list(config.items()))
         else:
             return config
