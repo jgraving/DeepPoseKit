@@ -36,22 +36,22 @@ DeepPoseKit is designed for easy use. For example, training and saving a model r
 from deepposekit.io import DataGenerator, TrainingGenerator
 from deepposekit.models import StackedDenseNet
 
-data_generator = DataGenerator('/path/to/data.h5')
+data_generator = DataGenerator('/path/to/annotation_data.h5')
 train_generator = TrainingGenerator(data_generator)
 model = StackedDenseNet(train_generator)
 model.fit(batch_size=16, n_workers=8)
-model.save('/path/to/model.h5')0
+model.save('/path/to/saved_model.h5')
 ```
-Loading a trained model and running predictions on new data is also straightforward:
+Loading a trained model and running predictions on new data is also straightforward. For example, running predictions on a new video:
 ```python
 from deepposekit.models import load_model
+from deepposekit.io import VideoReader
 
-model = load_model('/path/to/model.h5')
-new_data = load_new_data('/path/to/new/data.h5')
-predictions = model.predict(new_data)
+model = load_model('/path/to/saved_model.h5')
+reader = VideoReader('/path/to/video.mp4')
+predictions = model.predict_generator(reader)
 ```
 [See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) for more details on how to use DeepPoseKit.
-
 
 Installation
 ------------

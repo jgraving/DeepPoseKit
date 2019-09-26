@@ -75,13 +75,13 @@ class BaseModel:
                 upsample_factor=100,
                 index=n_keypoints,
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.0,
+                confidence_scale=255.,
             )(output)
         else:
             keypoints = Maxima2D(
                 index=n_keypoints,
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.0,
+                confidence_scale=255.,
             )(output)
         input_layer = self.train_model.inputs[0]
         self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
@@ -190,11 +190,11 @@ class BaseModel:
             X, y_true = keypoint_generator[idx]
 
             y_pred = self.predict_model.predict_on_batch(X)
-            y_pred = y_pred[..., :2]
-            y_pred_list.append(y_pred)
             confidence_list.append(y_pred[..., -1])
+            y_pred_coords = y_pred[..., :2]
+            y_pred_list.append(y_pred_coords)
 
-            errors = keypoint_errors(y_true, y_pred)
+            errors = keypoint_errors(y_true, y_pred_coords)
             y_error, euclidean, mae, mse, rmse = errors
             y_error_list.append(y_error)
             euclidean_list.append(euclidean)

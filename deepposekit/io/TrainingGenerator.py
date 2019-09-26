@@ -88,8 +88,8 @@ class TrainingGenerator(Sequence):
         augmenter=None,
         shuffle=True,
         sigma=5,
-        validation_split=0.1,
-        graph_scale=0.1,
+        validation_split=0.,
+        graph_scale=1.0,
         random_seed=None,
     ):
 
