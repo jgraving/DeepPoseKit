@@ -101,12 +101,14 @@ class DeepLabCut(BaseModel):
             normalized = ResNetPreprocess()(to_float)
         if self.mobile:
             backbone = MobileNetV2
+            input_shape = None
         else:
             backbone = ResNet50
+            input_shape = (self.train_generator.height, self.train_generator.width, 3)
         pretrained_model = backbone(
             include_top=False,
             weights=self.weights,
-            input_shape=(self.train_generator.height, self.train_generator.width, 3),
+            input_shape=input_shape,
             alpha=self.alpha
         )
         pretrained_features = pretrained_model(normalized)
@@ -147,7 +149,8 @@ class DeepLabCut(BaseModel):
             "name": self.__class__.__name__,
             "subpixel": self.subpixel,
             "weights": self.weights,
-            "mobile": self.mobile
+            "mobile": self.mobile,
+            "alpha": self.alpha
         }
         base_config = super(DeepLabCut, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))
