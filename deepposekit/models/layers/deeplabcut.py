@@ -26,15 +26,14 @@ from __future__ import print_function
 import os
 import tensorflow.keras as keras
 from tensorflow.keras.layers import Layer
-from functools import partial
 
 from tensorflow.python.keras.applications import imagenet_utils
-from tensorflow.python.keras.applications import keras_applications
+import tensorflow.python.keras.applications.resnet50 as resnet50
+import tensorflow.python.keras.applications.mobilenet_v2 as mobilenet_v2
 
 from deepposekit.models.layers.deeplabcut_mobile import MobileNetV2
 
 _obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape
-resnet = keras_applications.resnet
 
 backend = keras.backend
 layers = keras.layers
@@ -476,14 +475,9 @@ class ImageNetPreprocess(Layer):
     def __init__(self, network, **kwargs):
         self.network = network
         if network.startswith("mobile"):
-            preprocess_input = partial(
-                imagenet_utils.preprocess_input, mode="tf", **kwargs
-            )
+            self.preprocess_input = mobilenet_v2.preprocess_input
         elif network.startswith("resnet"):
-            preprocess_input = partial(
-                imagenet_utils.preprocess_input, mode="caffe", **kwargs
-            )
-        self.preprocess_input = preprocess_input
+            self.preprocess_input = resnet50.preprocess_input
         super(ImageNetPreprocess, self).__init__(**kwargs)
 
     def compute_output_shape(self, input_shape):
@@ -493,7 +487,9 @@ class ImageNetPreprocess(Layer):
         return self.preprocess_input(inputs)
 
     def get_config(self):
-        return super(ImageNetPreprocess, self).get_config()
+        config = {"network": self.network}
+        base_config = super(ImageNetPreprocess, self).get_config()
+        return dict(list(base_config.items()) + list(config.items()))
 
 
 MODELS = {

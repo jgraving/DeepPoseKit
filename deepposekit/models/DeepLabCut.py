@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- #
 """
 Copyright 2018 Jacob M. Graving <jgraving@gmail.com>
 
@@ -22,7 +22,7 @@ from deepposekit.models.layers.deeplabcut import ResNet50, ImageNetPreprocess, M
 
 from deepposekit.models.engine import BaseModel
 from functools import partial
-    
+
 
 __docstring__ = """
     Define a DeepLabCut model from Mathis et al., 2018 [1][2]
@@ -44,7 +44,7 @@ __docstring__ = """
         pretrained backbone network to use. Must be one of {}. See [3].
     alpha: float, default is 1.0
         Which MobileNetV2 to use. Must be one of:
-        [0.35, 0.50, 0.75, 1.0, 1.3, 1.4].
+        {}
         Not used if backbone is not "mobilenetv2".
 
     Attributes
@@ -70,16 +70,27 @@ __docstring__ = """
         pose estimation across species and behaviors. Nature protocols,
         14(7), 2152-2176.
     [3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
-        Pretraining boosts out-of-domain-robustenss for pose estimation.
+        Pretraining boosts out-of-domain-robustness for pose estimation.
         arXiv cs.CV https://arxiv.org/abs/1909.11229
 
 
-    """.format(list(MODELS.keys()))
+    """.format(
+    list(MODELS.keys()), [0.35, 0.50, 0.75, 1.0, 1.3, 1.4]
+)
+
 
 class DeepLabCut(BaseModel):
     __doc__ = __docstring__
 
-    def __init__(self, train_generator, subpixel=True, weights="imagenet", backbone="resnet50", alpha=1.0, **kwargs):
+    def __init__(
+        self,
+        train_generator,
+        subpixel=True,
+        weights="imagenet",
+        backbone="resnet50",
+        alpha=1.0,
+        **kwargs
+    ):
 
         self.subpixel = subpixel
         self.weights = weights
@@ -105,20 +116,17 @@ class DeepLabCut(BaseModel):
         else:
             raise ValueError(
                 "backbone model {} is not supported. Must be one of {}".format(
-                    self.backbone,
-                    list(MODELS.keys())
-                    )
+                    self.backbone, list(MODELS.keys())
                 )
+            )
         backbone = MODELS[self.backbone]
         if self.backbone in list(MODELS.keys()):
             input_shape = (self.train_generator.height, self.train_generator.width, 3)
-        elif self.backbone.startswith("mobile"):
+        if self.backbone.startswith("mobile"):
             input_shape = None
             backbone = partial(backbone, alpha=self.alpha)
         pretrained_model = backbone(
-            include_top=False,
-            weights=self.weights,
-            input_shape=input_shape,
+            include_top=False, weights=self.weights, input_shape=input_shape
         )
         pretrained_features = pretrained_model(normalized)
         if self.train_generator.downsample_factor is 4:
@@ -148,7 +156,9 @@ class DeepLabCut(BaseModel):
             )(x)
         else:
             raise ValueError(
-                "`downsample_factor={}` is not supported for DeepLabCut. Adjust your TrainingGenerator".format(self.train_generator.downsample_factor)
+                "`downsample_factor={}` is not supported for DeepLabCut. Adjust your TrainingGenerator".format(
+                    self.train_generator.downsample_factor
+                )
             )
 
         self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
@@ -159,7 +169,7 @@ class DeepLabCut(BaseModel):
             "subpixel": self.subpixel,
             "weights": self.weights,
             "backbone": self.backbone,
-            "alpha": self.alpha
+            "alpha": self.alpha if self.backbone is "mobilenetv2" else None,
         }
         base_config = super(DeepLabCut, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))
