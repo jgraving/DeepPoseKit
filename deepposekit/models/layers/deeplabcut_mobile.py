@@ -527,6 +527,5 @@ if __name__ == "__main__":
 
     input_layer = Input((192, 192, 3))
     model = MobileNetV2(include_top=False)
-    normalized = MobileNetPreprocess()(input_layer)
-    pretrained_output = model(normalized)
+    pretrained_output = model(input_layer)
     model = Model(inputs=input_layer, outputs=pretrained_output)

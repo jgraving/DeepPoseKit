@@ -507,6 +507,6 @@ if __name__ == "__main__":
 
     input_layer = Input((192, 192, 3))
     model = ResNet50(include_top=False, input_shape=(192, 192, 3))
-    normalized = ResNetPreprocess()(input_layer)
+    normalized = ImageNetPreprocess(network="resnet50")(input_layer)
     pretrained_output = model(normalized)
     model = Model(inputs=input_layer, outputs=pretrained_output)
