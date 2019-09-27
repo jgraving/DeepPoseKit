@@ -131,15 +131,15 @@ class DataGenerator(BaseGenerator):
         return np.stack(keypoints)
 
     def set_keypoints(self, indexes, keypoints):
-        if y.shape[-1] is 3:
-            y = y[..., :2]
-        elif y.shape[-1] is not 2:
+        if keypoints.shape[-1] is 3:
+            keypoints = keypoints[..., :2]
+        elif keypoints.shape[-1] is not 2:
             raise ValueError("data shape does not match annotations")
         indexes = self.get_indexes(indexes)
 
         with h5py.File(self.datapath, mode="r+") as h5file:
-            for idx, keypoints in zip(indexes, keypoints):
-                h5file["annotations"][idx] = keypoints
+            for idx, keypoints_idx in zip(indexes, keypoints):
+                h5file["annotations"][idx] = keypoints_idx
 
     def __call__(self, mode="annotated"):
         if mode not in ["full", "annotated", "unannotated"]:

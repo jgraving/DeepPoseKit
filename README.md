@@ -18,7 +18,9 @@ DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation o
 
 DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research.
 
-DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing and cropping individuals with additional tracking software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor). Localization can also be achieved with additional deep learning software like [keras-retinanet](https://github.com/fizyr/keras-retinanet), the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), or [MatterPort's Mask R-CNN](https://github.com/matterport/Mask_RCNN).
+DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing, tracking, and cropping individuals with additional software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor).
+
+Localization (without tracking) can also be achieved with deep learning software like [keras-retinanet](https://github.com/fizyr/keras-retinanet), the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), or [MatterPort's Mask R-CNN](https://github.com/matterport/Mask_RCNN).
 
 [Check out our preprint](https://doi.org/10.1101/620245) to find out more.
 
@@ -49,7 +51,7 @@ from deepposekit.io import VideoReader
 
 model = load_model('/path/to/saved_model.h5')
 reader = VideoReader('/path/to/video.mp4')
-predictions = model.predict_generator(reader)
+predictions = model.predict(reader)
 ```
 [See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) for more details on how to use DeepPoseKit.
 

@@ -15,6 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+from tensorflow.python.keras.utils import Sequence
 import cv2
 import numpy as np
 import os
@@ -22,7 +23,7 @@ import os
 __all__ = ["VideoReader", "VideoWriter"]
 
 
-class VideoReader(cv2.VideoCapture):
+class VideoReader(cv2.VideoCapture, Sequence):
 
     """Read a video in batches.
 
@@ -50,8 +51,8 @@ class VideoReader(cv2.VideoCapture):
         self.n_frames = int(self.get(cv2.CAP_PROP_FRAME_COUNT))
         self.idx = 0
         self.fps = self.get(cv2.CAP_PROP_FPS)
-        self.height = self.get(cv2.CAP_PROP_FRAME_HEIGHT)
-        self.width = self.get(cv2.CAP_PROP_FRAME_WIDTH)
+        self.height = int(self.get(cv2.CAP_PROP_FRAME_HEIGHT))
+        self.width = int(self.get(cv2.CAP_PROP_FRAME_WIDTH))
         self.finished = False
         self.gray = gray
         self._read = super(VideoReader, self).read

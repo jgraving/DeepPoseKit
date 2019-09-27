@@ -38,14 +38,15 @@ class BaseGenerator(Sequence):
     def compute_keypoints_shape(self):
         raise NotImplementedError()
 
-    def get_images(self, idx):
+    def get_images(self, indexes):
         raise NotImplementedError()
 
-    def get_keypoints(self, idx):
+    def get_keypoints(self, indexes):
         raise NotImplementedError()
 
-    def set_keypoints(self, idx, keypoints):
+    def set_keypoints(self, indexes, keypoints):
         raise NotImplementedError()
+        
 
     def __call__(self):
         return NotImplementedError()
@@ -105,9 +106,9 @@ class BaseGenerator(Sequence):
 
     def __setitem__(self, key, keypoints):
         indexes = self._check_index(key)
-        if len(value) != len(indexes):
+        if len(keypoints) != len(indexes):
             raise IndexError("data shape and index do not match")
-        self.set_data(indexes, keypoints)
+        self.set_data(indexes, keypoints[..., :2])
 
     def get_config(self):
         config = {
