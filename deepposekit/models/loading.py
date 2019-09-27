@@ -27,7 +27,7 @@ from deepposekit.models.layers.convolutional import (
     SubPixelDownscaling,
     SubPixelUpscaling,
 )
-from deepposekit.models.layers.deeplabcut import ResNetPreprocess
+from deepposekit.models.layers.deeplabcut import ImageNetPreprocess
 
 from deepposekit.io import TrainingGenerator
 from deepposekit.models.LEAP import LEAP
@@ -49,7 +49,7 @@ CUSTOM_LAYERS = {
     "UpSampling2D": UpSampling2D,
     "SubPixelDownscaling": SubPixelDownscaling,
     "SubPixelUpscaling": SubPixelUpscaling,
-    "ResNetPreprocess": ResNetPreprocess,
+    "ImageNetPreprocess": ImageNetPreprocess,
 }
 
 

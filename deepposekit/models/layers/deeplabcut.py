@@ -1,13 +1,16 @@
-# -*- coding: utf-8 -*-
-"""ResNet50 model for Keras.
-# Reference:
-- [Deep Residual Learning for Image Recognition](
-    https://arxiv.org/abs/1512.03385) (CVPR 2016 Best Paper Award)
-Adapted from code contributed by BigMoyan.
+"""ResNet models for Keras.
+# Reference papers
+- [Deep Residual Learning for Image Recognition]
+  (https://arxiv.org/abs/1512.03385) (CVPR 2016 Best Paper Award)
+# Reference implementations
+- [TensorNets]
+  (https://github.com/taehoonlee/tensornets/blob/master/tensornets/resnets.py)
+- [Caffe ResNet]
+  (https://github.com/KaimingHe/deep-residual-networks/tree/master/prototxt)
 
 Modified by Jacob M. Graving from:
 https://github.com/keras-team/keras-applications/blob/
-master/keras_applications/resnet50.py
+master/keras_applications/resnet_common.py
 
 to match the stride 16 ResNet found here:
 https://github.com/tensorflow/tensorflow/blob/
@@ -15,42 +18,23 @@ master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
 
 All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
 """
+from __future__ import absolute_import
+from __future__ import division
+from __future__ import print_function
+
 import os
-import warnings
 import tensorflow.keras as keras
+from tensorflow.keras.layers import Layer
+from functools import partial
 
 from tensorflow.python.keras.applications import imagenet_utils
-from tensorflow.keras.applications.resnet50 import preprocess_input
-from tensorflow.keras.layers import Layer
-
 from tensorflow.python.keras.applications import keras_applications
 
-correct_pad = keras_applications.correct_pad
-_obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape
+from deepposekit.models.layers.deeplabcut_mobile import MobileNetV2
 
-WEIGHTS_PATH = (
-    "https://github.com/fchollet/deep-learning-models/"
-    "releases/download/v0.2/"
-    "resnet50_weights_tf_dim_ordering_tf_kernels.h5"
-)
-WEIGHTS_PATH_NO_TOP = (
-    "https://github.com/fchollet/deep-learning-models/"
-    "releases/download/v0.2/"
-    "resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5"
-)
+_obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape
+resnet = keras_applications.resnet
 
 backend = keras.backend
 layers = keras.layers
@@ -58,157 +42,223 @@ models = keras.models
 keras_utils = keras.utils
 
 
-def identity_block(input_tensor, kernel_size, filters, stage, block):
-    """The identity block is the block that has no conv layer at shortcut.
+BASE_WEIGHTS_PATH = (
+    "https://github.com/keras-team/keras-applications/releases/download/resnet/"
+)
+WEIGHTS_HASHES = {
+    "resnet50": (
+        "2cb95161c43110f7111970584f804107",
+        "4d473c1dd8becc155b73f8504c6f6626",
+    ),
+    "resnet101": (
+        "f1aeb4b969a6efcfb50fad2f0c20cfc5",
+        "88cf7a10940856eca736dc7b7e228a21",
+    ),
+    "resnet152": (
+        "100835be76be38e30d865e96f2aaae62",
+        "ee4c566cf9a93f14d82f913c2dc6dd0c",
+    ),
+}
+
+
+def block1(
+    x, filters, kernel_size=3, stride=1, conv_shortcut=True, name=None, dilation=1
+):
+    """A residual block.
     # Arguments
-        input_tensor: input tensor
-        kernel_size: default 3, the kernel size of
-            middle conv layer at main path
-        filters: list of integers, the filters of 3 conv layer at main path
-        stage: integer, current stage label, used for generating layer names
-        block: 'a','b'..., current block label, used for generating layer names
+        x: input tensor.
+        filters: integer, filters of the bottleneck layer.
+        kernel_size: default 3, kernel size of the bottleneck layer.
+        stride: default 1, stride of the first layer.
+        conv_shortcut: default True, use convolution shortcut if True,
+            otherwise identity shortcut.
+        name: string, block label.
     # Returns
-        Output tensor for the block.
+        Output tensor for the residual block.
     """
-    filters1, filters2, filters3 = filters
-    if backend.image_data_format() == "channels_last":
-        bn_axis = 3
+    bn_axis = 3 if backend.image_data_format() == "channels_last" else 1
+
+    if conv_shortcut is True:
+        shortcut = layers.Conv2D(4 * filters, 1, strides=stride, name=name + "_0_conv")(
+            x
+        )
+        shortcut = layers.BatchNormalization(
+            axis=bn_axis, epsilon=1.001e-5, name=name + "_0_bn"
+        )(shortcut)
     else:
-        bn_axis = 1
-    conv_name_base = "res" + str(stage) + block + "_branch"
-    bn_name_base = "bn" + str(stage) + block + "_branch"
-    dilation = 2 if stage is 5 else 1  # modify for stride 16
-    x = layers.Conv2D(
-        filters1, (1, 1), kernel_initializer="he_normal", name=conv_name_base + "2a"
-    )(input_tensor)
-    x = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "2a")(x)
-    x = layers.Activation("relu")(x)
+        shortcut = x
+
+    x = layers.Conv2D(filters, 1, strides=stride, name=name + "_1_conv")(x)
+    x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=name + "_1_bn")(
+        x
+    )
+    x = layers.Activation("relu", name=name + "_1_relu")(x)
 
     x = layers.Conv2D(
-        filters2,
+        filters,
         kernel_size,
+        padding="SAME",
         dilation_rate=dilation,
-        padding="same",
-        kernel_initializer="he_normal",
-        name=conv_name_base + "2b",
+        name=name + "_2_conv",
     )(x)
-    x = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "2b")(x)
-    x = layers.Activation("relu")(x)
+    x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=name + "_2_bn")(
+        x
+    )
+    x = layers.Activation("relu", name=name + "_2_relu")(x)
 
-    x = layers.Conv2D(
-        filters3, (1, 1), kernel_initializer="he_normal", name=conv_name_base + "2c"
-    )(x)
-    x = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "2c")(x)
-
-    x = layers.add([x, input_tensor])
-    x = layers.Activation("relu")(x)
-    return x
-
-
-def conv_block(input_tensor, kernel_size, filters, stage, block, strides=(2, 2)):
-    """A block that has a conv layer at shortcut.
-    # Arguments
-        input_tensor: input tensor
-        kernel_size: default 3, the kernel size of
-            middle conv layer at main path
-        filters: list of integers, the filters of 3 conv layer at main path
-        stage: integer, current stage label, used for generating layer names
-        block: 'a','b'..., current block label, used for generating layer names
-        strides: Strides for the first conv layer in the block.
-    # Returns
-        Output tensor for the block.
-    Note that from stage 3,
-    the first conv layer at main path is with strides=(2, 2)
-    And the shortcut should have strides=(2, 2) as well
-    """
-    filters1, filters2, filters3 = filters
-    if backend.image_data_format() == "channels_last":
-        bn_axis = 3
-    else:
-        bn_axis = 1
-    conv_name_base = "res" + str(stage) + block + "_branch"
-    bn_name_base = "bn" + str(stage) + block + "_branch"
-
-    dilation = 2 if stage is 5 else 1  # modify for stride 16
-    x = layers.Conv2D(
-        filters1,
-        (1, 1),
-        strides=strides,
-        kernel_initializer="he_normal",
-        name=conv_name_base + "2a",
-    )(input_tensor)
-    x = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "2a")(x)
-    x = layers.Activation("relu")(x)
-
-    x = layers.Conv2D(
-        filters2,
-        kernel_size,
-        padding="same",
-        kernel_initializer="he_normal",
-        dilation_rate=dilation,
-        name=conv_name_base + "2b",
-    )(x)
-    x = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "2b")(x)
-    x = layers.Activation("relu")(x)
-
-    x = layers.Conv2D(
-        filters3, (1, 1), kernel_initializer="he_normal", name=conv_name_base + "2c"
-    )(x)
-    x = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "2c")(x)
-
-    shortcut = layers.Conv2D(
-        filters3,
-        (1, 1),
-        strides=strides,
-        kernel_initializer="he_normal",
-        name=conv_name_base + "1",
-    )(input_tensor)
-    shortcut = layers.BatchNormalization(axis=bn_axis, name=bn_name_base + "1")(
-        shortcut
+    x = layers.Conv2D(4 * filters, 1, name=name + "_3_conv")(x)
+    x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=name + "_3_bn")(
+        x
     )
 
-    x = layers.add([x, shortcut])
-    x = layers.Activation("relu")(x)
+    x = layers.Add(name=name + "_add")([shortcut, x])
+    x = layers.Activation("relu", name=name + "_out")(x)
     return x
 
 
-def ResNet50(
+def stack1(x, filters, blocks, stride1=2, name=None, dilation=1):
+    """A set of stacked residual blocks.
+    # Arguments
+        x: input tensor.
+        filters: integer, filters of the bottleneck layer in a block.
+        blocks: integer, blocks in the stacked blocks.
+        stride1: default 2, stride of the first layer in the first block.
+        name: string, stack label.
+    # Returns
+        Output tensor for the stacked blocks.
+    """
+    x = block1(x, filters, stride=stride1, name=name + "_block1", dilation=dilation)
+    for i in range(2, blocks + 1):
+        x = block1(x, filters, conv_shortcut=False, name=name + "_block" + str(i))
+    return x
+
+
+def block2(
+    x, filters, kernel_size=3, stride=1, conv_shortcut=False, name=None, dilation=1
+):
+    """A residual block.
+    # Arguments
+        x: input tensor.
+        filters: integer, filters of the bottleneck layer.
+        kernel_size: default 3, kernel size of the bottleneck layer.
+        stride: default 1, stride of the first layer.
+        conv_shortcut: default False, use convolution shortcut if True,
+            otherwise identity shortcut.
+        name: string, block label.
+    # Returns
+        Output tensor for the residual block.
+    """
+    bn_axis = 3 if backend.image_data_format() == "channels_last" else 1
+
+    preact = layers.BatchNormalization(
+        axis=bn_axis, epsilon=1.001e-5, name=name + "_preact_bn"
+    )(x)
+    preact = layers.Activation("relu", name=name + "_preact_relu")(preact)
+
+    if conv_shortcut is True:
+        shortcut = layers.Conv2D(4 * filters, 1, strides=stride, name=name + "_0_conv")(
+            preact
+        )
+    else:
+        shortcut = layers.MaxPooling2D(1, strides=stride)(x) if stride > 1 else x
+
+    x = layers.Conv2D(filters, 1, strides=1, use_bias=False, name=name + "_1_conv")(
+        preact
+    )
+    x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=name + "_1_bn")(
+        x
+    )
+    x = layers.Activation("relu", name=name + "_1_relu")(x)
+
+    x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name=name + "_2_pad")(x)
+    x = layers.Conv2D(
+        filters,
+        kernel_size,
+        strides=stride,
+        dilation_rate=dilation,
+        use_bias=False,
+        name=name + "_2_conv",
+    )(x)
+    x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=name + "_2_bn")(
+        x
+    )
+    x = layers.Activation("relu", name=name + "_2_relu")(x)
+
+    x = layers.Conv2D(4 * filters, 1, name=name + "_3_conv")(x)
+    x = layers.Add(name=name + "_out")([shortcut, x])
+    return x
+
+
+def stack2(x, filters, blocks, stride1=2, name=None, dilation=1):
+    """A set of stacked residual blocks.
+    # Arguments
+        x: input tensor.
+        filters: integer, filters of the bottleneck layer in a block.
+        blocks: integer, blocks in the stacked blocks.
+        stride1: default 2, stride of the first layer in the first block.
+        name: string, stack label.
+    # Returns
+        Output tensor for the stacked blocks.
+    """
+    x = block2(x, filters, conv_shortcut=True, name=name + "_block1")
+    for i in range(2, blocks):
+        x = block2(x, filters, name=name + "_block" + str(i))
+    x = block2(
+        x,
+        filters,
+        stride=stride1,
+        name=name + "_block" + str(blocks),
+        dilation=dilation,
+    )
+    return x
+
+
+def ResNet(
+    stack_fn,
+    preact,
+    use_bias,
+    model_name="resnet",
     include_top=False,
     weights="imagenet",
     input_tensor=None,
     input_shape=None,
     pooling=None,
     classes=1000,
-    alpha=None,  # dummy arg for mobile version
     **kwargs
 ):
-    """Instantiates the ResNet50 architecture.
+    """Instantiates the ResNet, ResNetV2, and ResNeXt architecture.
     Optionally loads weights pre-trained on ImageNet.
     Note that the data format convention used by the model is
     the one specified in your Keras config at `~/.keras/keras.json`.
     # Arguments
+        stack_fn: a function that returns output tensor for the
+            stacked residual blocks.
+        preact: whether to use pre-activation or not
+            (True for ResNetV2, False for ResNet and ResNeXt).
+        use_bias: whether to use biases for convolutional layers or not
+            (True for ResNet and ResNetV2, False for ResNeXt).
+        model_name: string, model name.
         include_top: whether to include the fully-connected
             layer at the top of the network.
         weights: one of `None` (random initialization),
               'imagenet' (pre-training on ImageNet),
               or the path to the weights file to be loaded.
-        input_tensor: optional Keras tensor (i.e. output of `layers.Input()`)
+        input_tensor: optional Keras tensor
+            (i.e. output of `layers.Input()`)
             to use as image input for the model.
         input_shape: optional shape tuple, only to be specified
             if `include_top` is False (otherwise the input shape
             has to be `(224, 224, 3)` (with `channels_last` data format)
             or `(3, 224, 224)` (with `channels_first` data format).
-            It should have exactly 3 inputs channels,
-            and width and height should be no smaller than 32.
-            E.g. `(200, 200, 3)` would be one valid value.
-        pooling: Optional pooling mode for feature extraction
+            It should have exactly 3 inputs channels.
+        pooling: optional pooling mode for feature extraction
             when `include_top` is `False`.
             - `None` means that the output of the model will be
                 the 4D tensor output of the
-                last convolutional block.
+                last convolutional layer.
             - `avg` means that global average pooling
                 will be applied to the output of the
-                last convolutional block, and thus
+                last convolutional layer, and thus
                 the output of the model will be a 2D tensor.
             - `max` means that global max pooling will
                 be applied.
@@ -253,59 +303,35 @@ def ResNet50(
             img_input = layers.Input(tensor=input_tensor, shape=input_shape)
         else:
             img_input = input_tensor
-    if backend.image_data_format() == "channels_last":
-        bn_axis = 3
-    else:
-        bn_axis = 1
 
-    x = layers.ZeroPadding2D(padding=(3, 3), name="conv1_pad")(img_input)
-    x = layers.Conv2D(
-        64,
-        (7, 7),
-        strides=(2, 2),
-        padding="valid",
-        kernel_initializer="he_normal",
-        name="conv1",
-    )(x)
-    x = layers.BatchNormalization(axis=bn_axis, name="bn_conv1")(x)
-    x = layers.Activation("relu")(x)
-    x = layers.ZeroPadding2D(padding=(1, 1), name="pool1_pad")(x)
-    x = layers.MaxPooling2D((3, 3), strides=(2, 2))(x)
+    bn_axis = 3 if backend.image_data_format() == "channels_last" else 1
 
-    x = conv_block(x, 3, [64, 64, 256], stage=2, block="a", strides=(1, 1))
-    x = identity_block(x, 3, [64, 64, 256], stage=2, block="b")
-    x = identity_block(x, 3, [64, 64, 256], stage=2, block="c")
+    x = layers.ZeroPadding2D(padding=((3, 3), (3, 3)), name="conv1_pad")(img_input)
+    x = layers.Conv2D(64, 7, strides=2, use_bias=use_bias, name="conv1_conv")(x)
 
-    x = conv_block(x, 3, [128, 128, 512], stage=3, block="a")
-    x = identity_block(x, 3, [128, 128, 512], stage=3, block="b")
-    x = identity_block(x, 3, [128, 128, 512], stage=3, block="c")
-    x = identity_block(x, 3, [128, 128, 512], stage=3, block="d")
+    if preact is False:
+        x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name="conv1_bn")(
+            x
+        )
+        x = layers.Activation("relu", name="conv1_relu")(x)
 
-    x = conv_block(x, 3, [256, 256, 1024], stage=4, block="a")
-    x = identity_block(x, 3, [256, 256, 1024], stage=4, block="b")
-    x = identity_block(x, 3, [256, 256, 1024], stage=4, block="c")
-    x = identity_block(x, 3, [256, 256, 1024], stage=4, block="d")
-    x = identity_block(x, 3, [256, 256, 1024], stage=4, block="e")
-    x = identity_block(x, 3, [256, 256, 1024], stage=4, block="f")
+    x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)), name="pool1_pad")(x)
+    x = layers.MaxPooling2D(3, strides=2, name="pool1_pool")(x)
 
-    # modify stride to (1, 1) for conv_block5 to maintain stride 16
-    x = conv_block(x, 3, [512, 512, 2048], strides=(1, 1), stage=5, block="a")
-    x = identity_block(x, 3, [512, 512, 2048], stage=5, block="b")
-    x = identity_block(x, 3, [512, 512, 2048], stage=5, block="c")
+    x = stack_fn(x)
+
+    if preact is True:
+        x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name="post_bn")(x)
+        x = layers.Activation("relu", name="post_relu")(x)
 
     if include_top:
         x = layers.GlobalAveragePooling2D(name="avg_pool")(x)
-        x = layers.Dense(classes, activation="softmax", name="fc1000")(x)
+        x = layers.Dense(classes, activation="softmax", name="probs")(x)
     else:
         if pooling == "avg":
-            x = layers.GlobalAveragePooling2D()(x)
+            x = layers.GlobalAveragePooling2D(name="avg_pool")(x)
         elif pooling == "max":
-            x = layers.GlobalMaxPooling2D()(x)
-        else:
-            warnings.warn(
-                "The output shape of `ResNet50(include_top=False)` "
-                "has been changed since Keras 2.2.0."
-            )
+            x = layers.GlobalMaxPooling2D(name="max_pool")(x)
 
     # Ensure that the model takes into account
     # any potential predecessors of `input_tensor`.
@@ -313,36 +339,126 @@ def ResNet50(
         inputs = keras_utils.get_source_inputs(input_tensor)
     else:
         inputs = img_input
+
     # Create model.
-    model = models.Model(inputs, x, name="resnet50")
+    model = models.Model(inputs, x, name=model_name)
 
     # Load weights.
-    if weights == "imagenet":
+    if (weights == "imagenet") and (model_name in WEIGHTS_HASHES):
         if include_top:
-            weights_path = keras_utils.get_file(
-                "resnet50_weights_tf_dim_ordering_tf_kernels.h5",
-                WEIGHTS_PATH,
-                cache_subdir="models",
-                md5_hash="a7b3fe01876f51b976af0dea6bc144eb",
-            )
+            file_name = model_name + "_weights_tf_dim_ordering_tf_kernels.h5"
+            file_hash = WEIGHTS_HASHES[model_name][0]
         else:
-            weights_path = keras_utils.get_file(
-                "resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5",
-                WEIGHTS_PATH_NO_TOP,
-                cache_subdir="models",
-                md5_hash="a268eb855778b3df3c7506639542a6af",
-            )
+            file_name = model_name + "_weights_tf_dim_ordering_tf_kernels_notop.h5"
+            file_hash = WEIGHTS_HASHES[model_name][1]
+        weights_path = keras_utils.get_file(
+            file_name,
+            BASE_WEIGHTS_PATH + file_name,
+            cache_subdir="models",
+            file_hash=file_hash,
+        )
         model.load_weights(weights_path)
-        if backend.backend() == "theano":
-            keras_utils.convert_all_kernels_in_model(model)
     elif weights is not None:
         model.load_weights(weights)
 
     return model
 
 
-class ResNetPreprocess(Layer):
-    """Preprocessing layer for ResNet inputs.
+def ResNet50(
+    include_top=False,
+    weights="imagenet",
+    input_tensor=None,
+    input_shape=None,
+    pooling=None,
+    classes=1000,
+    **kwargs
+):
+    def stack_fn(x):
+        x = stack1(x, 64, 3, stride1=1, name="conv2")
+        x = stack1(x, 128, 4, name="conv3")
+        x = stack1(x, 256, 6, name="conv4")
+        x = stack1(x, 512, 3, name="conv5", stride1=1, dilation=2)
+        return x
+
+    return ResNet(
+        stack_fn,
+        False,
+        True,
+        "resnet50",
+        include_top,
+        weights,
+        input_tensor,
+        input_shape,
+        pooling,
+        classes,
+        **kwargs
+    )
+
+
+def ResNet101(
+    include_top=False,
+    weights="imagenet",
+    input_tensor=None,
+    input_shape=None,
+    pooling=None,
+    classes=1000,
+    **kwargs
+):
+    def stack_fn(x):
+        x = stack1(x, 64, 3, stride1=1, name="conv2")
+        x = stack1(x, 128, 4, name="conv3")
+        x = stack1(x, 256, 23, name="conv4")
+        x = stack1(x, 512, 3, name="conv5", stride1=1, dilation=2)
+        return x
+
+    return ResNet(
+        stack_fn,
+        False,
+        True,
+        "resnet101",
+        include_top,
+        weights,
+        input_tensor,
+        input_shape,
+        pooling,
+        classes,
+        **kwargs
+    )
+
+
+def ResNet152(
+    include_top=False,
+    weights="imagenet",
+    input_tensor=None,
+    input_shape=None,
+    pooling=None,
+    classes=1000,
+    **kwargs
+):
+    def stack_fn(x):
+        x = stack1(x, 64, 3, stride1=1, name="conv2")
+        x = stack1(x, 128, 8, name="conv3")
+        x = stack1(x, 256, 36, name="conv4")
+        x = stack1(x, 512, 3, name="conv5", stride1=1, dilation=2)
+        return x
+
+    return ResNet(
+        stack_fn,
+        False,
+        True,
+        "resnet152",
+        include_top,
+        weights,
+        input_tensor,
+        input_shape,
+        pooling,
+        classes,
+        **kwargs
+    )
+
+
+class ImageNetPreprocess(Layer):
+    """Preprocessing layer for ImageNet inputs.
     # Input shape
         4D tensor with shape:
         - If `data_format` is `"channels_last"`:
@@ -357,18 +473,35 @@ class ResNetPreprocess(Layer):
             `(batch, channels, rows, cols)`
     """
 
-    def __init__(self, **kwargs):
-        super(ResNetPreprocess, self).__init__(**kwargs)
+    def __init__(self, network, **kwargs):
+        self.network = network
+        if network.startswith("mobile"):
+            preprocess_input = partial(
+                imagenet_utils.preprocess_input, mode="tf", **kwargs
+            )
+        elif network.startswith("resnet"):
+            preprocess_input = partial(
+                imagenet_utils.preprocess_input, mode="caffe", **kwargs
+            )
+        self.preprocess_input = preprocess_input
+        super(ImageNetPreprocess, self).__init__(**kwargs)
 
     def compute_output_shape(self, input_shape):
         return input_shape
 
     def call(self, inputs):
-        return preprocess_input(inputs)
+        return self.preprocess_input(inputs)
 
     def get_config(self):
-        return super(ResNetPreprocess, self).get_config()
+        return super(ImageNetPreprocess, self).get_config()
 
+
+MODELS = {
+    "resnet50": ResNet50,
+    "resnet101": ResNet101,
+    "resnet152": ResNet152,
+    "mobilenetv2": MobileNetV2,
+}
 
 if __name__ == "__main__":
 

@@ -519,36 +519,6 @@ def _inverted_res_block(
         return layers.Add(name=prefix + "add")([inputs, x])
     return x
 
-
-class MobileNetPreprocess(Layer):
-    """Preprocessing layer for MobileNet inputs.
-    # Input shape
-        4D tensor with shape:
-        - If `data_format` is `"channels_last"`:
-            `(batch, rows, cols, channels)`
-        - If `data_format` is `"channels_first"`:
-            `(batch, channels, rows, cols)`
-    # Output shape
-        4D tensor with shape:
-        - If `data_format` is `"channels_last"`:
-            `(batch, rows, cols, channels)`
-        - If `data_format` is `"channels_first"`:
-            `(batch, channels, rows, cols)`
-    """
-
-    def __init__(self, **kwargs):
-        super(MobileNetPreprocess, self).__init__(**kwargs)
-
-    def compute_output_shape(self, input_shape):
-        return input_shape
-
-    def call(self, inputs):
-        return preprocess_input(inputs)
-
-    def get_config(self):
-        return super(MobileNetPreprocess, self).get_config()
-
-
 if __name__ == "__main__":
 
     from tensorflow.keras.applications.mobilenet_v2 import preprocess_input

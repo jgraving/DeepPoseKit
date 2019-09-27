@@ -18,67 +18,72 @@ limitations under the License.
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2DTranspose, Conv2D, Concatenate
 from deepposekit.models.layers.util import Float
-from deepposekit.models.layers.deeplabcut import ResNet50, ResNetPreprocess
-from deepposekit.models.layers.deeplabcut_mobile import MobileNetV2, MobileNetPreprocess
+from deepposekit.models.layers.deeplabcut import ResNet50, ImageNetPreprocess, MODELS
 
 from deepposekit.models.engine import BaseModel
+from functools import partial
+    
 
+__docstring__ = """
+    Define a DeepLabCut model from Mathis et al., 2018 [1][2]
+    See `References` for details on the model architecture.
+
+    Parameters
+    ----------
+    train_generator : class deepposekit.io.TrainingGenerator
+        A deepposekit.io.TrainingGenerator class for generating
+        images and confidence maps.
+    subpixel: bool, default = True
+        Whether to use subpixel maxima for calculating
+        keypoint coordinates in the prediction model.
+    weights: "imagnet" or None, default is "imagenet"
+        Which weights to use for initialization. "imagenet" uses
+        weights pretrained on imagenet. None uses randomly initialized
+        weights.
+    backbone: string, default is "resnet50"
+        pretrained backbone network to use. Must be one of {}. See [3].
+    alpha: float, default is 1.0
+        Which MobileNetV2 to use. Must be one of:
+        [0.35, 0.50, 0.75, 1.0, 1.3, 1.4].
+        Not used if backbone is not "mobilenetv2".
+
+    Attributes
+    -------
+    train_model: keras.Model
+        A model for training the network to produce confidence maps with
+        one input layer for images
+    predict_model: keras.Model
+        A model for predicting keypoint coordinates using with Maxima2D or
+        SubpixelMaxima2D layers at the output of the network.
+
+    Both of these models share the same computational graph,
+    so training train_model updates the weights of predict_model
+
+    References
+    ----------
+    [1] Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
+        Mathis, M. W., & Bethge, M. (2018). DeepLabCut: markerless pose
+        estimation of user-defined body parts with deep learning (p. 1).
+        Nature Publishing Group.
+    [2] Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
+        & Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
+        pose estimation across species and behaviors. Nature protocols,
+        14(7), 2152-2176.
+    [3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
+        Pretraining boosts out-of-domain-robustenss for pose estimation.
+        arXiv cs.CV https://arxiv.org/abs/1909.11229
+
+
+    """.format(list(MODELS.keys()))
 
 class DeepLabCut(BaseModel):
-    def __init__(self, train_generator, subpixel=True, weights="imagenet", mobile=False, alpha=1.0, **kwargs):
-        """
-        Define a DeepLabCut model from Mathis et al., 2018 [1][2]
-        See `References` for details on the model architecture.
+    __doc__ = __docstring__
 
-        Parameters
-        ----------
-        train_generator : class deepposekit.io.TrainingGenerator
-            A deepposekit.io.TrainingGenerator class for generating
-            images and confidence maps.
-        subpixel: bool, default = True
-            Whether to use subpixel maxima for calculating
-            keypoint coordinates in the prediction model.
-        weights: "imagnet" or None, default is "imagenet"
-            Which weights to use for initialization. "imagenet" uses
-            weights pretrained on imagenet. None uses randomly initialized
-            weights.
-        mobile: bool, default is False
-            Whether to use MobileNetV2 as a backbone. See [3].
-        alpha: float, default is 1.0
-            Which MobileNetV2 to use. Must be one of:
-            [0.35, 0.50, 0.75, 1.0, 1.3, 1.4]
+    def __init__(self, train_generator, subpixel=True, weights="imagenet", backbone="resnet50", alpha=1.0, **kwargs):
 
-        Attributes
-        -------
-        train_model: keras.Model
-            A model for training the network to produce confidence maps with
-            one input layer for images
-        predict_model: keras.Model
-            A model for predicting keypoint coordinates using with Maxima2D or
-            SubpixelMaxima2D layers at the output of the network.
-
-        Both of these models share the same computational graph,
-        so training train_model updates the weights of predict_model
-
-        References
-        ----------
-        [1] Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
-            Mathis, M. W., & Bethge, M. (2018). DeepLabCut: markerless pose
-            estimation of user-defined body parts with deep learning (p. 1).
-            Nature Publishing Group.
-        [2] Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
-            & Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
-            pose estimation across species and behaviors. Nature protocols,
-            14(7), 2152-2176.
-        [3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
-            Pretraining boosts out-of-domain-robustenss for pose estimation.
-            arXiv cs.CV https://arxiv.org/abs/1909.11229
-
-
-        """
         self.subpixel = subpixel
         self.weights = weights
-        self.mobile = mobile
+        self.backbone = backbone
         self.alpha = alpha
         super(DeepLabCut, self).__init__(train_generator, subpixel, **kwargs)
 
@@ -95,21 +100,25 @@ class DeepLabCut(BaseModel):
         to_float = Float()(input_layer)
         if batch_shape[-1] is 1:
             to_float = Concatenate()([to_float] * 3)
-        if self.mobile:
-            normalized = MobileNetPreprocess()(to_float)
+        if self.backbone in list(MODELS.keys()):
+            normalized = ImageNetPreprocess(self.backbone)(to_float)
         else:
-            normalized = ResNetPreprocess()(to_float)
-        if self.mobile:
-            backbone = MobileNetV2
-            input_shape = None
-        else:
-            backbone = ResNet50
+            raise ValueError(
+                "backbone model {} is not supported. Must be one of {}".format(
+                    self.backbone,
+                    list(MODELS.keys())
+                    )
+                )
+        backbone = MODELS[self.backbone]
+        if self.backbone in list(MODELS.keys()):
             input_shape = (self.train_generator.height, self.train_generator.width, 3)
+        elif self.backbone.startswith("mobile"):
+            input_shape = None
+            backbone = partial(backbone, alpha=self.alpha)
         pretrained_model = backbone(
             include_top=False,
             weights=self.weights,
             input_shape=input_shape,
-            alpha=self.alpha
         )
         pretrained_features = pretrained_model(normalized)
         if self.train_generator.downsample_factor is 4:
@@ -149,7 +158,7 @@ class DeepLabCut(BaseModel):
             "name": self.__class__.__name__,
             "subpixel": self.subpixel,
             "weights": self.weights,
-            "mobile": self.mobile,
+            "backbone": self.backbone,
             "alpha": self.alpha
         }
         base_config = super(DeepLabCut, self).get_config()
