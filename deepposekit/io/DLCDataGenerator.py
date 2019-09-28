@@ -33,18 +33,18 @@ class DLCDataGenerator(BaseGenerator):
 
     Parameters
     ----------
-    projectpath : str
+    project_path : str
         Path to the project with config.yaml and images.
         e.g. '/path/to/project/'
     """
 
-    def __init__(self, projectpath, **kwargs):
-        self.projectpath = projectpath
-        annotations = glob.glob(projectpath + "/**/**/*.h5")
-        annotations = [pd.read_hdf(datapath) for datapath in annotations]
+    def __init__(self, project_path, **kwargs):
+        self.project_path = project_path
+        self.annotations_path = glob.glob(self.project_path + "/**/**/*.h5")
+        annotations = [pd.read_hdf(datapath) for datapath in self.annotations_path]
         self.annotations = pd.concat(annotations)
 
-        with open(projectpath + "/config.yaml", "r") as config_file:
+        with open(project_path + "/config.yaml", "r") as config_file:
             self.config = yaml.load(config_file, Loader=yaml.FullLoader)
         self.n_keypoints = len(self.config["bodyparts"])
 
@@ -68,7 +68,7 @@ class DLCDataGenerator(BaseGenerator):
         for idx in indexes:
             row = self.annotations.iloc[idx]
             image_name = row.name
-            filepath = self.projectpath + image_name
+            filepath = self.project_path + image_name
             if os.path.exists(filepath):
                 images.append(cv2.imread(filepath))
             else:
@@ -85,8 +85,8 @@ class DLCDataGenerator(BaseGenerator):
                 x = row[(self.scorer, part, "x")]
                 y = row[(self.scorer, part, "y")]
                 if np.isnan(x) or np.isnan(y):
-                    x = -1e10
-                    y = -1e10
+                    x = -99999
+                    y = -99999
                 coords.append([x, y])
             coords = np.array(coords)
             keypoints.append(coords)
@@ -96,12 +96,12 @@ class DLCDataGenerator(BaseGenerator):
         return self.n_samples
 
     def get_config(self):
-        config = {"projectpath": self.projectpath}
+        config = {"project_path": self.project_path}
         base_config = super(DLCDataGenerator, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))
 
 
 if __name__ == "__main__":
     data_generator = DLCDataGenerator(
-        projectpath="./deeplabcut/examples/openfield-Pranav-2018-10-30/"
+        project_path="./deeplabcut/examples/openfield-Pranav-2018-10-30/"
     )
