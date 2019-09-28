@@ -15,8 +15,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-from tensorflow.python.keras.engine import Layer
-from tensorflow.python.keras.engine import InputSpec
+from tensorflow.keras.engine import Layer
+from tensorflow.keras.engine import InputSpec
 
 from tensorflow.keras.layers import UpSampling2D
 

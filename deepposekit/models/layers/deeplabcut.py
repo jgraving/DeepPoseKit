@@ -22,9 +22,9 @@ from __future__ import print_function
 import os
 from tensorflow.keras.layers import Layer
 
-import tensorflow.python.keras.applications.resnet50 as resnet50
-import tensorflow.python.keras.applications.mobilenet_v2 as mobilenet_v2
-import tensorflow.python.keras.applications.densenet as densenet
+from tensorflow.python.keras.applications import resnet50
+from tensorflow.python.keras.applications import mobilenet_v2
+from tensorflow.python.keras.applications import densenet
 
 from deepposekit.models.layers.deeplabcut_resnet import MODELS as RESNET_MODELS
 from deepposekit.models.layers.deeplabcut_mobile import MODELS as MOBILE_MODELS

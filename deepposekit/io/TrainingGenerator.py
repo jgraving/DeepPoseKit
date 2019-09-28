@@ -295,11 +295,11 @@ class TrainingGenerator(Sequence):
             X, y = self.augment(X, y)
         if self.confidence:
             y = draw_confidence_maps(
-                X,
-                y,
-                self.graph,
-                self.output_shape,
-                self.use_graph,
+                images=X,
+                keypoints=y,
+                graph=self.graph,
+                output_shape=self.output_shape,
+                use_graph=self.use_graph,
                 sigma=self.output_sigma,
             )
             y *= 255
