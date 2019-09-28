@@ -26,7 +26,7 @@ __all__ = [
     "draw_confidence_map",
     "graph_to_edges",
     "draw_keypoints",
-    "draw_edges",
+    "draw_graph",
     "numpy_to_imgaug",
     "imgaug_to_numpy",
     "keypoint_errors",
@@ -55,7 +55,7 @@ def graph_to_edges(graph):
     return edges
 
 
-def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth=1):
+def draw_graph(keypoints, height, width, output_shape, graph, sigma=1, linewidth=1):
     # One channel for each edge
     keypoints = keypoints.copy()
     edge_labels = graph_to_edges(graph)
@@ -121,7 +121,7 @@ def draw_keypoints(keypoints, height, width, output_shape, sigma=1, normalize=Tr
 
 
 def draw_confidence_map(
-    image, keypoints, graph=None, output_shape=None, use_edges=True, sigma=1
+    image, keypoints, graph=None, output_shape=None, use_graph=True, sigma=1
 ):
     height = image.shape[0]
     width = image.shape[1]
@@ -129,8 +129,8 @@ def draw_confidence_map(
     if not output_shape:
         output_shape = image.shape[:2]
     keypoints_confidence = draw_keypoints(keypoints, height, width, output_shape, sigma)
-    if use_edges and isinstance(graph, np.ndarray):
-        edge_confidence = draw_edges(
+    if use_graph and isinstance(graph, np.ndarray):
+        edge_confidence = draw_graph(
             keypoints, height, width, output_shape, graph, sigma
         )
         sum_keypoints = keypoints_confidence.sum(-1, keepdims=True)
