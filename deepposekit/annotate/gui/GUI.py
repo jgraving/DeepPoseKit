@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from deepposekit.annotation.utils import hotkeys as keys
+from deepposekit.annotate.utils import hotkeys as keys
 
 
 def _mouse_click(event, x, y, flags, param):

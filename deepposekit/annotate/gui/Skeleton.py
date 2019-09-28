@@ -18,8 +18,8 @@ limitations under the License.
 import numpy as np
 import cv2
 
-from deepposekit.annotation.gui.GUI import GUI
-from deepposekit.annotation.utils import hotkeys as keys
+from deepposekit.annotate.gui.GUI import GUI
+from deepposekit.annotate.utils import hotkeys as keys
 
 __all__ = ["Skeleton"]
 

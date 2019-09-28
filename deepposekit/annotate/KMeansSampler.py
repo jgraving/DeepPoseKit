@@ -19,7 +19,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.cluster import MiniBatchKMeans
 from sklearn.utils.validation import check_is_fitted
-from deepposekit.annotation.utils.image import check_image_array
+from deepposekit.annotate.utils.image import check_image_array
 
 
 class KMeansSampler(MiniBatchKMeans):

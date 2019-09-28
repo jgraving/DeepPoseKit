@@ -17,6 +17,5 @@ limitations under the License.
 
 from __future__ import absolute_import
 
-from deepposekit.annotation.gui.Annotator import Annotator
-from deepposekit.annotation.gui.Skeleton import Skeleton
-from deepposekit.annotation.KMeansSampler import KMeansSampler
+from deepposekit.annotate.gui.Annotator import Annotator
+from deepposekit.annotate.gui.Skeleton import Skeleton
