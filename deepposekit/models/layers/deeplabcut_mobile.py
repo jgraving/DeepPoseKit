@@ -302,12 +302,12 @@ def MobileNetV2(
 
         if rows != cols or rows not in [96, 128, 160, 192, 224]:
             rows = 224
-            warnings.warn(
-                "`input_shape` is undefined or non-square, "
-                "or `rows` is not in [96, 128, 160, 192, 224]."
-                " Weights for input shape (224, 224) will be"
-                " loaded as the default."
-            )
+            # warnings.warn(
+            #    "`input_shape` is undefined or non-square, "
+            #    "or `rows` is not in [96, 128, 160, 192, 224]."
+            #    " Weights for input shape (224, 224) will be"
+            #    " loaded as the default."
+            # )
 
     if input_tensor is None:
         img_input = layers.Input(shape=input_shape)
@@ -518,6 +518,10 @@ def _inverted_res_block(
     if in_channels == pointwise_filters and stride == 1:
         return layers.Add(name=prefix + "add")([inputs, x])
     return x
+
+
+MODELS = {"mobilenetv2": MobileNetV2}
+
 
 if __name__ == "__main__":
 
