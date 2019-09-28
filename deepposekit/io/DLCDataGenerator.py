@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd
 import os
 import cv2
+import yaml
+import glob
 
 from deepposekit.io.BaseGenerator import BaseGenerator
 
@@ -31,27 +33,24 @@ class DLCDataGenerator(BaseGenerator):
 
     Parameters
     ----------
-    datapath : str
-        The path to the annotations file. Must be .h5
-        e.g. '/path/to/file.h5'
-    imagepath : str
-        Path to the image dataset used in the annotations file.
-        e.g. '/path/to/images/'
+    projectpath : str
+        Path to the project with config.yaml and images.
+        e.g. '/path/to/project/'
     """
 
-    def __init__(self, datapath, imagepath):
-        self.annotations = pd.read_hdf(datapath)
-        self.datapath = datapath
-        self.imagepath = imagepath
-        scorer = []
-        bodyparts = []
-        for column in self.annotations.columns:
-            scorer.append(column[0])
-            bodyparts.append(column[1])
-        self.bodyparts = np.unique(bodyparts)
-        self.scorer = np.unique(scorer)[0]
+    def __init__(self, projectpath, **kwargs):
+        self.projectpath = projectpath
+        annotations = glob.glob(projectpath + "/**/**/*.h5")
+        annotations = [pd.read_hdf(datapath) for datapath in annotations]
+        self.annotations = pd.concat(annotations)
 
-        self.n_keypoints = len(self.bodyparts)
+        with open(projectpath + "/config.yaml", "r") as config_file:
+            self.config = yaml.load(config_file, Loader=yaml.FullLoader)
+        self.n_keypoints = len(self.config["bodyparts"])
+
+        self.bodyparts = self.config["bodyparts"]
+        self.scorer = self.config["scorer"]
+
         self.n_samples = self.annotations.shape[0]
         self.index = np.arange(self.n_samples)
 
@@ -69,7 +68,7 @@ class DLCDataGenerator(BaseGenerator):
         for idx in indexes:
             row = self.annotations.iloc[idx]
             image_name = row.name
-            filepath = self.imagepath + image_name
+            filepath = self.projectpath + image_name
             if os.path.exists(filepath):
                 images.append(cv2.imread(filepath))
             else:
@@ -97,16 +96,12 @@ class DLCDataGenerator(BaseGenerator):
         return self.n_samples
 
     def get_config(self):
-        config = {
-            "datapath": self.datapath,
-            "imagepath": self.imagepath,
-        }
+        config = {"projectpath": self.projectpath}
         base_config = super(DLCDataGenerator, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))
 
 
 if __name__ == "__main__":
     data_generator = DLCDataGenerator(
-        datapath="./deeplabcut/examples/openfield-Pranav-2018-10-30/labeled-data/m4s1/CollectedData_Pranav.h5",
-        imagepath="./deeplabcut/examples/openfield-Pranav-2018-10-30/",
+        projectpath="./deeplabcut/examples/openfield-Pranav-2018-10-30/"
     )

@@ -187,7 +187,7 @@ class TrainingGenerator(Sequence):
         self.n_keypoints = self.generator.keypoints_shape[0]
 
         # Initialize skeleton attributes
-        self.graph = self.generator.tree
+        self.graph = self.generator.graph
         self.swap_index = self.generator.swap_index
 
         self.on_epoch_end()

@@ -92,7 +92,7 @@ class DataGenerator(BaseGenerator):
             self.n_unannotated = self.unannotated_index.shape[0]
 
             # Initialize skeleton attributes
-            self.tree = h5file["skeleton"][:, 0]
+            self.graph = h5file["skeleton"][:, 0]
             self.swap_index = h5file["skeleton"][:, 1]
 
         super(DataGenerator, self).__init__(**kwargs)

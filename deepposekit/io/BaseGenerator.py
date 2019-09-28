@@ -23,8 +23,8 @@ __all__ = ["BaseGenerator"]
 
 class BaseGenerator(Sequence):
     def __init__(self, **kwargs):
-        if not hasattr(self, 'tree'):
-            self.tree = -np.ones(self.keypoints_shape[0])
+        if not hasattr(self, 'graph'):
+            self.graph = -np.ones(self.keypoints_shape[0])
         if not hasattr(self, 'swap_index'):
             self.swap_index = -np.ones(self.keypoints_shape[0]) 
         return
