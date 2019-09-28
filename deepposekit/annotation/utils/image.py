@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-__all__ = ['check_image_array']
+__all__ = ["check_image_array"]
 
 
 def check_image_array(self, X):
@@ -27,6 +27,8 @@ def check_image_array(self, X):
         else:
             self.channels = 1
     else:
-        raise ValueError('''X is an invalid shape.
-                         Must be 3-d or 4-d array-like''')
+        raise ValueError(
+            """X is an invalid shape.
+                         Must be 3-d or 4-d array-like"""
+        )
     return X.reshape(X.shape[0], -1)

@@ -15,30 +15,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
-PLUS = ord('=')
-MINUS = ord('-')
+PLUS = ord("=")
+MINUS = ord("-")
 
-W = ord('w')
-A = ord('a')
-S = ord('s')
-D = ord('d')
-SPACE = ord(' ')
+W = ord("w")
+A = ord("a")
+S = ord("s")
+D = ord("d")
+SPACE = ord(" ")
 
 
-TAB = ord('\t')
-SHIFT_TAB = ord('\v')
+TAB = ord("\t")
+SHIFT_TAB = ord("\v")
 
-UPARROW = ord('i')
-DOWNARROW = ord('k')
-RIGHTARROW = ord('l')
-LEFTARROW = ord('j')
+UPARROW = ord("i")
+DOWNARROW = ord("k")
+RIGHTARROW = ord("l")
+LEFTARROW = ord("j")
 
-LESSTHAN = ord(',')
-GREATERTHAN = ord('.')
+LESSTHAN = ord(",")
+GREATERTHAN = ord(".")
 
-R = ord('r')
-F = ord('f')
+R = ord("r")
+F = ord("f")
 
-Q = ord('q')
+Q = ord("q")
 NONE = 255
 ESC = 27

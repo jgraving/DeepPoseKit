@@ -167,11 +167,6 @@ class DataGenerator(BaseGenerator):
             return self.n_samples
 
     def get_config(self):
-        config = {
-            "datapath": self.datapath,
-            "dataset": self.dataset,
-        }
+        config = {"datapath": self.datapath, "dataset": self.dataset}
         base_config = super(DataGenerator, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))
-
-

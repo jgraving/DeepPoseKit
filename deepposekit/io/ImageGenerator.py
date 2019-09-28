@@ -43,13 +43,13 @@ class ImageGenerator(BaseGenerator):
         self.compute_image_shape = self.generator.compute_image_shape
 
         super(ImageGenerator, self).__init__(**kwargs)
-    
+
     def __len__(self):
         return len(self.generator)
-    
+
     def get_data(self, indexes):
         return self.generator.get_images(indexes)
-    
+
     def set_keypoints(self, indexes, keypoints):
         return self.generator.set_keypoints(indexes, keypoints)
 
@@ -58,7 +58,6 @@ class ImageGenerator(BaseGenerator):
         return (len(self),) + self.generator.image_shape
 
     def get_config(self):
-        config = {
-        }
+        config = {}
         base_config = super(ImageGenerator, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))

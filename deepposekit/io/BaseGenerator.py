@@ -23,10 +23,10 @@ __all__ = ["BaseGenerator"]
 
 class BaseGenerator(Sequence):
     def __init__(self, **kwargs):
-        if not hasattr(self, 'graph'):
+        if not hasattr(self, "graph"):
             self.graph = -np.ones(self.keypoints_shape[0])
-        if not hasattr(self, 'swap_index'):
-            self.swap_index = -np.ones(self.keypoints_shape[0]) 
+        if not hasattr(self, "swap_index"):
+            self.swap_index = -np.ones(self.keypoints_shape[0])
         return
 
     def __len__(self):
@@ -46,7 +46,6 @@ class BaseGenerator(Sequence):
 
     def set_keypoints(self, indexes, keypoints):
         raise NotImplementedError()
-        
 
     def __call__(self):
         return NotImplementedError()
@@ -57,7 +56,7 @@ class BaseGenerator(Sequence):
 
     @property
     def keypoints_shape(self):
-        return self.compute_keypoints_shape() 
+        return self.compute_keypoints_shape()
 
     @property
     def shape(self):
@@ -118,4 +117,3 @@ class BaseGenerator(Sequence):
             "keypoints_shape": self.keypoints_shape,
         }
         return config
-

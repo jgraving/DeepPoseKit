@@ -37,14 +37,14 @@ class BaseModel:
             if self.train_generator is not None:
                 config = self.train_generator.get_config()
                 if self.subpixel:
-                    output_sigma = config['output_sigma']
+                    output_sigma = config["output_sigma"]
                 else:
                     output_sigma = None
                 self.__init_predict_model__(
-                    config['output_shape'],
-                    config['keypoints_shape'],
-                    config['downsample_factor'],
-                    config['output_sigma'],
+                    config["output_shape"],
+                    config["keypoints_shape"],
+                    config["downsample_factor"],
+                    config["output_sigma"],
                 )
 
     train_model = NotImplemented
@@ -62,7 +62,12 @@ class BaseModel:
         )
 
     def __init_predict_model__(
-        self, output_shape, keypoints_shape, downsample_factor, output_sigma=None, **kwargs
+        self,
+        output_shape,
+        keypoints_shape,
+        downsample_factor,
+        output_sigma=None,
+        **kwargs
     ):
 
         output = self.train_model.outputs[-1]
@@ -76,13 +81,13 @@ class BaseModel:
                 upsample_factor=100,
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.,
+                confidence_scale=255.0,
             )(output)
         else:
             keypoints = Maxima2D(
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
-                confidence_scale=255.,
+                confidence_scale=255.0,
             )(output)
         input_layer = self.train_model.inputs[0]
         self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)

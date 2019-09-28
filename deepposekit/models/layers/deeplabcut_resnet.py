@@ -451,11 +451,8 @@ def ResNet152(
         **kwargs
     )
 
-MODELS = {
-    "resnet50": ResNet50,
-    "resnet101": ResNet101,
-    "resnet152": ResNet152,
-}
+
+MODELS = {"resnet50": ResNet50, "resnet101": ResNet101, "resnet152": ResNet152}
 
 if __name__ == "__main__":
 
