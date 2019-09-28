@@ -22,7 +22,27 @@ __all__ = ["BaseGenerator"]
 
 
 class BaseGenerator(Sequence):
+    """
+    BaseGenerator class for abstracting data loading and saving.
+    Attributes that should be defined before use:
+    __init__
+    __len__
+    compute_image_shape
+    compute_keypoints_shape
+    get_images
+    get_keypoints
+    set_keypoints (only needed for saving data)
+    
+    See docstrings for further details.
+    """
+
     def __init__(self, **kwargs):
+        """
+        Initializes the BaseGenerator class.
+        If graph and swap_index are not defined,
+        they are set to a vector of -1 corresponding
+        to keypoints shape
+        """
         if not hasattr(self, "graph"):
             self.graph = -np.ones(self.keypoints_shape[0])
         if not hasattr(self, "swap_index"):
@@ -30,21 +50,52 @@ class BaseGenerator(Sequence):
         return
 
     def __len__(self):
+        """
+        Returns the number of samples in the generator as an integer (int64)
+        """
         raise NotImplementedError()
 
     def compute_image_shape(self):
+        """
+        Returns a tuple of integers describing
+        the image shape in the form:
+        (height, width, n_channels)
+        """
         raise NotImplementedError()
 
     def compute_keypoints_shape(self):
+        """
+        Returns a tuple of integers describing the
+        keypoints shape in the form:
+        (n_keypoints, 2), where 2 is the x,y coordinates
+        """
         raise NotImplementedError()
 
     def get_images(self, indexes):
+        """
+        Takes a list or array of indexes corresponding
+        to image-keypoint pairs in the dataset.
+        Returns a numpy array of images with the shape:
+        (1, height, width, n_channels)
+        """
         raise NotImplementedError()
 
     def get_keypoints(self, indexes):
+        """
+        Takes a list or array of indexes corresponding to
+        image-keypoint pairs in the dataset.
+        Returns a numpy array of keypoints with the shape:
+        (1, n_keypoints, 2), where 2 is the x,y coordinates
+        """
         raise NotImplementedError()
 
     def set_keypoints(self, indexes, keypoints):
+        """
+        Takes a list or array of indexes and corresponding
+        to keypoints.
+        Sets the values of the keypoints corresponding to the indexes
+        in the dataset.
+        """
         raise NotImplementedError()
 
     def __call__(self):
@@ -60,7 +111,18 @@ class BaseGenerator(Sequence):
 
     @property
     def shape(self):
+        """
+        Returns a tuple of tuples describing the data shapes
+        in the form:
+        ((height, width, n_channels), (n_keypoints, 2))
+        """
         return (self.image_shape, self.keypoints_shape)
+
+    def get_data(self, indexes):
+        return (self.get_images(indexes), self.get_keypoints(indexes))
+
+    def set_data(self, indexes, keypoints):
+        self.set_keypoints(indexes, keypoints)
 
     def _check_index(self, key):
         if isinstance(key, slice):
@@ -92,12 +154,6 @@ class BaseGenerator(Sequence):
         else:
             raise IndexError()
         return indexes
-
-    def get_data(self, indexes):
-        return (self.get_images(indexes), self.get_keypoints(indexes))
-
-    def set_data(self, indexes, keypoints):
-        self.set_keypoints(indexes, keypoints)
 
     def __getitem__(self, key):
         indexes = self._check_index(key)
