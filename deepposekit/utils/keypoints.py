@@ -65,6 +65,7 @@ def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth
     sigma *= height / out_height
     output_shape = (out_height, out_width, labels.shape[0])
     confidence = np.zeros(output_shape, dtype=np.float64)
+    edge_confidence_list = []
     for idx, label in enumerate(labels):
         lines = graph[edge_labels == label]
         lines_idx = np.where(edge_labels == label)[0]
@@ -88,9 +89,10 @@ def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth
                 resized = cv2.resize(blurred, (out_width, out_height)) + MACHINE_EPSILON
                 edge_confidence[..., jdx] = resized
         edge_confidence = edge_confidence[..., 1:]
-        edge_confidence = edge_confidence.sum(-1, keepdims=True)
-        confidence[..., idx] = edge_confidence[..., 0]
-        confidence = np.concatenate((confidence, edge_confidence), -1)
+        edge_confidence_list.append(edge_confidence)
+        confidence[..., idx] = edge_confidence.sum(-1)
+    edge_confidence = np.concatenate(edge_confidence_list, -1)
+    confidence = np.concatenate((confidence, edge_confidence), -1)
     return confidence
 
 
