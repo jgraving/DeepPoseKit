@@ -153,13 +153,13 @@ def draw_confidence_map(
 
 
 def draw_confidence_maps(
-    images, keypoints, graph=None, output_shape=None, use_edges=True, sigma=1
+    images, keypoints, graph=None, output_shape=None, use_graph=True, sigma=1
 ):
     n_samples = keypoints.shape[0]
     confidence_maps = []
     for idx in range(n_samples):
         confidence = draw_confidence_map(
-            images[idx], keypoints[idx], graph, output_shape, use_edges, sigma
+            images[idx], keypoints[idx], graph, output_shape, use_graph, sigma
         )
         confidence_maps.append(confidence)
     confidence_maps = np.stack(confidence_maps)
