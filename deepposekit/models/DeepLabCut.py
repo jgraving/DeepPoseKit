@@ -135,27 +135,13 @@ class DeepLabCut(BaseModel):
             x_out = Conv2D(self.train_generator.n_output_channels, (1, 1))(x)
         elif self.train_generator.downsample_factor is 3:
             x = pretrained_features
-            x = Conv2D(
-                512, (1, 1), kernel_initializer="lecun_normal", activation="selu"
-            )(x)
             x = SubPixelUpscaling()(x)
             x_out = Conv2D(
                 self.train_generator.n_output_channels, (3, 3), padding="same"
             )(x)
         elif self.train_generator.downsample_factor is 2:
             x = pretrained_features
-            x = Conv2D(
-                512, (1, 1), kernel_initializer="lecun_normal", activation="selu"
-            )(x)
-            x = SubPixelUpscaling()(x)
-            x = Conv2D(
-                self.train_generator.n_output_channels * 2,
-                (3, 3),
-                padding="same",
-                kernel_initializer="lecun_normal",
-                activation="selu",
-            )(x)
-            x = SubPixelUpscaling()(x)
+            x = SubPixelUpscaling(4)(x)
             x_out = Conv2D(
                 self.train_generator.n_output_channels, (3, 3), padding="same"
             )(x)
