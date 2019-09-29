@@ -45,11 +45,11 @@ class DLCDataGenerator(BaseGenerator):
         self.annotations = pd.concat(annotations)
 
         with open(project_path + "/config.yaml", "r") as config_file:
-            self.config = yaml.load(config_file, Loader=yaml.FullLoader)
-        self.n_keypoints = len(self.config["bodyparts"])
+            self.dlcconfig = yaml.load(config_file, Loader=yaml.FullLoader)
+        self.n_keypoints = len(self.dlcconfig["bodyparts"])
 
-        self.bodyparts = self.config["bodyparts"]
-        self.scorer = self.config["scorer"]
+        self.bodyparts = self.dlcconfig["bodyparts"]
+        self.scorer = self.dlcconfig["scorer"]
 
         self.n_samples = self.annotations.shape[0]
         self.index = np.arange(self.n_samples)
