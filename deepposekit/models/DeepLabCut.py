@@ -16,7 +16,7 @@ limitations under the License.
 """
 
 from tensorflow.keras import Input, Model
-from tensorflow.keras.layers import Conv2D, Concatenate
+from tensorflow.keras.layers import Conv2DTranspose, Concatenate
 from deepposekit.models.layers.util import Float
 from deepposekit.models.layers.deeplabcut import ImageNetPreprocess, MODELS
 from deepposekit.models.layers.convolutional import SubPixelUpscaling
@@ -135,15 +135,20 @@ class DeepLabCut(BaseModel):
             x_out = Conv2D(self.train_generator.n_output_channels, (1, 1))(x)
         elif self.train_generator.downsample_factor is 3:
             x = pretrained_features
-            x = SubPixelUpscaling()(x)
-            x_out = Conv2D(
-                self.train_generator.n_output_channels, (3, 3), padding="same"
+            x_out = Conv2DTranspose(
+                self.train_generator.n_output_channels,
+                (3, 3),
+                strides=(2, 2),
+                padding="same",
             )(x)
         elif self.train_generator.downsample_factor is 2:
             x = pretrained_features
-            x = SubPixelUpscaling(4)(x)
+            x = SubPixelUpscaling()(x)
             x_out = Conv2D(
-                self.train_generator.n_output_channels, (3, 3), padding="same"
+                self.train_generator.n_output_channels,
+                (3, 3),
+                strides=(2, 2),
+                padding="same",
             )(x)
         else:
             raise ValueError(
