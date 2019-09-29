@@ -230,6 +230,7 @@ class StackedDenseNet(BaseModel):
             "growth_rate": self.growth_rate,
             "bottleneck_factor": self.bottleneck_factor,
             "compression_factor": self.compression_factor,
+            "pretrained": self.pretrained,
             "subpixel": self.subpixel,
         }
         base_config = super(StackedDenseNet, self).get_config()
