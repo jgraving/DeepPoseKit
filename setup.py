@@ -21,17 +21,13 @@ import warnings
 from setuptools import setup, find_packages
 
 DESCRIPTION = "a toolkit for pose estimation using deep learning"
-LONG_DESCRIPTION = """\
-a toolkit for pose estimation using deep learning
-"""
-
 DISTNAME = "deepposekit"
 MAINTAINER = "Jacob Graving <jgraving@gmail.com>"
 MAINTAINER_EMAIL = "jgraving@gmail.com"
 URL = "https://github.com/jgraving/deepposekit"
 LICENSE = "Apache 2.0"
 DOWNLOAD_URL = "https://github.com/jgraving/deepposekit.git"
-VERSION = "0.2.0.dev"
+VERSION = "0.2.1"
 
 
 if __name__ == "__main__":
@@ -43,7 +39,8 @@ if __name__ == "__main__":
         maintainer=MAINTAINER,
         maintainer_email=MAINTAINER_EMAIL,
         description=DESCRIPTION,
-        long_description=LONG_DESCRIPTION,
+        long_description=open('README.md').read(),
+        long_description_content_type='text/markdown',
         license=LICENSE,
         url=URL,
         version=VERSION,
@@ -61,11 +58,6 @@ if __name__ == "__main__":
         classifiers=[
             "Intended Audience :: Science/Research",
             "Programming Language :: Python :: 3",
-            "Topic :: Scientific/Engineering :: Visualization",
             "Topic :: Scientific/Engineering :: Image Recognition",
-            "Topic :: Scientific/Engineering :: Information Analysis",
-            "Topic :: Multimedia :: Video" "Operating System :: POSIX",
-            "Operating System :: Unix",
-            "Operating System :: MacOS",
         ],
     )

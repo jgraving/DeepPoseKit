@@ -4,7 +4,7 @@
 
 
 You have just found DeepPoseKit.
-------------
+---------------------------------
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" max-height:256px>
 </p>
@@ -30,7 +30,7 @@ DeepPoseKit is currently limited to individual pose esimation, but can be extend
 </p>
 
 How to use DeepPoseKit
-------------
+---------------------------------
 DeepPoseKit is designed for easy use. For example, training and saving a model requires only a few lines of code:
 ```python
 from deepposekit import TrainingGenerator
@@ -53,7 +53,7 @@ predictions = model.predict(new_data)
 
 
 Installation
-------------
+---------------------------------
 
 DeepPoseKit requires [Tensorflow](https://github.com/tensorflow/tensorflow) for training and using pose estimation models. [Tensorflow](https://github.com/tensorflow/tensorflow) should be manually installed, along with dependencies such as CUDA and cuDNN, before installing DeepPoseKit:
 
@@ -96,7 +96,7 @@ import sys
 ```
 
 Citation
----------
+---------------------------------
 If you use DeepPoseKit for your research please cite [our preprint](https://doi.org/10.1101/620245):
 
     @article{graving2019deepposekit,
@@ -110,15 +110,15 @@ If you use DeepPoseKit for your research please cite [our preprint](https://doi.
 
 
 Development
--------------
+---------------------------------
 Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible. 
 
 If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
 
 Contributors
-------------
+---------------------------------
 DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
 
 License
-------------
+---------------------------------
 Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
