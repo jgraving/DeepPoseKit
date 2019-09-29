@@ -83,7 +83,7 @@ class DataGenerator(BaseGenerator):
             self.annotated = np.all(h5file["annotated"].value, axis=1)
             self.annotated_index = np.where(self.annotated)[0]
             self.n_annotated = self.annotated_index.shape[0]
-            if self.n_annotated == 0 and self.mode is not "unannotated":
+            if self.n_annotated == 0 and self.mode not in ["full", "unannotated"]:
                 raise ValueError("The number of annotated images is zero")
             self.n_keypoints = h5file["annotations"].shape[1]
             self.n_samples = h5file[self.dataset].shape[0]
