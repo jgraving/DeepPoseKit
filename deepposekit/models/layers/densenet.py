@@ -321,6 +321,7 @@ class ImageNetFrontEnd:  # (layers.Layer):
         ]
         outputs = [outputs[-1]]
         [outputs.append(output) for output in res_outputs]
+        outputs = [Compression(self.compression_factor)(output) for output in outputs]
         outputs = Concatenate()(outputs)
         return [outputs]
 
