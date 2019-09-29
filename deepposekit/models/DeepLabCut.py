@@ -144,7 +144,7 @@ class DeepLabCut(BaseModel):
         elif self.train_generator.downsample_factor is 2:
             x = pretrained_features
             x = SubPixelUpscaling()(x)
-            x_out = Conv2D(
+            x_out = Conv2DTranspose(
                 self.train_generator.n_output_channels,
                 (3, 3),
                 strides=(2, 2),
