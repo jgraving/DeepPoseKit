@@ -140,6 +140,7 @@ def DenseNet(
     input_shape=None,
     pooling=None,
     classes=1000,
+    residuals=False,
     **kwargs
 ):
     """Instantiates the DenseNet architecture.
@@ -216,21 +217,26 @@ def DenseNet(
             img_input = input_tensor
 
     bn_axis = 3 if backend.image_data_format() == "channels_last" else 1
-
+    
+    res_outputs = []
     x = layers.ZeroPadding2D(padding=((3, 3), (3, 3)))(img_input)
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name="conv1/conv")(x)
     x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name="conv1/bn")(x)
     x = layers.Activation("relu", name="conv1/relu")(x)
+    res_outputs.append(x)
     x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)))(x)
     x = layers.MaxPooling2D(3, strides=2, name="pool1")(x)
 
     x = dense_block(x, blocks[0], name="conv2")
+    res_outputs.append(x)
     x = transition_block(x, 0.5, name="pool2")
     x = dense_block(x, blocks[1], name="conv3")
+    res_outputs.append(x)
     x = transition_block(x, 0.5, name="pool3")
     x = dense_block(x, blocks[2], name="conv4")
     x = transition_block(x, 0.5, name="pool4", pool=False)
     x = dense_block(x, blocks[3], name="conv5", dilation=2)
+
 
     x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name="bn")(x)
     x = layers.Activation("relu", name="relu")(x)
@@ -310,7 +316,8 @@ def DenseNet(
         model.load_weights(weights_path)
     elif weights is not None:
         model.load_weights(weights)
-
+    if residuals:
+        model = models.Model(inputs, res_outputs, name="densenet121")
     return model
 
 
@@ -321,6 +328,7 @@ def DenseNet121(
     input_shape=None,
     pooling=None,
     classes=1000,
+    residuals=False,
     **kwargs
 ):
     return DenseNet(
@@ -331,6 +339,7 @@ def DenseNet121(
         input_shape,
         pooling,
         classes,
+        residuals,
         **kwargs
     )
 

@@ -25,6 +25,7 @@ from deepposekit.models.layers.convolutional import (
     SubPixelDownscaling,
     SubPixelUpscaling,
 )
+from deepposekit.models.layers.deeplabcut_densenet import DenseNet121
 
 
 __all__ = [
@@ -35,6 +36,8 @@ __all__ = [
     "TransitionDown",
     "TransitionUp",
     "DenseNet",
+    "FrontEnd",
+    "ImageNetFrontEnd",
     "OutputChannels",
 ]
 
@@ -293,6 +296,36 @@ class FrontEnd:  # (layers.Layer):
     #    config = {'n_downsample': self.n_downsample}
     #    base_config = super(FrontEnd, self).get_config()
     #    return dict(list(base_config.items()) + list(config.items()))
+
+
+class ImageNetFrontEnd:  # (layers.Layer):
+    def __init__(self, input_shape, n_downsample=1, compression_factor=0.5, **kwargs):
+        # super(FrontEnd, self).__init__(self, **kwargs)
+        self.input_shape = input_shape
+        self.compression_factor = compression_factor
+        if n_downsample > 3:
+            raise ValueError("ImageNetFrontEnd does not support `n_downsample` > 3")
+        self.n_downsample = n_downsample
+        self.pool_input = SubPixelDownscaling(2 ** n_downsample)
+        self.pooled_outputs = [
+            TransitionDown(compression_factor, pool_size=2 ** (n_downsample - idx))
+            for idx in range(1, n_downsample)
+        ]
+
+    def call(self, inputs):
+        pretrained_model = DenseNet121(input_shape=self.input_shape, residuals=True)
+        outputs = pretrained_model(inputs)
+        res_outputs = outputs[: self.n_downsample]
+        res_outputs = [
+            pool(output)[0] for pool, output in zip(self.pooled_outputs, res_outputs)
+        ]
+        outputs = [outputs[-1]]
+        [outputs.append(output) for output in res_outputs]
+        outputs = Concatenate()(outputs)
+        return [outputs]
+
+    def __call__(self, inputs):
+        return self.call(inputs)
 
 
 class DenseNet:  # (layers.Layer):

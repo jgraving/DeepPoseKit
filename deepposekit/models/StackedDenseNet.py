@@ -22,8 +22,10 @@ from tensorflow.keras.layers import BatchNormalization
 import deepposekit.utils.image as image_utils
 from deepposekit.models.engine import BaseModel
 from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.deeplabcut import ImageNetPreprocess
 from deepposekit.models.layers.densenet import (
     FrontEnd,
+    ImageNetFrontEnd,
     DenseNet,
     OutputChannels,
     Concatenate,
@@ -39,6 +41,7 @@ class StackedDenseNet(BaseModel):
         growth_rate=48,
         bottleneck_factor=1,
         compression_factor=0.5,
+        pretrained=False,
         subpixel=True,
         **kwargs
     ):
@@ -79,6 +82,8 @@ class StackedDenseNet(BaseModel):
             Inputs are first passed through a 1x1 convolutional layer
             to reduce the number of channels to
             n_input_channels * compression_factor
+        pretrained : bool, default = False
+            Whether to use an encoder that is pretrained on ImageNet
         subpixel: bool, default = True
             Whether to use subpixel maxima for calculating
             keypoint coordinates in the prediction model.
@@ -119,6 +124,7 @@ class StackedDenseNet(BaseModel):
         self.bottleneck_factor = bottleneck_factor
         self.compression_factor = compression_factor
         self.n_transitions = n_transitions
+        self.pretrained = pretrained
         super(StackedDenseNet, self).__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
@@ -171,13 +177,23 @@ class StackedDenseNet(BaseModel):
             )
         input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
-        normalized = ImageNormalization()(to_float)
-        front_outputs = FrontEnd(
-            growth_rate=self.growth_rate,
-            n_downsample=self.train_generator.downsample_factor,
-            compression_factor=self.compression_factor,
-            bottleneck_factor=self.bottleneck_factor,
-        )(normalized)
+        if self.pretrained:
+            if batch_shape[-1] is 1:
+                to_float = Concatenate()([to_float] * 3)
+                batch_shape = batch_shape[:-1] + (3,)
+            normalized = ImageNetPreprocess("densenet121")(to_float)
+            front_outputs = ImageNetFrontEnd(
+                input_shape=batch_shape[1:],
+                n_downsample=self.train_generator.downsample_factor
+            )(normalized)
+        else:
+            normalized = ImageNormalization()(to_float)
+            front_outputs = FrontEnd(
+                growth_rate=self.growth_rate,
+                n_downsample=self.train_generator.downsample_factor,
+                compression_factor=self.compression_factor,
+                bottleneck_factor=self.bottleneck_factor,
+            )(normalized)
         n_downsample = self.n_transitions - self.train_generator.downsample_factor
         outputs = front_outputs
         model_outputs = OutputChannels(
