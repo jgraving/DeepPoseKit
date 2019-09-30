@@ -18,23 +18,23 @@ IO module `deepposekit.io`
 Annotation module `deepposekit.annotate`
 ------
 - [ ] Add support for `deepposekit.annotate.Annotator` to edit DeepLabCut formatted data `deepposekit.io.DLCDataGenerator`. Ensure this does not destroy compatibility with DLC.
-- [ ] Remove extra step of initializing a skeleton and remove `deepposekit.annotate.Skeleton`, as this is confusing and not all that helpful.
+- [x] Remove extra step of initializing a skeleton and remove `deepposekit.annotate.Skeleton`, as this is confusing and not all that helpful.
 - [ ] Abstract `deepposekit.annotate.gui.GUI` and `deepposekit.annotate.Annotator` to use new `deepposekit.io.BaseGenerator` with abstracted data IO
 - [ ] Develop submodule `deepposekit.annotate.outliers` with tools for identifying outlier data for adding to data sets
 
 Models modules `deepposekit.models`
 ------
 - [x] Add `MobileNetV2` and `DenseNet` backbones to `deepposekit.models.DeepLabCut`
-- [ ] Add pretrained `DenseNet` frontend to `StackedDenseNet` model
+- [x] Add pretrained `DenseNet` frontend to `StackedDenseNet` model
 - [ ] Support arbitrary image sizes (not just powers of 2) with `tf.keras.layers.ZeroPaddding2D` 
 - [ ] Support dynamic image sizes with with automatic padding at inference. **Is this possible without reducing functionality?**
 
 Examples and Documentation
 ------
 - [ ] Improve and update docstrings across the package
-- [ ] Add example notebook for using custom data sets 
+- [x] Add example notebook for using custom data sets 
 - [x] Add example notebook for using DeepLabCut formatted data
-- [ ] Add example for identifying outliers and appending new images to a training set
+- [x] Add example for identifying outliers and appending new images to a training set
 
 Tests (once API has stabilized)
 ------
@@ -48,6 +48,7 @@ Tests (once API has stabilized)
 
 Future
 ------
+- [x] Put `deepposekit` on PyPI
 - [x] Update to tf.keras (stand-alone keras will be deprecated)
 - [ ] Update to Tensorflow 2.0
 - [ ] `deepposekit.visualize` module with functions for making videos and plotting data
