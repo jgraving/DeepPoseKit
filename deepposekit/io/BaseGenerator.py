@@ -105,6 +105,10 @@ class BaseGenerator(Sequence):
     def image_shape(self):
         return self.compute_image_shape()
 
+    def replace_nan(self, keypoints):
+        keypoints[np.isnan(keypoints)] = -99999
+        return keypoints
+
     @property
     def keypoints_shape(self):
         return self.compute_keypoints_shape()
@@ -119,7 +123,9 @@ class BaseGenerator(Sequence):
         return (self.image_shape, self.keypoints_shape)
 
     def get_data(self, indexes):
-        return (self.get_images(indexes), self.get_keypoints(indexes))
+        keypoints = self.get_keypoints(indexes)
+        keypoints = self.replace_nan(keypoints)
+        return (self.get_images(indexes), keypoints)
 
     def set_data(self, indexes, keypoints):
         self.set_keypoints(indexes, keypoints)

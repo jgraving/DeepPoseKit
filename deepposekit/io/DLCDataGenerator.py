@@ -84,9 +84,6 @@ class DLCDataGenerator(BaseGenerator):
             for part in self.bodyparts:
                 x = row[(self.scorer, part, "x")]
                 y = row[(self.scorer, part, "y")]
-                if np.isnan(x) or np.isnan(y):
-                    x = -99999
-                    y = -99999
                 coords.append([x, y])
             coords = np.array(coords)
             keypoints.append(coords)
