@@ -55,6 +55,16 @@ predictions = model.predict(reader)
 ```
 [See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) for more details on how to use DeepPoseKit.
 
+"I already have annotated data"
+---------------------------------
+DeepPoseKit is designed to be extensible, so loading data in other formats is possible.
+
+If you have data from DeepLabCut (http://deeplabcut.org), try our [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplacut_data_example.ipynb) for loading data in this format.
+
+Have data in another format? You can write your own custom generator to load it.
+Check out the [example for writing custom data generators](https://github.com/jgraving/DeepPoseKit/blob/master/examples/custom_data_generator.ipynb).
+
+
 Installation
 ---------------------------------
 
@@ -65,7 +75,12 @@ DeepPoseKit requires [Tensorflow](https://github.com/tensorflow/tensorflow) for 
 
 DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended system for using the toolkit. 
 
-Install the development version with pip:
+Install the latest stable release with pip:
+```bash
+pip install -U deepposekit
+```
+
+Install the latest development version with pip:
 ```bash
 pip install git+https://www.github.com/jgraving/deepposekit.git
 ```
