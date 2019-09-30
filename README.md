@@ -59,7 +59,7 @@ predictions = model.predict(reader)
 ---------------------------------
 DeepPoseKit is designed to be extensible, so loading data in other formats is possible.
 
-If you have data from DeepLabCut (http://deeplabcut.org), try our [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplacut_data_example.ipynb) for loading data in this format.
+If you have data from DeepLabCut (http://deeplabcut.org), try [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplacut_data_example.ipynb) for loading data in this format.
 
 Have data in another format? You can write your own custom generator to load it.
 Check out the [example for writing custom data generators](https://github.com/jgraving/DeepPoseKit/blob/master/examples/custom_data_generator.ipynb).
@@ -134,3 +134,9 @@ DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Da
 License
 ---------------------------------
 Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
+
+News
+---------------------------------
+
+- **September 2019:** v0.3.0 is released. See [the release notes](https://github.com/jgraving/DeepPoseKit/releases/tag/v0.3.0).
+- **April 2019:** The DeepPoseKit preprint is on biorxiv (http://preprint.deepposekit.org)
