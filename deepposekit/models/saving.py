@@ -35,12 +35,12 @@ def save_model(model, path, optimizer=True):
 
     with h5py.File(filepath, "r+") as h5file:
 
-        data_generator = model.data_generator
+        train_generator = model.train_generator
 
-        h5file.attrs["data_generator_config"] = json.dumps(
+        h5file.attrs["train_generator_config"] = json.dumps(
             {
-                "class_name": data_generator.__class__.__name__,
-                "config": data_generator.get_config(),
+                "class_name": train_generator.__class__.__name__,
+                "config": train_generator.get_config(),
             },
             default=get_json_type,
         ).encode("utf8")

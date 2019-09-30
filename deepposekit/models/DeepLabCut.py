@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*- #
 """
 Copyright 2018 Jacob M. Graving <jgraving@gmail.com>
 
@@ -16,114 +16,146 @@ limitations under the License.
 """
 
 from tensorflow.keras import Input, Model
-from tensorflow.keras.layers import Conv2DTranspose, Conv2D, Concatenate
+from tensorflow.keras.layers import Conv2DTranspose, Concatenate
 from deepposekit.models.layers.util import Float
-from deepposekit.models.layers.deeplabcut import ResNet50, ResNetPreprocess
+from deepposekit.models.layers.deeplabcut import ImageNetPreprocess, MODELS
+from deepposekit.models.layers.convolutional import SubPixelUpscaling
+
 from deepposekit.models.engine import BaseModel
+from functools import partial
+
+
+__docstring__ = """
+    Define a DeepLabCut model from Mathis et al., 2018 [1][2]
+    See `References` for details on the model architecture.
+
+    Parameters
+    ----------
+    train_generator : class deepposekit.io.TrainingGenerator
+        A deepposekit.io.TrainingGenerator class for generating
+        images and confidence maps.
+    subpixel: bool, default = True
+        Whether to use subpixel maxima for calculating
+        keypoint coordinates in the prediction model.
+    weights: "imagnet" or None, default is "imagenet"
+        Which weights to use for initialization. "imagenet" uses
+        weights pretrained on imagenet. None uses randomly initialized
+        weights.
+    backbone: string, default is "resnet50"
+        pretrained backbone network to use. Must be one of {}. See [3].
+    alpha: float, default is 1.0
+        Which MobileNetV2 to use. Must be one of:
+        {}
+        Not used if backbone is not "mobilenetv2".
+
+    Attributes
+    -------
+    train_model: keras.Model
+        A model for training the network to produce confidence maps with
+        one input layer for images
+    predict_model: keras.Model
+        A model for predicting keypoint coordinates using with Maxima2D or
+        SubpixelMaxima2D layers at the output of the network.
+
+    Both of these models share the same computational graph,
+    so training train_model updates the weights of predict_model
+
+    References
+    ----------
+    [1] Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
+        Mathis, M. W., & Bethge, M. (2018). DeepLabCut: markerless pose
+        estimation of user-defined body parts with deep learning (p. 1).
+        Nature Publishing Group.
+    [2] Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
+        & Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
+        pose estimation across species and behaviors. Nature protocols,
+        14(7), 2152-2176.
+    [3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
+        Pretraining boosts out-of-domain-robustness for pose estimation.
+        arXiv cs.CV https://arxiv.org/abs/1909.11229
+
+
+    """.format(
+    list(MODELS.keys()), [0.35, 0.50, 0.75, 1.0, 1.3, 1.4]
+)
 
 
 class DeepLabCut(BaseModel):
-    def __init__(self, data_generator, subpixel=True, weights="imagenet", **kwargs):
-        """
-        Define a DeepLabCut model from Mathis et al., 2018 [1]
-        See `References` for details on the model architecture.
+    __doc__ = __docstring__
 
-        Parameters
-        ----------
-        data_generator : class pose.DataGenerator
-            A pose.DataGenerator class for generating
-            images and confidence maps.
-        subpixel: bool, default = True
-            Whether to use subpixel maxima for calculating
-            keypoint coordinates in the prediction model.
+    def __init__(
+        self,
+        train_generator,
+        subpixel=True,
+        weights="imagenet",
+        backbone="resnet50",
+        alpha=1.0,
+        **kwargs
+    ):
 
-        Attributes
-        -------
-        train_model: keras.Model
-            A model for training the network to produce confidence maps with
-            one input layer for images
-        predict_model: keras.Model
-            A model for predicting keypoint coordinates using with Maxima2D or
-            SubpixelMaxima2D layers at the output of the network.
-
-        Both of these models share the same computational graph,
-        so training train_model updates the weights of predict_model
-
-        References
-        ----------
-        [1] Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
-            Mathis, M. W., & Bethge, M. (2018). DeepLabCut: markerless pose
-            estimation of user-defined body parts with deep learning (p. 1).
-            Nature Publishing Group.
-
-        """
         self.subpixel = subpixel
         self.weights = weights
-        super(DeepLabCut, self).__init__(data_generator, subpixel, **kwargs)
+        self.backbone = backbone
+        self.alpha = alpha
+        super(DeepLabCut, self).__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
 
         batch_shape = (
             None,
-            self.data_generator.height,
-            self.data_generator.width,
-            self.data_generator.n_channels,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
         )
 
         input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
         if batch_shape[-1] is 1:
             to_float = Concatenate()([to_float] * 3)
-        normalized = ResNetPreprocess()(to_float)
-        pretrained_model = ResNet50(
-            include_top=False,
-            weights=self.weights,
-            input_shape=(self.data_generator.height, self.data_generator.width, 3),
+        if self.backbone in list(MODELS.keys()):
+            normalized = ImageNetPreprocess(self.backbone)(to_float)
+        else:
+            raise ValueError(
+                "backbone model {} is not supported. Must be one of {}".format(
+                    self.backbone, list(MODELS.keys())
+                )
+            )
+        backbone = MODELS[self.backbone]
+        if self.backbone in list(MODELS.keys()):
+            input_shape = (self.train_generator.height, self.train_generator.width, 3)
+        if self.backbone.startswith("mobile"):
+            input_shape = None
+            backbone = partial(backbone, alpha=self.alpha)
+        pretrained_model = backbone(
+            include_top=False, weights=self.weights, input_shape=input_shape
         )
         pretrained_features = pretrained_model(normalized)
-        if self.data_generator.downsample_factor is 4:
+        if self.train_generator.downsample_factor is 4:
             x = pretrained_features
-            x_out = Conv2D(self.data_generator.n_output_channels, (1, 1))(x)
-        elif self.data_generator.downsample_factor is 3:
+            x_out = Conv2D(self.train_generator.n_output_channels, (1, 1))(x)
+        elif self.train_generator.downsample_factor is 3:
             x = pretrained_features
             x_out = Conv2DTranspose(
-                self.data_generator.n_output_channels,
+                self.train_generator.n_output_channels,
                 (3, 3),
                 strides=(2, 2),
                 padding="same",
             )(x)
-        elif self.data_generator.downsample_factor is 2:
+        elif self.train_generator.downsample_factor is 2:
             x = pretrained_features
-            x = Conv2DTranspose(512, (3, 3), strides=(2, 2), padding="same")(x)
+            x = SubPixelUpscaling()(x)
             x_out = Conv2DTranspose(
-                self.data_generator.n_output_channels,
-                (3, 3),
-                strides=(2, 2),
-                padding="same",
-            )(x)
-        elif self.data_generator.downsample_factor is 1:
-            x = pretrained_features
-            x = Conv2DTranspose(512, (3, 3), strides=(2, 2), padding="same")(x)
-            x = Conv2DTranspose(256, (3, 3), strides=(2, 2), padding="same")(x)
-            x_out = Conv2DTranspose(
-                self.data_generator.n_output_channels,
-                (3, 3),
-                strides=(2, 2),
-                padding="same",
-            )(x)
-        elif self.data_generator.downsample_factor is 0:
-            x = pretrained_features
-            x = Conv2DTranspose(512, (3, 3), strides=(2, 2), padding="same")(x)
-            x = Conv2DTranspose(256, (3, 3), strides=(2, 2), padding="same")(x)
-            x = Conv2DTranspose(128, (3, 3), strides=(2, 2), padding="same")(x)
-            x_out = Conv2DTranspose(
-                self.data_generator.n_output_channels,
+                self.train_generator.n_output_channels,
                 (3, 3),
                 strides=(2, 2),
                 padding="same",
             )(x)
         else:
-            raise ValueError("This downsample factor is not supported for DeepLabCut")
+            raise ValueError(
+                "`downsample_factor={}` is not supported for DeepLabCut. Adjust your TrainingGenerator".format(
+                    self.train_generator.downsample_factor
+                )
+            )
 
         self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
 
@@ -132,6 +164,8 @@ class DeepLabCut(BaseModel):
             "name": self.__class__.__name__,
             "subpixel": self.subpixel,
             "weights": self.weights,
+            "backbone": self.backbone,
+            "alpha": self.alpha if self.backbone is "mobilenetv2" else None,
         }
         base_config = super(DeepLabCut, self).get_config()
         return dict(list(config.items()) + list(base_config.items()))

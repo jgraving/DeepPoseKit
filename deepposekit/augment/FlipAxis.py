@@ -20,6 +20,8 @@ import imgaug.augmenters as iaa
 import six.moves as sm
 import h5py
 
+from deepposekit.io.BaseGenerator import BaseGenerator
+
 __all__ = ["FlipAxis"]
 
 
@@ -34,9 +36,9 @@ class FlipAxis(iaa.Flipud):
 
     Parameters
     ----------
-    swap_index: str or array
+    swap_index: deepposekit.io.BaseGenerator or array
         The keypoint indices to swap when the image is flipped.
-        This can be a string specifying a .h5 file for annotations
+        This can be a deepposekit.io.BaseGenerator for annotations
         or an array of integers specifying which keypoint indices
         to swap.
 
@@ -80,12 +82,9 @@ class FlipAxis(iaa.Flipud):
         )
 
         self.axis = axis
-        if isinstance(swap_index, str):
-            if swap_index.endswith(".h5"):
-                with h5py.File(swap_index, mode="r") as h5file:
-                    self.swap_index = h5file["skeleton"][:, 1]
-            else:
-                raise ValueError("swap_index must be .h5 file")
+        if isinstance(swap_index, BaseGenerator):
+            if hasattr(swap_index, "swap_index"):
+                self.swap_index = swap_index.swap_index
         elif isinstance(swap_index, np.ndarray):
             self.swap_index = swap_index
 
@@ -139,6 +138,6 @@ class FlipAxis(iaa.Flipud):
                 swapped = keypoints_on_image.keypoints.copy()
                 for r in range(len(keypoints_on_image.keypoints)):
                     idx = self.swap_index[r]
-                    if idx > 0:
+                    if idx >= 0:
                         keypoints_on_image.keypoints[r] = swapped[idx]
         return keypoints_on_images

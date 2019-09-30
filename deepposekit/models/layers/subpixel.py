@@ -63,7 +63,7 @@ class SubpixelMaxima2D(Layer):
         upsample_factor,
         index=None,
         coordinate_scale=1.0,
-        confidence_scale=255.0,
+        confidence_scale=1.0,
         data_format=None,
         **kwargs
     ):

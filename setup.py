@@ -27,7 +27,7 @@ MAINTAINER_EMAIL = "jgraving@gmail.com"
 URL = "https://github.com/jgraving/deepposekit"
 LICENSE = "Apache 2.0"
 DOWNLOAD_URL = "https://github.com/jgraving/deepposekit.git"
-VERSION = "0.2.1"
+VERSION = '0.3.0.dev'
 
 
 if __name__ == "__main__":

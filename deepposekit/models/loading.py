@@ -22,8 +22,12 @@ import json
 import inspect
 
 from deepposekit.models.layers.util import ImageNormalization, Float
-from deepposekit.models.layers.convolutional import UpSampling2D, SubPixelDownscaling, SubPixelUpscaling
-from deepposekit.models.layers.deeplabcut import ResNetPreprocess
+from deepposekit.models.layers.convolutional import (
+    UpSampling2D,
+    SubPixelDownscaling,
+    SubPixelUpscaling,
+)
+from deepposekit.models.layers.deeplabcut import ImageNetPreprocess
 
 from deepposekit.io import TrainingGenerator
 from deepposekit.models.LEAP import LEAP
@@ -45,11 +49,11 @@ CUSTOM_LAYERS = {
     "UpSampling2D": UpSampling2D,
     "SubPixelDownscaling": SubPixelDownscaling,
     "SubPixelUpscaling": SubPixelUpscaling,
-    "ResNetPreprocess": ResNetPreprocess,
+    "ImageNetPreprocess": ImageNetPreprocess,
 }
 
 
-def load_model(path, augmenter=None, custom_objects=None, datapath=None):
+def load_model(path, generator=None, augmenter=None, custom_objects=None):
     """
     Load the model
 
@@ -78,10 +82,10 @@ def load_model(path, augmenter=None, custom_objects=None, datapath=None):
     train_model = saving.load_model(filepath, custom_objects=custom_objects)
 
     with h5py.File(filepath, "r") as h5file:
-        data_generator_config = h5file.attrs.get("data_generator_config")
-        if data_generator_config is None:
+        train_generator_config = h5file.attrs.get("train_generator_config")
+        if train_generator_config is None:
             raise ValueError("No data generator found in config file")
-        data_generator_config = json.loads(data_generator_config.decode("utf-8"))[
+        train_generator_config = json.loads(train_generator_config.decode("utf-8"))[
             "config"
         ]
 
@@ -91,28 +95,30 @@ def load_model(path, augmenter=None, custom_objects=None, datapath=None):
         model_name = json.loads(model_config.decode("utf-8"))["class_name"]
         model_config = json.loads(model_config.decode("utf-8"))["config"]
 
-    if datapath:
+    if generator:
         signature = inspect.signature(TrainingGenerator.__init__)
         keys = [key for key in signature.parameters.keys()]
         keys.remove("self")
         keys.remove("augmenter")
-        keys.remove("datapath")
-        kwargs = {key: data_generator_config[key] for key in keys}
+        keys.remove("generator")
+        kwargs = {key: train_generator_config[key] for key in keys}
         kwargs["augmenter"] = augmenter
-        kwargs["datapath"] = datapath
-        data_generator = TrainingGenerator(**kwargs)
+        kwargs["generator"] = generator
+        train_generator = TrainingGenerator(**kwargs)
     else:
-        data_generator = None
+        train_generator = None
 
     Model = MODELS[model_name]
     signature = inspect.signature(Model.__init__)
     keys = [key for key in signature.parameters.keys()]
     keys.remove("self")
-    keys.remove("data_generator")
+    keys.remove("train_generator")
     if "kwargs" in keys:
         keys.remove("kwargs")
     kwargs = {key: model_config[key] for key in keys}
-    kwargs["data_generator"] = data_generator
+    kwargs["train_generator"] = train_generator
+
+    # Pass to skip initialization and manually intialize
     kwargs["skip_init"] = True
 
     model = Model(**kwargs)
@@ -121,12 +127,9 @@ def load_model(path, augmenter=None, custom_objects=None, datapath=None):
 
     kwargs = {}
     kwargs["output_shape"] = model_config["output_shape"]
-    kwargs["n_keypoints"] = model_config["n_keypoints"]
+    kwargs["keypoints_shape"] = model_config["keypoints_shape"]
     kwargs["downsample_factor"] = model_config["downsample_factor"]
-    if model_config["sigma"]:
-        kwargs["output_sigma"] = model_config["sigma"]
-    else:
-        kwargs["output_sigma"] = None
+    kwargs["output_sigma"] = model_config["output_sigma"]
     model.__init_predict_model__(**kwargs)
 
     return model

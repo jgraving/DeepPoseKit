@@ -18,7 +18,9 @@ DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation o
 
 DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research.
 
-DeepPoseKit is currently limited to individual pose esimation, but can be extended to multiple individuals by first localizing and cropping individuals with additional tracking software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor). Localization can also be achieved with additional deep learning software like [keras-retinanet](https://github.com/fizyr/keras-retinanet), the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), or [MatterPort's Mask R-CNN](https://github.com/matterport/Mask_RCNN).
+DeepPoseKit is currently limited to *individual pose esimation*. If individuals can be easily distinguished visually (i.e., they have differently colored bodies or are marked in some way), then multiple individuals can simply be labeled with separate keypoints (head1, tail1, head2, tail2, etc.). Otherwise DeepPoseKit can be extended to multiple individuals by first localizing, tracking, and cropping individuals with additional software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor).
+
+Localization (without tracking) can also be achieved with deep learning software like [keras-retinanet](https://github.com/fizyr/keras-retinanet), the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), or [MatterPort's Mask R-CNN](https://github.com/matterport/Mask_RCNN).
 
 [Check out our preprint](https://doi.org/10.1101/620245) to find out more.
 
@@ -33,24 +35,25 @@ How to use DeepPoseKit
 ---------------------------------
 DeepPoseKit is designed for easy use. For example, training and saving a model requires only a few lines of code:
 ```python
-from deepposekit import TrainingGenerator
+from deepposekit.io import DataGenerator, TrainingGenerator
 from deepposekit.models import StackedDenseNet
 
-train_generator = TrainingGenerator('/path/to/data.h5')
+data_generator = DataGenerator('/path/to/annotation_data.h5')
+train_generator = TrainingGenerator(data_generator)
 model = StackedDenseNet(train_generator)
 model.fit(batch_size=16, n_workers=8)
-model.save('/path/to/model.h5')
+model.save('/path/to/saved_model.h5')
 ```
-Loading a trained model and running predictions on new data is also straightforward:
+Loading a trained model and running predictions on new data is also straightforward. For example, running predictions on a new video:
 ```python
 from deepposekit.models import load_model
+from deepposekit.io import VideoReader
 
-model = load_model('/path/to/model.h5')
-new_data = load_new_data('/path/to/new/data.h5')
-predictions = model.predict(new_data)
+model = load_model('/path/to/saved_model.h5')
+reader = VideoReader('/path/to/video.mp4')
+predictions = model.predict(reader)
 ```
 [See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) for more details on how to use DeepPoseKit.
-
 
 Installation
 ---------------------------------
@@ -65,11 +68,6 @@ DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended syste
 Install the development version with pip:
 ```bash
 pip install git+https://www.github.com/jgraving/deepposekit.git
-```
-
-To use the annotation toolkit you must install the [DeepPoseKit Annotator](https://www.github.com/jgraving/deepposekit-annotator) package:
-```bash
-pip install git+https://www.github.com/jgraving/deepposekit-annotator.git
 ```
 
 You can download example datasets from our [DeepPoseKit Data](https://github.com/jgraving/deepposekit-data) repository:
@@ -92,7 +90,6 @@ We also recommend installing DeepPoseKit from within Python rather than using th
 ```python
 import sys
 !{sys.executable} -m pip install git+https://www.github.com/jgraving/deepposekit.git
-!{sys.executable} -m pip install git+https://www.github.com/jgraving/deepposekit-annotator.git
 ```
 
 Citation

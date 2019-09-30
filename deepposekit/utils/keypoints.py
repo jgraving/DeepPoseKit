@@ -26,7 +26,7 @@ __all__ = [
     "draw_confidence_map",
     "graph_to_edges",
     "draw_keypoints",
-    "draw_edges",
+    "draw_graph",
     "numpy_to_imgaug",
     "imgaug_to_numpy",
     "keypoint_errors",
@@ -55,7 +55,7 @@ def graph_to_edges(graph):
     return edges
 
 
-def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth=1):
+def draw_graph(keypoints, height, width, output_shape, graph, sigma=1, linewidth=1):
     # One channel for each edge
     keypoints = keypoints.copy()
     edge_labels = graph_to_edges(graph)
@@ -65,6 +65,7 @@ def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth
     sigma *= height / out_height
     output_shape = (out_height, out_width, labels.shape[0])
     confidence = np.zeros(output_shape, dtype=np.float64)
+    edge_confidence_list = []
     for idx, label in enumerate(labels):
         lines = graph[edge_labels == label]
         lines_idx = np.where(edge_labels == label)[0]
@@ -88,8 +89,10 @@ def draw_edges(keypoints, height, width, output_shape, graph, sigma=1, linewidth
                 resized = cv2.resize(blurred, (out_width, out_height)) + MACHINE_EPSILON
                 edge_confidence[..., jdx] = resized
         edge_confidence = edge_confidence[..., 1:]
+        edge_confidence_list.append(edge_confidence)
         confidence[..., idx] = edge_confidence.sum(-1)
-        confidence = np.concatenate((confidence, edge_confidence), -1)
+    edge_confidence = np.concatenate(edge_confidence_list, -1)
+    confidence = np.concatenate((confidence, edge_confidence), -1)
     return confidence
 
 
@@ -118,7 +121,7 @@ def draw_keypoints(keypoints, height, width, output_shape, sigma=1, normalize=Tr
 
 
 def draw_confidence_map(
-    image, keypoints, graph=None, output_shape=None, use_edges=True, sigma=1
+    image, keypoints, graph=None, output_shape=None, use_graph=True, sigma=1
 ):
     height = image.shape[0]
     width = image.shape[1]
@@ -126,8 +129,8 @@ def draw_confidence_map(
     if not output_shape:
         output_shape = image.shape[:2]
     keypoints_confidence = draw_keypoints(keypoints, height, width, output_shape, sigma)
-    if use_edges and isinstance(graph, np.ndarray):
-        edge_confidence = draw_edges(
+    if use_graph and isinstance(graph, np.ndarray):
+        edge_confidence = draw_graph(
             keypoints, height, width, output_shape, graph, sigma
         )
         sum_keypoints = keypoints_confidence.sum(-1, keepdims=True)
@@ -150,13 +153,13 @@ def draw_confidence_map(
 
 
 def draw_confidence_maps(
-    images, keypoints, graph=None, output_shape=None, use_edges=True, sigma=1
+    images, keypoints, graph=None, output_shape=None, use_graph=True, sigma=1
 ):
     n_samples = keypoints.shape[0]
     confidence_maps = []
     for idx in range(n_samples):
         confidence = draw_confidence_map(
-            images[idx], keypoints[idx], graph, output_shape, use_edges, sigma
+            images[idx], keypoints[idx], graph, output_shape, use_graph, sigma
         )
         confidence_maps.append(confidence)
     confidence_maps = np.stack(confidence_maps)

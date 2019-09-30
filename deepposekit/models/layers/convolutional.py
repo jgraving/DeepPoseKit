@@ -20,7 +20,12 @@ from tensorflow.python.keras.engine import InputSpec
 
 from tensorflow.keras.layers import UpSampling2D
 
-from deepposekit.models.backend.backend import resize_images, find_maxima, depth_to_space, space_to_depth
+from deepposekit.models.backend.backend import (
+    resize_images,
+    find_maxima,
+    depth_to_space,
+    space_to_depth,
+)
 
 from tensorflow.python.keras.utils.conv_utils import (
     normalize_data_format,
@@ -67,7 +72,7 @@ class Maxima2D(Layer):
         self,
         index=None,
         coordinate_scale=1.0,
-        confidence_scale=255.0,
+        confidence_scale=1.0,
         data_format=None,
         **kwargs
     ):

@@ -271,7 +271,7 @@ class Hourglass:
 class StackedHourglass(BaseModel):
     def __init__(
         self,
-        data_generator,
+        train_generator,
         n_stacks=1,
         n_transitions=-1,
         filters=256,
@@ -285,8 +285,8 @@ class StackedHourglass(BaseModel):
 
         Parameters
         ----------
-        data_generator : class pose.DataGenerator
-            A pose.DataGenerator class for generating
+        train_generator : class deepposekit.io.TrainingGenerator
+            A deepposekit.io.TrainingGenerator class for generating
             images and confidence maps.
         n_stacks : int, default = 1
             The number of hourglass networks to stack
@@ -334,14 +334,14 @@ class StackedHourglass(BaseModel):
         self.filters = filters
         self.bottleneck_factor = bottleneck_factor
         self.n_transitions = n_transitions
-        super().__init__(data_generator, subpixel, **kwargs)
+        super().__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
 
         max_transitions = np.min(
             [
-                image_utils.n_downsample(self.data_generator.height),
-                image_utils.n_downsample(self.data_generator.width),
+                image_utils.n_downsample(self.train_generator.height),
+                image_utils.n_downsample(self.train_generator.width),
             ]
         )
 
@@ -367,19 +367,24 @@ class StackedHourglass(BaseModel):
                 "{0} < n_transitions <= "
                 "{1}".format(-max_transitions + 1, max_transitions)
             )
+        if n_transitions <= self.train_generator.downsample_factor:
+            raise ValueError(
+                "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
+                " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
+            )
 
         batch_shape = (
             None,
-            self.data_generator.height,
-            self.data_generator.width,
-            self.data_generator.n_channels,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
         )
 
         input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
         normalized = ImageNormalization()(to_float)
 
-        n_downsample = self.data_generator.downsample_factor
+        n_downsample = self.train_generator.downsample_factor
         front_module = FrontModule(self.filters, n_downsample, self.bottleneck_factor)
         front_output = front_module(normalized)
 
@@ -388,7 +393,7 @@ class StackedHourglass(BaseModel):
         outputs = []
         for idx in range(self.n_stacks):
             x = Hourglass(self.filters, self.bottleneck_factor, n_transitions)(x)
-            outputs_x, x = Output(self.data_generator.n_output_channels, self.filters)(
+            outputs_x, x = Output(self.train_generator.n_output_channels, self.filters)(
                 x
             )
             outputs.append(outputs_x)

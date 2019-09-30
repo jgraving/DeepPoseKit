@@ -22,8 +22,10 @@ from tensorflow.keras.layers import BatchNormalization
 import deepposekit.utils.image as image_utils
 from deepposekit.models.engine import BaseModel
 from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.deeplabcut import ImageNetPreprocess
 from deepposekit.models.layers.densenet import (
     FrontEnd,
+    ImageNetFrontEnd,
     DenseNet,
     OutputChannels,
     Concatenate,
@@ -33,12 +35,13 @@ from deepposekit.models.layers.densenet import (
 class StackedDenseNet(BaseModel):
     def __init__(
         self,
-        data_generator,
+        train_generator,
         n_stacks=1,
         n_transitions=-1,
         growth_rate=48,
         bottleneck_factor=1,
         compression_factor=0.5,
+        pretrained=False,
         subpixel=True,
         **kwargs
     ):
@@ -49,8 +52,8 @@ class StackedDenseNet(BaseModel):
 
         Parameters
         ----------
-        data_generator : class deepposekit.TrainingGenerator
-            A deepposekit.TrainingGenerator class for generating
+        train_generator : class deepposekit.io.TrainingGenerator
+            A deepposekit.io.TrainingGenerator class for generating
             images and confidence maps.
         n_stacks : int, default = 1
             The number of encoder-decoder networks to stack
@@ -79,6 +82,8 @@ class StackedDenseNet(BaseModel):
             Inputs are first passed through a 1x1 convolutional layer
             to reduce the number of channels to
             n_input_channels * compression_factor
+        pretrained : bool, default = False
+            Whether to use an encoder that is pretrained on ImageNet
         subpixel: bool, default = True
             Whether to use subpixel maxima for calculating
             keypoint coordinates in the prediction model.
@@ -119,13 +124,14 @@ class StackedDenseNet(BaseModel):
         self.bottleneck_factor = bottleneck_factor
         self.compression_factor = compression_factor
         self.n_transitions = n_transitions
-        super(StackedDenseNet, self).__init__(data_generator, subpixel, **kwargs)
+        self.pretrained = pretrained
+        super(StackedDenseNet, self).__init__(train_generator, subpixel, **kwargs)
 
     def __init_model__(self):
         max_transitions = np.min(
             [
-                image_utils.n_downsample(self.data_generator.height),
-                image_utils.n_downsample(self.data_generator.width),
+                image_utils.n_downsample(self.train_generator.height),
+                image_utils.n_downsample(self.train_generator.width),
             ]
         )
 
@@ -154,34 +160,44 @@ class StackedDenseNet(BaseModel):
 
         batch_shape = (
             None,
-            self.data_generator.height,
-            self.data_generator.width,
-            self.data_generator.n_channels,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
         )
-        
-        if self.data_generator.downsample_factor < 2:
+
+        if self.train_generator.downsample_factor < 2:
             raise ValueError(
                 "StackedDenseNet is only compatible with `downsample_factor` >= 2."
-                "Adjust the TrainingGenerator or choose a different model."            
-                            )
-        if n_transitions <= self.data_generator.downsample_factor:
+                "Adjust the TrainingGenerator or choose a different model."
+            )
+        if n_transitions <= self.train_generator.downsample_factor:
             raise ValueError(
                 "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
                 " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
             )
         input_layer = Input(batch_shape=batch_shape, dtype="uint8")
         to_float = Float()(input_layer)
-        normalized = ImageNormalization()(to_float)
-        front_outputs = FrontEnd(
-            growth_rate=self.growth_rate,
-            n_downsample=self.data_generator.downsample_factor,
-            compression_factor=self.compression_factor,
-            bottleneck_factor=self.bottleneck_factor
-        )(normalized)
-        n_downsample = self.n_transitions - self.data_generator.downsample_factor
+        if self.pretrained:
+            if batch_shape[-1] is 1:
+                to_float = Concatenate()([to_float] * 3)
+                batch_shape = batch_shape[:-1] + (3,)
+            normalized = ImageNetPreprocess("densenet121")(to_float)
+            front_outputs = ImageNetFrontEnd(
+                input_shape=batch_shape[1:],
+                n_downsample=self.train_generator.downsample_factor
+            )(normalized)
+        else:
+            normalized = ImageNormalization()(to_float)
+            front_outputs = FrontEnd(
+                growth_rate=self.growth_rate,
+                n_downsample=self.train_generator.downsample_factor,
+                compression_factor=self.compression_factor,
+                bottleneck_factor=self.bottleneck_factor,
+            )(normalized)
+        n_downsample = self.n_transitions - self.train_generator.downsample_factor
         outputs = front_outputs
         model_outputs = OutputChannels(
-            self.data_generator.n_output_channels, name="output_0"
+            self.train_generator.n_output_channels, name="output_0"
         )(outputs)
 
         model_outputs_list = [model_outputs]
@@ -189,15 +205,16 @@ class StackedDenseNet(BaseModel):
         for idx in range(self.n_stacks):
             outputs = DenseNet(
                 growth_rate=self.growth_rate,
-                n_downsample=self.n_transitions - self.data_generator.downsample_factor,
-                downsample_factor=self.data_generator.downsample_factor,
+                n_downsample=self.n_transitions
+                - self.train_generator.downsample_factor,
+                downsample_factor=self.train_generator.downsample_factor,
                 compression_factor=self.compression_factor,
-                bottleneck_factor=self.bottleneck_factor
+                bottleneck_factor=self.bottleneck_factor,
             )(outputs)
             outputs.append(Concatenate()(front_outputs))
             outputs.append(BatchNormalization()(model_outputs))
             model_outputs = OutputChannels(
-                self.data_generator.n_output_channels, name="output_" + str(idx + 1)
+                self.train_generator.n_output_channels, name="output_" + str(idx + 1)
             )(outputs)
             model_outputs_list.append(model_outputs)
 
@@ -213,6 +230,7 @@ class StackedDenseNet(BaseModel):
             "growth_rate": self.growth_rate,
             "bottleneck_factor": self.bottleneck_factor,
             "compression_factor": self.compression_factor,
+            "pretrained": self.pretrained,
             "subpixel": self.subpixel,
         }
         base_config = super(StackedDenseNet, self).get_config()
