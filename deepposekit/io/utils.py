@@ -230,7 +230,7 @@ def merge_new_images(
     elif images.dtype != np.uint8:
         raise TypeError("`images` must be ndarray with dtype np.uint8")
 
-    if keypoints:
+    if keypoints is not None:
         if not isinstance(keypoints, np.ndarray):
             raise TypeError(
                 "keypoints must be None or ndarray with shape (n_images, n_keypoints, 2)"
@@ -252,11 +252,13 @@ def merge_new_images(
                 images.shape[1:], data_generator.image_shape
             )
         )
-    if keypoints:
+    if keypoints is not None:
+        if keypoints.shape[-1] == 3:
+            keypoints = keypoints[:, :, :2]
         if keypoints.shape[1:] != data_generator.keypoints_shape:
             raise IndexError(
                 "`keypoints` shape {} does not match existing dataset {}".format(
-                    keypoints.shape, data_generator.keypoints_shape
+                    keypoints.shape[1:], data_generator.keypoints_shape
                 )
             )
 
@@ -294,7 +296,7 @@ def merge_new_images(
 
     for idx in range(h5file[dataset].shape[0], n_samples_merged):
         merged_h5file[dataset][idx] = images[idx - h5file[dataset].shape[0]]
-        if keypoints:
+        if keypoints is not None:
             merged_h5file["annotations"][idx] = keypoints[
                 idx - h5file[dataset].shape[0]
             ]
@@ -306,3 +308,4 @@ def merge_new_images(
 
     h5file.close()
     merged_h5file.close()
+
