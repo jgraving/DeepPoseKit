@@ -20,6 +20,8 @@ import h5py
 import os
 import pandas as pd
 
+from deepposekit.io.DataGenerator import DataGenerator
+
 __all__ = ["initialize_dataset", "initialize_skeleton", "merge_new_images"]
 
 
