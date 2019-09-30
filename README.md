@@ -24,7 +24,7 @@ Localization (without tracking) can also be achieved with deep learning software
 
 [Check out our preprint](https://doi.org/10.1101/620245) to find out more.
 
-**Note:** This software is still in early-release development. Expect some adventures.
+**NOTE:** This software is still in early-release development. *Expect some adventures.*
 
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" max-height:256px>
@@ -53,7 +53,16 @@ model = load_model('/path/to/saved_model.h5')
 reader = VideoReader('/path/to/video.mp4')
 predictions = model.predict(reader)
 ```
-[See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) for more details on how to use DeepPoseKit.
+
+Using DeepPoseKit is a 4-step workflow:
+- **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb)
+- **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI
+- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our `StackedDenseNet` model and the `DeepLabCut` model.
+- **4.** Use the trained model to:
+	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*.
+	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance.
+
+[See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) and [read our preprint](https://doi.org/10.1101/620245) for more details.
 
 "I already have annotated data"
 ---------------------------------
@@ -77,12 +86,12 @@ DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended syste
 
 Install the latest stable release with pip:
 ```bash
-pip install -U deepposekit
+pip install -update deepposekit
 ```
 
 Install the latest development version with pip:
 ```bash
-pip install git+https://www.github.com/jgraving/deepposekit.git
+pip install --update git+https://www.github.com/jgraving/deepposekit.git
 ```
 
 You can download example datasets from our [DeepPoseKit Data](https://github.com/jgraving/deepposekit-data) repository:
@@ -92,7 +101,7 @@ git clone https://www.github.com/jgraving/deepposekit-data
 
 To install an earlier release (e.g. v0.1.1.dev):
 ```bash
-pip install -U git+https://github.com/jgraving/deepposekit.git@v0.1.1.dev
+pip install --update git+https://github.com/jgraving/deepposekit.git@v0.1.1.dev
 ```
 
 ### Installing with Anaconda
@@ -104,10 +113,27 @@ conda install imgaug -c conda-forge
 We also recommend installing DeepPoseKit from within Python rather than using the command line, either from within Jupyter or another IDE, to ensure it is installed in the correct working environment:
 ```python
 import sys
-!{sys.executable} -m pip install git+https://www.github.com/jgraving/deepposekit.git
+!{sys.executable} -m pip install --update deepposekit
 ```
+Contributors    
+---------------------------------   
+DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. .
 
-Citation
+We welcome community involvement and public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
+
+If you'd like to get involved with developing DeepPoseKit, get in touch (jgraving@gmail.com) and check out [our development roadmap](https://github.com/jgraving/DeepPoseKit/blob/master/DEVELOPMENT.md) to see future plans for the package.  
+
+Development
+---------------------------------
+Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible.
+
+If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
+
+License
+---------------------------------
+Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
+
+References
 ---------------------------------
 If you use DeepPoseKit for your research please cite [our preprint](https://doi.org/10.1101/620245):
 
@@ -120,20 +146,6 @@ If you use DeepPoseKit for your research please cite [our preprint](https://doi.
              publisher={Cold Spring Harbor Laboratory}
              }
 
-
-Development
----------------------------------
-Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible. 
-
-If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
-
-Contributors
----------------------------------
-DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. We welcome public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
-
-License
----------------------------------
-Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
 
 News
 ---------------------------------
