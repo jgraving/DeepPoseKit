@@ -54,13 +54,14 @@ reader = VideoReader('/path/to/video.mp4')
 predictions = model.predict(reader)
 ```
 
-Using DeepPoseKit is a 4-step workflow:
-- **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb)
-- **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI
-- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our `StackedDenseNet` model and the `DeepLabCut` model.
+Using DeepPoseKit is a 4-step process:
+- **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb) <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+- **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI (no Colab support)
+- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our `StackedDenseNet` model and the `DeepLabCut` model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **4.** Use the trained model to:
-	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*.
-	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance.
+	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+
+	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 [See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) and [read our preprint](https://doi.org/10.1101/620245) for more details.
 
@@ -68,10 +69,10 @@ Using DeepPoseKit is a 4-step workflow:
 ---------------------------------
 DeepPoseKit is designed to be extensible, so loading data in other formats is possible.
 
-If you have data from DeepLabCut (http://deeplabcut.org), try [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplacut_data_example.ipynb) for loading data in this format.
+If you have data from DeepLabCut (http://deeplabcut.org), try [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplacut_data_example.ipynb) for loading data in this format. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/deeplabcut_data_example.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 Have data in another format? You can write your own custom generator to load it.
-Check out the [example for writing custom data generators](https://github.com/jgraving/DeepPoseKit/blob/master/examples/custom_data_generator.ipynb).
+Check out the [example for writing custom data generators](https://github.com/jgraving/DeepPoseKit/blob/master/examples/custom_data_generator.ipynb). <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/custom_data_generator.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 
 Installation
@@ -86,7 +87,7 @@ DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended syste
 
 Install the latest stable release with pip:
 ```bash
-pip install -update deepposekit
+pip install --update deepposekit
 ```
 
 Install the latest development version with pip:
@@ -115,7 +116,7 @@ We also recommend installing DeepPoseKit from within Python rather than using th
 import sys
 !{sys.executable} -m pip install --update deepposekit
 ```
-Contributors    
+Contributors and Development  
 ---------------------------------   
 DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. .
 
@@ -123,8 +124,6 @@ We welcome community involvement and public contributions to the toolkit. If you
 
 If you'd like to get involved with developing DeepPoseKit, get in touch (jgraving@gmail.com) and check out [our development roadmap](https://github.com/jgraving/DeepPoseKit/blob/master/DEVELOPMENT.md) to see future plans for the package.  
 
-Development
----------------------------------
 Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible.
 
 If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
