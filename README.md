@@ -100,11 +100,6 @@ You can download example datasets from our [DeepPoseKit Data](https://github.com
 git clone https://www.github.com/jgraving/deepposekit-data
 ```
 
-To install an earlier release (e.g. v0.1.1.dev):
-```bash
-pip install --update git+https://github.com/jgraving/deepposekit.git@v0.1.1.dev
-```
-
 ### Installing with Anaconda
 Anaconda cannot install the [imgaug package](https://github.com/aleju/imgaug) using pip, therefore as a temporary workaround we recommend installing imgaug manually:
 ```bash
