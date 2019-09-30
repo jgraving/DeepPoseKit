@@ -45,7 +45,7 @@ class DLCDataGenerator(BaseGenerator):
         self.annotations = pd.concat(annotations)
 
         with open(project_path + "/config.yaml", "r") as config_file:
-            self.dlcconfig = yaml.load(config_file, Loader=yaml.FullLoader)
+            self.dlcconfig = yaml.load(config_file, Loader=yaml.SafeLoader)
         self.n_keypoints = len(self.dlcconfig["bodyparts"])
 
         self.bodyparts = self.dlcconfig["bodyparts"]
