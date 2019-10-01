@@ -1,0 +1,1009 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.0" />
+<title>deepposekit.models.StackedHourglass API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>deepposekit.models.StackedHourglass</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from tensorflow.keras import Input, Model
+from tensorflow.keras.layers import Conv2D, BatchNormalization, Add, MaxPool2D
+import tensorflow.keras.backend as K
+
+from functools import partial
+
+import numpy as np
+
+from deepposekit.models.engine import BaseModel
+from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.convolutional import UpSampling2D
+from deepposekit.utils import image as image_utils
+
+
+class ResidualBlock:
+    def __init__(self, filters, bottleneck_factor=2):
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+
+        conv = partial(Conv2D, activation=&#34;relu&#34;, padding=&#34;same&#34;, use_bias=False)
+
+        self.identity_bn = BatchNormalization()
+        self.identity_1x1 = conv(filters, kernel_size=(1, 1))
+
+        self.bottleneck_1x1_bn = BatchNormalization()
+        self.bottleneck_1x1 = conv(filters // bottleneck_factor, kernel_size=(1, 1))
+
+        self.bottleneck_3x3_bn = BatchNormalization()
+        self.bottleneck_3x3 = conv(filters // bottleneck_factor, kernel_size=(3, 3))
+
+        self.expansion_1x1_bn = BatchNormalization()
+        self.expansion_1x1 = conv(filters, kernel_size=(1, 1))
+
+        self.residual_add_bn = BatchNormalization()
+        self.residual_add = Add()
+
+    def __call__(self, inputs):
+        identity = inputs
+        if K.int_shape(identity)[-1] == self.filters:
+            identity = self.identity_bn(identity)
+        else:
+            identity = self.identity_bn(identity)
+            identity = self.identity_1x1(identity)
+
+        x = inputs
+        x = self.bottleneck_1x1_bn(x)
+        x = self.bottleneck_1x1(x)
+
+        x = self.bottleneck_3x3_bn(x)
+        x = self.bottleneck_3x3(x)
+
+        x = self.expansion_1x1_bn(x)
+        x = self.expansion_1x1(x)
+
+        x = self.residual_add_bn(x)
+        return self.residual_add([identity, x])
+
+
+class FrontModule:
+    def __init__(self, filters, n_downsample, bottleneck_factor=2):
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+        n_downsample = n_downsample - 1
+        self.n_downsample = int(np.maximum(0, n_downsample))
+
+        self.conv_7x7 = Conv2D(
+            filters,
+            (7, 7),
+            strides=(2, 2),
+            padding=&#34;same&#34;,
+            activation=&#34;relu&#34;,
+            use_bias=False,
+        )
+
+        self.res_blocks = []
+        self.pool_layers = []
+        for idx in range(n_downsample):
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            max_pool = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+            self.res_blocks.append(res_block)
+            self.pool_layers.append(max_pool)
+
+        self.res_output = [
+            ResidualBlock(filters, bottleneck_factor),
+            ResidualBlock(filters, bottleneck_factor),
+        ]
+
+    def __call__(self, inputs):
+        x = inputs
+        x = self.conv_7x7(x)
+        for res_block, pool_layer in zip(self.res_blocks, self.pool_layers):
+            x = res_block(x)
+            x = pool_layer(x)
+        for layer in self.res_output:
+            x = layer(x)
+        return x
+
+
+class Output:
+    def __init__(self, n_output_channels, filters):
+        self.n_output_channels = n_output_channels
+        self.filters = filters
+
+        conv = partial(
+            Conv2D,
+            kernel_size=(1, 1),
+            activation=&#34;relu&#34;,
+            padding=&#34;same&#34;,
+            use_bias=False,
+        )
+
+        self.input_bn = BatchNormalization()
+        self.input_conv = conv(filters)
+        self.loss_bn = BatchNormalization()
+        self.loss_output = conv(n_output_channels, activation=&#34;linear&#34;, use_bias=True)
+
+        self.loss_res_bn = BatchNormalization()
+        self.loss_res_conv = conv(filters)
+
+        self.conv_1x1_bn = BatchNormalization()
+        self.conv_1x1 = conv(filters)
+
+        self.res_add_bn_loss = BatchNormalization()
+        self.res_add_bn_conv = BatchNormalization()
+        self.res_add_bn_identity = BatchNormalization()
+
+        self.res_add = Add()
+
+    def __call__(self, inputs):
+        x = inputs
+        x = self.input_bn(x)
+        x = self.input_conv(x)
+
+        loss_x = self.loss_bn(x)
+        loss_outputs = self.loss_output(loss_x)
+
+        loss_x = self.loss_res_bn(loss_outputs)
+        loss_x = self.loss_res_conv(loss_x)
+
+        conv_x = self.conv_1x1_bn(x)
+        conv_x = self.conv_1x1(conv_x)
+
+        loss_x = self.res_add_bn_loss(loss_x)
+        conv_x = self.res_add_bn_conv(conv_x)
+        identity = self.res_add_bn_identity(inputs)
+
+        res_outputs = self.res_add([loss_x, conv_x, identity])
+
+        return [loss_outputs, res_outputs]
+
+
+class Hourglass:
+    def __init__(self, filters, bottleneck_factor, n_downsample, n_upsample=None):
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+        self.n_downsample = n_downsample
+        if n_upsample:
+            self.n_upsample = n_upsample
+        else:
+            self.n_upsample = n_downsample
+
+        self.down_res_blocks = []
+        self.pool_layers = []
+        for idx in range(self.n_downsample):
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            max_pool = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+            self.down_res_blocks.append(res_block)
+            self.pool_layers.append(max_pool)
+
+        self.skip_bottleneck = ResidualBlock(filters, bottleneck_factor)
+        self.bottleneck_layers = [
+            ResidualBlock(filters, bottleneck_factor),
+            ResidualBlock(filters, bottleneck_factor),
+            ResidualBlock(filters, bottleneck_factor),
+        ]
+        self.bottleneck_identity_bn = BatchNormalization()
+        self.bottleneck_skip_bn = BatchNormalization()
+        self.bottleneck_add = Add()
+
+        self.up_res_blocks = []
+        self.skip_res_blocks = []
+        self.upsample_layers = []
+        self.skip_bn_layers = []
+        self.add_bn_layers = []
+        self.add_layers = []
+        for idx in range(self.n_upsample):
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            self.up_res_blocks.append(res_block)
+
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            self.skip_res_blocks.append(res_block)
+
+            upsample = UpSampling2D(size=(2, 2))
+            self.upsample_layers.append(upsample)
+
+            add_layer = Add()
+            self.add_layers.append(add_layer)
+
+            bn_layer = BatchNormalization()
+            self.skip_bn_layers.append(bn_layer)
+
+            bn_layer = BatchNormalization()
+            self.add_bn_layers.append(bn_layer)
+
+    def __call__(self, inputs):
+        x = inputs
+        skip_connections = [x]
+
+        for res_block, pool_layer in zip(self.down_res_blocks, self.pool_layers):
+            x = res_block(x)
+            skip_connections.append(x)
+            x = pool_layer(x)
+
+        x_identity = self.skip_bottleneck(x)
+
+        x_bottleneck = x_identity
+        for layer in self.bottleneck_layers:
+            x_bottleneck = layer(x_bottleneck)
+
+        x_identity = self.bottleneck_identity_bn(x_identity)
+        x_bottleneck = self.bottleneck_skip_bn(x_bottleneck)
+        x = self.bottleneck_add([x_identity, x_bottleneck])
+
+        skip_connections = skip_connections[::-1]
+
+        up_layers = zip(
+            skip_connections,
+            self.skip_res_blocks,
+            self.skip_bn_layers,
+            self.add_layers,
+            self.add_bn_layers,
+            self.up_res_blocks,
+            self.upsample_layers,
+        )
+        for (
+            skip_x,
+            skip_res_block,
+            skip_bn,
+            add_layer,
+            add_bn,
+            up_res_block,
+            upsample_layer,
+        ) in up_layers:
+            skip_x = skip_res_block(skip_x)
+            skip_x = skip_bn(skip_x)
+            x = upsample_layer(x)
+            x = add_bn(x)
+            x = add_layer([skip_x, x])
+            x = up_res_block(x)
+
+        return x
+
+
+class StackedHourglass(BaseModel):
+    def __init__(
+        self,
+        train_generator,
+        n_stacks=1,
+        n_transitions=-1,
+        filters=256,
+        bottleneck_factor=2,
+        subpixel=True,
+        **kwargs
+    ):
+        &#34;&#34;&#34;
+        Define a Stacked Hourglass model for pose estimation.
+        See `References` for details on the model architecture.
+
+        Parameters
+        ----------
+        train_generator : class deepposekit.io.TrainingGenerator
+            A deepposekit.io.TrainingGenerator class for generating
+            images and confidence maps.
+        n_stacks : int, default = 1
+            The number of hourglass networks to stack
+            with intermediate supervision between stacks
+        n_transitions : int, default = -1
+            The number of transition layers (downsampling and upsampling)
+            in each encoder-decoder stack. If value is &lt;0
+            the number of transitions will be automatically set
+            based on image size as the maximum number of possible
+            transitions minus n_transitions plus 1, or:
+            n_transitions = max_transitions - n_transitions + 1.
+            The default is -1, which uses the maximum number of
+            transitions possible.
+        bottleneck_factor : int, default = 4
+            The factor for determining the number of input channels
+            to 3x3 convolutional layer in each convolutional block.
+            Inputs are first passed through a 1x1 convolutional layer to
+            reduce the number of channels to:
+            filters // bottleneck_factor
+        subpixel: bool, default = True
+            Whether to use subpixel maxima for calculating
+            keypoint coordinates in the prediction model.
+
+        Attributes
+        -------
+        train_model: keras.Model
+            A model for training the network to produce confidence maps with
+            one input layer for images and `n_outputs` output layers for training
+            with intermediate supervision
+        predict_model: keras.Model
+            A model for predicting keypoint coordinates with one input and one output
+            using with Maxima2D or SubpixelMaxima2D layers at the output of the network.
+
+        Both of these models share the same computational graph, so training train_model
+        updates the weights of predict_model
+
+        References
+        ----------
+        [1] Newell, A., Yang, K., &amp; Deng, J. (2016). Stacked hourglass networks
+            for human pose estimation. In European Conference on Computer
+            Vision (pp. 483-499). Springer, Cham.
+        &#34;&#34;&#34;
+
+        self.n_stacks = n_stacks
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+        self.n_transitions = n_transitions
+        super().__init__(train_generator, subpixel, **kwargs)
+
+    def __init_model__(self):
+
+        max_transitions = np.min(
+            [
+                image_utils.n_downsample(self.train_generator.height),
+                image_utils.n_downsample(self.train_generator.width),
+            ]
+        )
+
+        n_transitions = self.n_transitions
+        if isinstance(self.n_transitions, (int, np.integer)):
+            if n_transitions == 0:
+                raise ValueError(&#34;n_transitions cannot equal zero&#34;)
+            if n_transitions &lt; 0:
+                n_transitions += 1
+                n_transitions = max_transitions - np.abs(n_transitions)
+                self.n_transitions = n_transitions
+            elif 0 &lt; n_transitions &lt;= max_transitions:
+                self.n_transitions = n_transitions
+            else:
+                raise ValueError(
+                    &#34;n_transitions must be in range {0} &#34;
+                    &#34;&lt; n_transitions &lt;= &#34;
+                    &#34;{1}&#34;.format(-max_transitions + 1, max_transitions)
+                )
+        else:
+            raise TypeError(
+                &#34;n_transitions must be integer in range &#34;
+                &#34;{0} &lt; n_transitions &lt;= &#34;
+                &#34;{1}&#34;.format(-max_transitions + 1, max_transitions)
+            )
+        if n_transitions &lt;= self.train_generator.downsample_factor:
+            raise ValueError(
+                &#34;`n_transitions` &lt;= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`.&#34;
+                &#34; If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly).&#34;
+            )
+
+        batch_shape = (
+            None,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
+        )
+
+        input_layer = Input(batch_shape=batch_shape, dtype=&#34;uint8&#34;)
+        to_float = Float()(input_layer)
+        normalized = ImageNormalization()(to_float)
+
+        n_downsample = self.train_generator.downsample_factor
+        front_module = FrontModule(self.filters, n_downsample, self.bottleneck_factor)
+        front_output = front_module(normalized)
+
+        n_transitions = self.n_transitions - n_downsample
+        x = front_output
+        outputs = []
+        for idx in range(self.n_stacks):
+            x = Hourglass(self.filters, self.bottleneck_factor, n_transitions)(x)
+            outputs_x, x = Output(self.train_generator.n_output_channels, self.filters)(
+                x
+            )
+            outputs.append(outputs_x)
+
+        self.train_model = Model(input_layer, outputs, name=self.__class__.__name__)
+
+    def get_config(self):
+        config = {
+            &#34;name&#34;: self.__class__.__name__,
+            &#34;n_stacks&#34;: self.n_stacks,
+            &#34;n_transitions&#34;: self.n_transitions,
+            &#34;bottleneck_factor&#34;: self.bottleneck_factor,
+            &#34;filters&#34;: self.filters,
+            &#34;subpixel&#34;: self.subpixel,
+        }
+        base_config = super(StackedHourglass, self).get_config()
+        return dict(list(config.items()) + list(base_config.items()))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="deepposekit.models.StackedHourglass.FrontModule"><code class="flex name class">
+<span>class <span class="ident">FrontModule</span></span>
+<span>(</span><span>filters, n_downsample, bottleneck_factor=2)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class FrontModule:
+    def __init__(self, filters, n_downsample, bottleneck_factor=2):
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+        n_downsample = n_downsample - 1
+        self.n_downsample = int(np.maximum(0, n_downsample))
+
+        self.conv_7x7 = Conv2D(
+            filters,
+            (7, 7),
+            strides=(2, 2),
+            padding=&#34;same&#34;,
+            activation=&#34;relu&#34;,
+            use_bias=False,
+        )
+
+        self.res_blocks = []
+        self.pool_layers = []
+        for idx in range(n_downsample):
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            max_pool = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+            self.res_blocks.append(res_block)
+            self.pool_layers.append(max_pool)
+
+        self.res_output = [
+            ResidualBlock(filters, bottleneck_factor),
+            ResidualBlock(filters, bottleneck_factor),
+        ]
+
+    def __call__(self, inputs):
+        x = inputs
+        x = self.conv_7x7(x)
+        for res_block, pool_layer in zip(self.res_blocks, self.pool_layers):
+            x = res_block(x)
+            x = pool_layer(x)
+        for layer in self.res_output:
+            x = layer(x)
+        return x</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.StackedHourglass.Hourglass"><code class="flex name class">
+<span>class <span class="ident">Hourglass</span></span>
+<span>(</span><span>filters, bottleneck_factor, n_downsample, n_upsample=None)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Hourglass:
+    def __init__(self, filters, bottleneck_factor, n_downsample, n_upsample=None):
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+        self.n_downsample = n_downsample
+        if n_upsample:
+            self.n_upsample = n_upsample
+        else:
+            self.n_upsample = n_downsample
+
+        self.down_res_blocks = []
+        self.pool_layers = []
+        for idx in range(self.n_downsample):
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            max_pool = MaxPool2D(pool_size=(2, 2), strides=(2, 2))
+            self.down_res_blocks.append(res_block)
+            self.pool_layers.append(max_pool)
+
+        self.skip_bottleneck = ResidualBlock(filters, bottleneck_factor)
+        self.bottleneck_layers = [
+            ResidualBlock(filters, bottleneck_factor),
+            ResidualBlock(filters, bottleneck_factor),
+            ResidualBlock(filters, bottleneck_factor),
+        ]
+        self.bottleneck_identity_bn = BatchNormalization()
+        self.bottleneck_skip_bn = BatchNormalization()
+        self.bottleneck_add = Add()
+
+        self.up_res_blocks = []
+        self.skip_res_blocks = []
+        self.upsample_layers = []
+        self.skip_bn_layers = []
+        self.add_bn_layers = []
+        self.add_layers = []
+        for idx in range(self.n_upsample):
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            self.up_res_blocks.append(res_block)
+
+            res_block = ResidualBlock(filters, bottleneck_factor)
+            self.skip_res_blocks.append(res_block)
+
+            upsample = UpSampling2D(size=(2, 2))
+            self.upsample_layers.append(upsample)
+
+            add_layer = Add()
+            self.add_layers.append(add_layer)
+
+            bn_layer = BatchNormalization()
+            self.skip_bn_layers.append(bn_layer)
+
+            bn_layer = BatchNormalization()
+            self.add_bn_layers.append(bn_layer)
+
+    def __call__(self, inputs):
+        x = inputs
+        skip_connections = [x]
+
+        for res_block, pool_layer in zip(self.down_res_blocks, self.pool_layers):
+            x = res_block(x)
+            skip_connections.append(x)
+            x = pool_layer(x)
+
+        x_identity = self.skip_bottleneck(x)
+
+        x_bottleneck = x_identity
+        for layer in self.bottleneck_layers:
+            x_bottleneck = layer(x_bottleneck)
+
+        x_identity = self.bottleneck_identity_bn(x_identity)
+        x_bottleneck = self.bottleneck_skip_bn(x_bottleneck)
+        x = self.bottleneck_add([x_identity, x_bottleneck])
+
+        skip_connections = skip_connections[::-1]
+
+        up_layers = zip(
+            skip_connections,
+            self.skip_res_blocks,
+            self.skip_bn_layers,
+            self.add_layers,
+            self.add_bn_layers,
+            self.up_res_blocks,
+            self.upsample_layers,
+        )
+        for (
+            skip_x,
+            skip_res_block,
+            skip_bn,
+            add_layer,
+            add_bn,
+            up_res_block,
+            upsample_layer,
+        ) in up_layers:
+            skip_x = skip_res_block(skip_x)
+            skip_x = skip_bn(skip_x)
+            x = upsample_layer(x)
+            x = add_bn(x)
+            x = add_layer([skip_x, x])
+            x = up_res_block(x)
+
+        return x</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.StackedHourglass.Output"><code class="flex name class">
+<span>class <span class="ident">Output</span></span>
+<span>(</span><span>n_output_channels, filters)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Output:
+    def __init__(self, n_output_channels, filters):
+        self.n_output_channels = n_output_channels
+        self.filters = filters
+
+        conv = partial(
+            Conv2D,
+            kernel_size=(1, 1),
+            activation=&#34;relu&#34;,
+            padding=&#34;same&#34;,
+            use_bias=False,
+        )
+
+        self.input_bn = BatchNormalization()
+        self.input_conv = conv(filters)
+        self.loss_bn = BatchNormalization()
+        self.loss_output = conv(n_output_channels, activation=&#34;linear&#34;, use_bias=True)
+
+        self.loss_res_bn = BatchNormalization()
+        self.loss_res_conv = conv(filters)
+
+        self.conv_1x1_bn = BatchNormalization()
+        self.conv_1x1 = conv(filters)
+
+        self.res_add_bn_loss = BatchNormalization()
+        self.res_add_bn_conv = BatchNormalization()
+        self.res_add_bn_identity = BatchNormalization()
+
+        self.res_add = Add()
+
+    def __call__(self, inputs):
+        x = inputs
+        x = self.input_bn(x)
+        x = self.input_conv(x)
+
+        loss_x = self.loss_bn(x)
+        loss_outputs = self.loss_output(loss_x)
+
+        loss_x = self.loss_res_bn(loss_outputs)
+        loss_x = self.loss_res_conv(loss_x)
+
+        conv_x = self.conv_1x1_bn(x)
+        conv_x = self.conv_1x1(conv_x)
+
+        loss_x = self.res_add_bn_loss(loss_x)
+        conv_x = self.res_add_bn_conv(conv_x)
+        identity = self.res_add_bn_identity(inputs)
+
+        res_outputs = self.res_add([loss_x, conv_x, identity])
+
+        return [loss_outputs, res_outputs]</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.StackedHourglass.ResidualBlock"><code class="flex name class">
+<span>class <span class="ident">ResidualBlock</span></span>
+<span>(</span><span>filters, bottleneck_factor=2)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ResidualBlock:
+    def __init__(self, filters, bottleneck_factor=2):
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+
+        conv = partial(Conv2D, activation=&#34;relu&#34;, padding=&#34;same&#34;, use_bias=False)
+
+        self.identity_bn = BatchNormalization()
+        self.identity_1x1 = conv(filters, kernel_size=(1, 1))
+
+        self.bottleneck_1x1_bn = BatchNormalization()
+        self.bottleneck_1x1 = conv(filters // bottleneck_factor, kernel_size=(1, 1))
+
+        self.bottleneck_3x3_bn = BatchNormalization()
+        self.bottleneck_3x3 = conv(filters // bottleneck_factor, kernel_size=(3, 3))
+
+        self.expansion_1x1_bn = BatchNormalization()
+        self.expansion_1x1 = conv(filters, kernel_size=(1, 1))
+
+        self.residual_add_bn = BatchNormalization()
+        self.residual_add = Add()
+
+    def __call__(self, inputs):
+        identity = inputs
+        if K.int_shape(identity)[-1] == self.filters:
+            identity = self.identity_bn(identity)
+        else:
+            identity = self.identity_bn(identity)
+            identity = self.identity_1x1(identity)
+
+        x = inputs
+        x = self.bottleneck_1x1_bn(x)
+        x = self.bottleneck_1x1(x)
+
+        x = self.bottleneck_3x3_bn(x)
+        x = self.bottleneck_3x3(x)
+
+        x = self.expansion_1x1_bn(x)
+        x = self.expansion_1x1(x)
+
+        x = self.residual_add_bn(x)
+        return self.residual_add([identity, x])</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.StackedHourglass.StackedHourglass"><code class="flex name class">
+<span>class <span class="ident">StackedHourglass</span></span>
+<span>(</span><span>train_generator, n_stacks=1, n_transitions=-1, filters=256, bottleneck_factor=2, subpixel=True, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Define a Stacked Hourglass model for pose estimation.
+See <code>References</code> for details on the model architecture.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>train_generator</code></strong> :&ensp;<code>class</code> <a title="deepposekit.io.TrainingGenerator" href="../io/TrainingGenerator.html"><code>deepposekit.io.TrainingGenerator</code></a></dt>
+<dd>A deepposekit.io.TrainingGenerator class for generating
+images and confidence maps.</dd>
+<dt><strong><code>n_stacks</code></strong> :&ensp;<code>int</code>, default = <code>1</code></dt>
+<dd>The number of hourglass networks to stack
+with intermediate supervision between stacks</dd>
+<dt><strong><code>n_transitions</code></strong> :&ensp;<code>int</code>, default = -<code>1</code></dt>
+<dd>The number of transition layers (downsampling and upsampling)
+in each encoder-decoder stack. If value is &lt;0
+the number of transitions will be automatically set
+based on image size as the maximum number of possible
+transitions minus n_transitions plus 1, or:
+n_transitions = max_transitions - n_transitions + 1.
+The default is -1, which uses the maximum number of
+transitions possible.</dd>
+<dt><strong><code>bottleneck_factor</code></strong> :&ensp;<code>int</code>, default = <code>4</code></dt>
+<dd>The factor for determining the number of input channels
+to 3x3 convolutional layer in each convolutional block.
+Inputs are first passed through a 1x1 convolutional layer to
+reduce the number of channels to:
+filters // bottleneck_factor</dd>
+<dt><strong><code>subpixel</code></strong> :&ensp;<code>bool</code>, default = <code>True</code></dt>
+<dd>Whether to use subpixel maxima for calculating
+keypoint coordinates in the prediction model.</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>train_model</code></strong> :&ensp;<code>keras.Model</code></dt>
+<dd>A model for training the network to produce confidence maps with
+one input layer for images and <code>n_outputs</code> output layers for training
+with intermediate supervision</dd>
+<dt><strong><code>predict_model</code></strong> :&ensp;<code>keras.Model</code></dt>
+<dd>A model for predicting keypoint coordinates with one input and one output
+using with Maxima2D or SubpixelMaxima2D layers at the output of the network.</dd>
+</dl>
+<p>Both of these models share the same computational graph, so training train_model
+updates the weights of predict_model</p>
+<h2 id="references">References</h2>
+<p>[1] Newell, A., Yang, K., &amp; Deng, J. (2016). Stacked hourglass networks
+for human pose estimation. In European Conference on Computer
+Vision (pp. 483-499). Springer, Cham.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class StackedHourglass(BaseModel):
+    def __init__(
+        self,
+        train_generator,
+        n_stacks=1,
+        n_transitions=-1,
+        filters=256,
+        bottleneck_factor=2,
+        subpixel=True,
+        **kwargs
+    ):
+        &#34;&#34;&#34;
+        Define a Stacked Hourglass model for pose estimation.
+        See `References` for details on the model architecture.
+
+        Parameters
+        ----------
+        train_generator : class deepposekit.io.TrainingGenerator
+            A deepposekit.io.TrainingGenerator class for generating
+            images and confidence maps.
+        n_stacks : int, default = 1
+            The number of hourglass networks to stack
+            with intermediate supervision between stacks
+        n_transitions : int, default = -1
+            The number of transition layers (downsampling and upsampling)
+            in each encoder-decoder stack. If value is &lt;0
+            the number of transitions will be automatically set
+            based on image size as the maximum number of possible
+            transitions minus n_transitions plus 1, or:
+            n_transitions = max_transitions - n_transitions + 1.
+            The default is -1, which uses the maximum number of
+            transitions possible.
+        bottleneck_factor : int, default = 4
+            The factor for determining the number of input channels
+            to 3x3 convolutional layer in each convolutional block.
+            Inputs are first passed through a 1x1 convolutional layer to
+            reduce the number of channels to:
+            filters // bottleneck_factor
+        subpixel: bool, default = True
+            Whether to use subpixel maxima for calculating
+            keypoint coordinates in the prediction model.
+
+        Attributes
+        -------
+        train_model: keras.Model
+            A model for training the network to produce confidence maps with
+            one input layer for images and `n_outputs` output layers for training
+            with intermediate supervision
+        predict_model: keras.Model
+            A model for predicting keypoint coordinates with one input and one output
+            using with Maxima2D or SubpixelMaxima2D layers at the output of the network.
+
+        Both of these models share the same computational graph, so training train_model
+        updates the weights of predict_model
+
+        References
+        ----------
+        [1] Newell, A., Yang, K., &amp; Deng, J. (2016). Stacked hourglass networks
+            for human pose estimation. In European Conference on Computer
+            Vision (pp. 483-499). Springer, Cham.
+        &#34;&#34;&#34;
+
+        self.n_stacks = n_stacks
+        self.filters = filters
+        self.bottleneck_factor = bottleneck_factor
+        self.n_transitions = n_transitions
+        super().__init__(train_generator, subpixel, **kwargs)
+
+    def __init_model__(self):
+
+        max_transitions = np.min(
+            [
+                image_utils.n_downsample(self.train_generator.height),
+                image_utils.n_downsample(self.train_generator.width),
+            ]
+        )
+
+        n_transitions = self.n_transitions
+        if isinstance(self.n_transitions, (int, np.integer)):
+            if n_transitions == 0:
+                raise ValueError(&#34;n_transitions cannot equal zero&#34;)
+            if n_transitions &lt; 0:
+                n_transitions += 1
+                n_transitions = max_transitions - np.abs(n_transitions)
+                self.n_transitions = n_transitions
+            elif 0 &lt; n_transitions &lt;= max_transitions:
+                self.n_transitions = n_transitions
+            else:
+                raise ValueError(
+                    &#34;n_transitions must be in range {0} &#34;
+                    &#34;&lt; n_transitions &lt;= &#34;
+                    &#34;{1}&#34;.format(-max_transitions + 1, max_transitions)
+                )
+        else:
+            raise TypeError(
+                &#34;n_transitions must be integer in range &#34;
+                &#34;{0} &lt; n_transitions &lt;= &#34;
+                &#34;{1}&#34;.format(-max_transitions + 1, max_transitions)
+            )
+        if n_transitions &lt;= self.train_generator.downsample_factor:
+            raise ValueError(
+                &#34;`n_transitions` &lt;= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`.&#34;
+                &#34; If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly).&#34;
+            )
+
+        batch_shape = (
+            None,
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
+        )
+
+        input_layer = Input(batch_shape=batch_shape, dtype=&#34;uint8&#34;)
+        to_float = Float()(input_layer)
+        normalized = ImageNormalization()(to_float)
+
+        n_downsample = self.train_generator.downsample_factor
+        front_module = FrontModule(self.filters, n_downsample, self.bottleneck_factor)
+        front_output = front_module(normalized)
+
+        n_transitions = self.n_transitions - n_downsample
+        x = front_output
+        outputs = []
+        for idx in range(self.n_stacks):
+            x = Hourglass(self.filters, self.bottleneck_factor, n_transitions)(x)
+            outputs_x, x = Output(self.train_generator.n_output_channels, self.filters)(
+                x
+            )
+            outputs.append(outputs_x)
+
+        self.train_model = Model(input_layer, outputs, name=self.__class__.__name__)
+
+    def get_config(self):
+        config = {
+            &#34;name&#34;: self.__class__.__name__,
+            &#34;n_stacks&#34;: self.n_stacks,
+            &#34;n_transitions&#34;: self.n_transitions,
+            &#34;bottleneck_factor&#34;: self.bottleneck_factor,
+            &#34;filters&#34;: self.filters,
+            &#34;subpixel&#34;: self.subpixel,
+        }
+        base_config = super(StackedHourglass, self).get_config()
+        return dict(list(config.items()) + list(base_config.items()))</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="deepposekit.models.engine.BaseModel" href="engine.html#deepposekit.models.engine.BaseModel">BaseModel</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="deepposekit.models.StackedHourglass.StackedHourglass.get_config"><code class="name flex">
+<span>def <span class="ident">get_config</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_config(self):
+    config = {
+        &#34;name&#34;: self.__class__.__name__,
+        &#34;n_stacks&#34;: self.n_stacks,
+        &#34;n_transitions&#34;: self.n_transitions,
+        &#34;bottleneck_factor&#34;: self.bottleneck_factor,
+        &#34;filters&#34;: self.filters,
+        &#34;subpixel&#34;: self.subpixel,
+    }
+    base_config = super(StackedHourglass, self).get_config()
+    return dict(list(config.items()) + list(base_config.items()))</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="deepposekit.models.engine.BaseModel" href="engine.html#deepposekit.models.engine.BaseModel">BaseModel</a></b></code>:
+<ul class="hlist">
+<li><code><a title="deepposekit.models.engine.BaseModel.fit" href="engine.html#deepposekit.models.engine.BaseModel.fit">fit</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="deepposekit.models" href="index.html">deepposekit.models</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="deepposekit.models.StackedHourglass.FrontModule" href="#deepposekit.models.StackedHourglass.FrontModule">FrontModule</a></code></h4>
+</li>
+<li>
+<h4><code><a title="deepposekit.models.StackedHourglass.Hourglass" href="#deepposekit.models.StackedHourglass.Hourglass">Hourglass</a></code></h4>
+</li>
+<li>
+<h4><code><a title="deepposekit.models.StackedHourglass.Output" href="#deepposekit.models.StackedHourglass.Output">Output</a></code></h4>
+</li>
+<li>
+<h4><code><a title="deepposekit.models.StackedHourglass.ResidualBlock" href="#deepposekit.models.StackedHourglass.ResidualBlock">ResidualBlock</a></code></h4>
+</li>
+<li>
+<h4><code><a title="deepposekit.models.StackedHourglass.StackedHourglass" href="#deepposekit.models.StackedHourglass.StackedHourglass">StackedHourglass</a></code></h4>
+<ul class="">
+<li><code><a title="deepposekit.models.StackedHourglass.StackedHourglass.get_config" href="#deepposekit.models.StackedHourglass.StackedHourglass.get_config">get_config</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
