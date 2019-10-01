@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.0" />
+<title>deepposekit.io.utils API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>deepposekit.io.utils</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import numpy as np
+import h5py
+import os
+import pandas as pd
+
+from deepposekit.io.DataGenerator import DataGenerator
+
+__all__ = [&#34;initialize_dataset&#34;, &#34;initialize_skeleton&#34;, &#34;merge_new_images&#34;]
+
+
+def initialize_skeleton(skeleton):
+    &#34;&#34;&#34; Initialize the skeleton from input data.
+
+    Takes in either a .csv or .xlsx file and makes a DataFrame.
+
+    Parameters
+    ----------
+    skeleton: pandas.DataFrame
+        Filepath of the .csv or .xlsx file that has indexed information
+        on name of the keypoint (part, e.g. head), parent (the direct
+        connecting part, e.g. neck connects to head, parent is head),
+        and swap (swapping positions with a part when reflected over X).
+    &#34;&#34;&#34;
+
+    if isinstance(skeleton, str):
+        if skeleton.endswith(&#34;.csv&#34;):
+            skeleton = pd.read_csv(skeleton)
+        elif skeleton.endswith(&#34;.xlsx&#34;):
+            skeleton = pd.read_excel(skeleton)
+        else:
+            raise ValueError(&#34;skeleton must be .csv or .xlsx file&#34;)
+    elif isinstance(skeleton, pd.DataFrame):
+        skeleton = skeleton
+    else:
+        raise TypeError(&#34;skeleton must be type `str` or pandas.DataFrame&#34;)
+
+    if &#34;name&#34; not in skeleton.columns:
+        raise KeyError(&#34;skeleton file must contain a `name` column&#34;)
+    elif &#34;parent&#34; not in skeleton.columns:
+        raise KeyError(&#34;skeleton file must contain a `parent` column&#34;)
+
+    if &#34;x&#34; not in skeleton.columns:
+        skeleton[&#34;x&#34;] = -1
+    if &#34;y&#34; not in skeleton.columns:
+        skeleton[&#34;y&#34;] = -1
+
+    if &#34;tree&#34; not in skeleton.columns:
+        skeleton[&#34;tree&#34;] = -1
+        for idx, name in enumerate(skeleton[&#34;parent&#34;].values):
+            branch = np.where(skeleton[&#34;name&#34;] == name)[0]
+            if branch.shape[0] &gt; 0:
+                branch = branch[0]
+                skeleton.loc[idx, &#34;tree&#34;] = branch
+    if &#34;swap_index&#34; not in skeleton.columns:
+        skeleton[&#34;swap_index&#34;] = -1
+        for idx, name in enumerate(skeleton[&#34;name&#34;].values):
+            for jdx, swap_name in enumerate(skeleton[&#34;swap&#34;].values):
+                if swap_name == name:
+                    skeleton.loc[idx, &#34;swap_index&#34;] = jdx
+    return skeleton
+
+
+def initialize_dataset(
+    datapath, images, skeleton, keypoints=None, dataset=&#34;images&#34;, overwrite=False
+):
+    &#34;&#34;&#34;
+    Intialize an image dataset for annotation as an h5 file
+
+    Parameters
+    ----------
+    datapath : str
+        The path to the annotations file. Must be .h5
+        e.g. &#39;/path/to/file.h5&#39;
+    images : ndarray, shape (n_images, height, width, channels)
+        A numpy array containing image data. 
+        `images.dtype` should be np.uint8
+    skeleton: str or pandas.DataFrame
+        Filepath of the .csv or .xlsx file that has indexed information
+        on name of the keypoint (part, e.g. head), parent (the direct
+        connecting part, e.g. neck connects to head, parent is head),
+        and swap (swapping positions with a part when reflected).
+        See example files for more information.
+    keypoints : None or ndarray, shape (n_images, n_keypoints, 2)
+        Optionally pass keypoints for initializing annotations for the
+        new images.
+    dataset : str, default = &#34;images&#34;
+        The name of the dataset within the h5 file to save the images.
+    overwrite: bool, default = False
+        Whether to overwrite an existing .h5 file with the same name.
+    &#34;&#34;&#34;
+    if os.path.exists(datapath) and overwrite is False:
+        raise OSError(
+            &#34;Annotation set {} already exists. Delete the file or set `overwrite=True`.&#34;.format(
+                datapath
+            )
+        )
+    if not isinstance(images, np.ndarray):
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.ndim != 4:
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.dtype != np.uint8:
+        raise TypeError(&#34;`images` must be ndarray with dtype np.uint8&#34;)
+
+    if keypoints:
+        if not isinstance(keypoints, np.ndarray):
+            raise TypeError(
+                &#34;keypoints must be None or ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.ndim != 3:
+            raise TypeError(
+                &#34;images must be ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.shape[0] != images.shape[0]:
+            raise IndexError(
+                &#34;shape for `images` and `keypoints` must match along axis 0.&#34;
+            )
+
+    n_images = images.shape[0]
+    height = images.shape[1]
+    width = images.shape[2]
+    n_channels = images.shape[3]
+    skeleton = initialize_skeleton(skeleton)
+    skeleton_names = skeleton[&#34;name&#34;].values
+    skeleton = skeleton[[&#34;tree&#34;, &#34;swap_index&#34;]].values
+    n_keypoints = skeleton.shape[0]
+
+    with h5py.File(datapath, mode=&#34;w&#34;) as h5file:
+        h5file.create_dataset(
+            dataset,
+            shape=images.shape,
+            dtype=np.uint8,
+            data=images,
+            maxshape=(None,) + images.shape[1:],
+        )
+        data = keypoints or -np.ones((n_images, n_keypoints, 2))
+        h5file.create_dataset(
+            &#34;annotations&#34;,
+            (n_images, n_keypoints, 2),
+            dtype=np.float64,
+            data=data,
+            maxshape=(None,) + data.shape[1:],
+        )
+        data = np.zeros((n_images, n_keypoints), dtype=bool)
+        h5file.create_dataset(
+            &#34;annotated&#34;,
+            (n_images, n_keypoints),
+            dtype=bool,
+            data=data,
+            maxshape=(None,) + data.shape[1:],
+        )
+
+        h5file.create_dataset(&#34;skeleton&#34;, skeleton.shape, dtype=np.int32, data=skeleton)
+        h5file.create_dataset(
+            &#34;skeleton_names&#34;,
+            (skeleton.shape[0],),
+            dtype=&#34;S10&#34;,
+            data=skeleton_names.astype(&#34;S10&#34;),
+        )
+
+
+def merge_new_images(
+    datapath,
+    merged_datapath,
+    images,
+    keypoints=None,
+    dataset=&#34;images&#34;,
+    overwrite=False,
+    mode=&#34;full&#34;,
+):
+    &#34;&#34;&#34;
+    Merge new images with an annotation set
+
+    Parameters
+    ----------
+    datapath : str
+        The path to the annotations file. Must be .h5
+        e.g. &#39;/path/to/file.h5&#39;
+    merged_datapath : str
+        The path to save the merged annotations file. Must be .h5
+        e.g. &#39;/path/to/merged_file.h5&#39;
+    images : ndarray, shape (n_images, height, width, channels)
+        A numpy array containing image data. 
+        `images.dtype` should be np.uint8
+    keypoints : None or ndarray, shape (n_images, n_keypoints, 2)
+        Optionally pass keypoints for initializing annotations for the
+        new images.
+    dataset : str, default = &#34;images&#34;
+        The dataset within the h5 file to save the images.
+    overwrite: bool, default = False
+        Whether to overwrite an existing .h5 file with the same name.
+    mode : str
+        The mode for loading the existing data. 
+        Must be &#34;annotated&#34;, or &#34;full&#34; (the full dataset)
+
+    &#34;&#34;&#34;
+
+    if os.path.exists(merged_datapath) and overwrite is False:
+        raise OSError(
+            &#34;Annotation set {} already exists. Delete the file or set `overwrite=True`.&#34;.format(
+                merged_datapath
+            )
+        )
+    if not isinstance(images, np.ndarray):
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.ndim != 4:
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.dtype != np.uint8:
+        raise TypeError(&#34;`images` must be ndarray with dtype np.uint8&#34;)
+
+    if keypoints is not None:
+        if not isinstance(keypoints, np.ndarray):
+            raise TypeError(
+                &#34;keypoints must be None or ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.ndim != 3:
+            raise TypeError(
+                &#34;images must be ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.shape[0] != images.shape[0]:
+            raise IndexError(
+                &#34;shape for `images` and `keypoints` must match along axis 0.&#34;
+            )
+
+    data_generator = DataGenerator(datapath, dataset=dataset, mode=&#34;full&#34;)
+
+    if images.shape[1:] != data_generator.image_shape:
+        raise IndexError(
+            &#34;`images` shape {} does not match existing dataset {}&#34;.format(
+                images.shape[1:], data_generator.image_shape
+            )
+        )
+    if keypoints is not None:
+        if keypoints.shape[-1] == 3:
+            keypoints = keypoints[:, :, :2]
+        if keypoints.shape[1:] != data_generator.keypoints_shape:
+            raise IndexError(
+                &#34;`keypoints` shape {} does not match existing dataset {}&#34;.format(
+                    keypoints.shape[1:], data_generator.keypoints_shape
+                )
+            )
+
+    h5file = h5py.File(datapath, mode=&#34;r&#34;)
+
+    n_samples_merged = h5file[dataset].shape[0] + images.shape[0]
+
+    merged_h5file = h5py.File(merged_datapath, &#34;w&#34;)
+    merged_h5file.create_dataset(
+        dataset,
+        shape=(n_samples_merged,) + data_generator.image_shape,
+        dtype=np.uint8,
+        maxshape=(None,) + data_generator.image_shape,
+    )
+    merged_h5file.create_dataset(
+        &#34;annotations&#34;,
+        shape=(n_samples_merged,) + data_generator.keypoints_shape,
+        dtype=np.float64,
+        maxshape=(None,) + data_generator.keypoints_shape,
+    )
+    merged_h5file.create_dataset(
+        &#34;annotated&#34;,
+        (n_samples_merged, data_generator.keypoints_shape[0]),
+        dtype=bool,
+        maxshape=(None, data_generator.keypoints_shape[0]),
+    )
+    merged_h5file.create_dataset(
+        &#34;skeleton&#34;, h5file[&#34;skeleton&#34;].shape, dtype=np.int32, data=h5file[&#34;skeleton&#34;][:]
+    )
+
+    for idx in range(h5file[dataset].shape[0]):
+        merged_h5file[dataset][idx] = h5file[dataset][idx]
+        merged_h5file[&#34;annotations&#34;][idx] = h5file[&#34;annotations&#34;][idx]
+        merged_h5file[&#34;annotated&#34;][idx] = h5file[&#34;annotated&#34;][idx]
+
+    for idx in range(h5file[dataset].shape[0], n_samples_merged):
+        merged_h5file[dataset][idx] = images[idx - h5file[dataset].shape[0]]
+        if keypoints is not None:
+            merged_h5file[&#34;annotations&#34;][idx] = keypoints[
+                idx - h5file[dataset].shape[0]
+            ]
+        else:
+            merged_h5file[&#34;annotations&#34;][idx] = np.zeros(data_generator.keypoints_shape)
+        merged_h5file[&#34;annotated&#34;][idx] = np.zeros(
+            data_generator.keypoints_shape[0], dtype=bool
+        )
+
+    h5file.close()
+    merged_h5file.close()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="deepposekit.io.utils.initialize_dataset"><code class="name flex">
+<span>def <span class="ident">initialize_dataset</span></span>(<span>datapath, images, skeleton, keypoints=None, dataset=&#39;images&#39;, overwrite=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Intialize an image dataset for annotation as an h5 file</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>datapath</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to the annotations file. Must be .h5
+e.g. '/path/to/file.h5'</dd>
+<dt><strong><code>images</code></strong> :&ensp;<code>ndarray</code>, <code>shape</code> (<code>n_images</code>, <code>height</code>, <code>width</code>, <code>channels</code>)</dt>
+<dd>A numpy array containing image data.
+<code>images.dtype</code> should be np.uint8</dd>
+<dt><strong><code>skeleton</code></strong> :&ensp;<code>str</code> or <code>pandas.DataFrame</code></dt>
+<dd>Filepath of the .csv or .xlsx file that has indexed information
+on name of the keypoint (part, e.g. head), parent (the direct
+connecting part, e.g. neck connects to head, parent is head),
+and swap (swapping positions with a part when reflected).
+See example files for more information.</dd>
+<dt><strong><code>keypoints</code></strong> :&ensp;<code>None</code> or <code>ndarray</code>, <code>shape</code> (<code>n_images</code>, <code>n_keypoints</code>, <code>2</code>)</dt>
+<dd>Optionally pass keypoints for initializing annotations for the
+new images.</dd>
+<dt><strong><code>dataset</code></strong> :&ensp;<code>str</code>, default = <code>"images"</code></dt>
+<dd>The name of the dataset within the h5 file to save the images.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code>, default = <code>False</code></dt>
+<dd>Whether to overwrite an existing .h5 file with the same name.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initialize_dataset(
+    datapath, images, skeleton, keypoints=None, dataset=&#34;images&#34;, overwrite=False
+):
+    &#34;&#34;&#34;
+    Intialize an image dataset for annotation as an h5 file
+
+    Parameters
+    ----------
+    datapath : str
+        The path to the annotations file. Must be .h5
+        e.g. &#39;/path/to/file.h5&#39;
+    images : ndarray, shape (n_images, height, width, channels)
+        A numpy array containing image data. 
+        `images.dtype` should be np.uint8
+    skeleton: str or pandas.DataFrame
+        Filepath of the .csv or .xlsx file that has indexed information
+        on name of the keypoint (part, e.g. head), parent (the direct
+        connecting part, e.g. neck connects to head, parent is head),
+        and swap (swapping positions with a part when reflected).
+        See example files for more information.
+    keypoints : None or ndarray, shape (n_images, n_keypoints, 2)
+        Optionally pass keypoints for initializing annotations for the
+        new images.
+    dataset : str, default = &#34;images&#34;
+        The name of the dataset within the h5 file to save the images.
+    overwrite: bool, default = False
+        Whether to overwrite an existing .h5 file with the same name.
+    &#34;&#34;&#34;
+    if os.path.exists(datapath) and overwrite is False:
+        raise OSError(
+            &#34;Annotation set {} already exists. Delete the file or set `overwrite=True`.&#34;.format(
+                datapath
+            )
+        )
+    if not isinstance(images, np.ndarray):
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.ndim != 4:
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.dtype != np.uint8:
+        raise TypeError(&#34;`images` must be ndarray with dtype np.uint8&#34;)
+
+    if keypoints:
+        if not isinstance(keypoints, np.ndarray):
+            raise TypeError(
+                &#34;keypoints must be None or ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.ndim != 3:
+            raise TypeError(
+                &#34;images must be ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.shape[0] != images.shape[0]:
+            raise IndexError(
+                &#34;shape for `images` and `keypoints` must match along axis 0.&#34;
+            )
+
+    n_images = images.shape[0]
+    height = images.shape[1]
+    width = images.shape[2]
+    n_channels = images.shape[3]
+    skeleton = initialize_skeleton(skeleton)
+    skeleton_names = skeleton[&#34;name&#34;].values
+    skeleton = skeleton[[&#34;tree&#34;, &#34;swap_index&#34;]].values
+    n_keypoints = skeleton.shape[0]
+
+    with h5py.File(datapath, mode=&#34;w&#34;) as h5file:
+        h5file.create_dataset(
+            dataset,
+            shape=images.shape,
+            dtype=np.uint8,
+            data=images,
+            maxshape=(None,) + images.shape[1:],
+        )
+        data = keypoints or -np.ones((n_images, n_keypoints, 2))
+        h5file.create_dataset(
+            &#34;annotations&#34;,
+            (n_images, n_keypoints, 2),
+            dtype=np.float64,
+            data=data,
+            maxshape=(None,) + data.shape[1:],
+        )
+        data = np.zeros((n_images, n_keypoints), dtype=bool)
+        h5file.create_dataset(
+            &#34;annotated&#34;,
+            (n_images, n_keypoints),
+            dtype=bool,
+            data=data,
+            maxshape=(None,) + data.shape[1:],
+        )
+
+        h5file.create_dataset(&#34;skeleton&#34;, skeleton.shape, dtype=np.int32, data=skeleton)
+        h5file.create_dataset(
+            &#34;skeleton_names&#34;,
+            (skeleton.shape[0],),
+            dtype=&#34;S10&#34;,
+            data=skeleton_names.astype(&#34;S10&#34;),
+        )</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.io.utils.initialize_skeleton"><code class="name flex">
+<span>def <span class="ident">initialize_skeleton</span></span>(<span>skeleton)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Initialize the skeleton from input data.</p>
+<p>Takes in either a .csv or .xlsx file and makes a DataFrame.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>skeleton</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>Filepath of the .csv or .xlsx file that has indexed information
+on name of the keypoint (part, e.g. head), parent (the direct
+connecting part, e.g. neck connects to head, parent is head),
+and swap (swapping positions with a part when reflected over X).</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def initialize_skeleton(skeleton):
+    &#34;&#34;&#34; Initialize the skeleton from input data.
+
+    Takes in either a .csv or .xlsx file and makes a DataFrame.
+
+    Parameters
+    ----------
+    skeleton: pandas.DataFrame
+        Filepath of the .csv or .xlsx file that has indexed information
+        on name of the keypoint (part, e.g. head), parent (the direct
+        connecting part, e.g. neck connects to head, parent is head),
+        and swap (swapping positions with a part when reflected over X).
+    &#34;&#34;&#34;
+
+    if isinstance(skeleton, str):
+        if skeleton.endswith(&#34;.csv&#34;):
+            skeleton = pd.read_csv(skeleton)
+        elif skeleton.endswith(&#34;.xlsx&#34;):
+            skeleton = pd.read_excel(skeleton)
+        else:
+            raise ValueError(&#34;skeleton must be .csv or .xlsx file&#34;)
+    elif isinstance(skeleton, pd.DataFrame):
+        skeleton = skeleton
+    else:
+        raise TypeError(&#34;skeleton must be type `str` or pandas.DataFrame&#34;)
+
+    if &#34;name&#34; not in skeleton.columns:
+        raise KeyError(&#34;skeleton file must contain a `name` column&#34;)
+    elif &#34;parent&#34; not in skeleton.columns:
+        raise KeyError(&#34;skeleton file must contain a `parent` column&#34;)
+
+    if &#34;x&#34; not in skeleton.columns:
+        skeleton[&#34;x&#34;] = -1
+    if &#34;y&#34; not in skeleton.columns:
+        skeleton[&#34;y&#34;] = -1
+
+    if &#34;tree&#34; not in skeleton.columns:
+        skeleton[&#34;tree&#34;] = -1
+        for idx, name in enumerate(skeleton[&#34;parent&#34;].values):
+            branch = np.where(skeleton[&#34;name&#34;] == name)[0]
+            if branch.shape[0] &gt; 0:
+                branch = branch[0]
+                skeleton.loc[idx, &#34;tree&#34;] = branch
+    if &#34;swap_index&#34; not in skeleton.columns:
+        skeleton[&#34;swap_index&#34;] = -1
+        for idx, name in enumerate(skeleton[&#34;name&#34;].values):
+            for jdx, swap_name in enumerate(skeleton[&#34;swap&#34;].values):
+                if swap_name == name:
+                    skeleton.loc[idx, &#34;swap_index&#34;] = jdx
+    return skeleton</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.io.utils.merge_new_images"><code class="name flex">
+<span>def <span class="ident">merge_new_images</span></span>(<span>datapath, merged_datapath, images, keypoints=None, dataset=&#39;images&#39;, overwrite=False, mode=&#39;full&#39;)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Merge new images with an annotation set</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>datapath</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to the annotations file. Must be .h5
+e.g. '/path/to/file.h5'</dd>
+<dt><strong><code>merged_datapath</code></strong> :&ensp;<code>str</code></dt>
+<dd>The path to save the merged annotations file. Must be .h5
+e.g. '/path/to/merged_file.h5'</dd>
+<dt><strong><code>images</code></strong> :&ensp;<code>ndarray</code>, <code>shape</code> (<code>n_images</code>, <code>height</code>, <code>width</code>, <code>channels</code>)</dt>
+<dd>A numpy array containing image data.
+<code>images.dtype</code> should be np.uint8</dd>
+<dt><strong><code>keypoints</code></strong> :&ensp;<code>None</code> or <code>ndarray</code>, <code>shape</code> (<code>n_images</code>, <code>n_keypoints</code>, <code>2</code>)</dt>
+<dd>Optionally pass keypoints for initializing annotations for the
+new images.</dd>
+<dt><strong><code>dataset</code></strong> :&ensp;<code>str</code>, default = <code>"images"</code></dt>
+<dd>The dataset within the h5 file to save the images.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code>, default = <code>False</code></dt>
+<dd>Whether to overwrite an existing .h5 file with the same name.</dd>
+<dt><strong><code>mode</code></strong> :&ensp;<code>str</code></dt>
+<dd>The mode for loading the existing data.
+Must be "annotated", or "full" (the full dataset)</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def merge_new_images(
+    datapath,
+    merged_datapath,
+    images,
+    keypoints=None,
+    dataset=&#34;images&#34;,
+    overwrite=False,
+    mode=&#34;full&#34;,
+):
+    &#34;&#34;&#34;
+    Merge new images with an annotation set
+
+    Parameters
+    ----------
+    datapath : str
+        The path to the annotations file. Must be .h5
+        e.g. &#39;/path/to/file.h5&#39;
+    merged_datapath : str
+        The path to save the merged annotations file. Must be .h5
+        e.g. &#39;/path/to/merged_file.h5&#39;
+    images : ndarray, shape (n_images, height, width, channels)
+        A numpy array containing image data. 
+        `images.dtype` should be np.uint8
+    keypoints : None or ndarray, shape (n_images, n_keypoints, 2)
+        Optionally pass keypoints for initializing annotations for the
+        new images.
+    dataset : str, default = &#34;images&#34;
+        The dataset within the h5 file to save the images.
+    overwrite: bool, default = False
+        Whether to overwrite an existing .h5 file with the same name.
+    mode : str
+        The mode for loading the existing data. 
+        Must be &#34;annotated&#34;, or &#34;full&#34; (the full dataset)
+
+    &#34;&#34;&#34;
+
+    if os.path.exists(merged_datapath) and overwrite is False:
+        raise OSError(
+            &#34;Annotation set {} already exists. Delete the file or set `overwrite=True`.&#34;.format(
+                merged_datapath
+            )
+        )
+    if not isinstance(images, np.ndarray):
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.ndim != 4:
+        raise TypeError(
+            &#34;images must be ndarray with shape (n_images, height, width, channels)&#34;
+        )
+    elif images.dtype != np.uint8:
+        raise TypeError(&#34;`images` must be ndarray with dtype np.uint8&#34;)
+
+    if keypoints is not None:
+        if not isinstance(keypoints, np.ndarray):
+            raise TypeError(
+                &#34;keypoints must be None or ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.ndim != 3:
+            raise TypeError(
+                &#34;images must be ndarray with shape (n_images, n_keypoints, 2)&#34;
+            )
+        elif keypoints.shape[0] != images.shape[0]:
+            raise IndexError(
+                &#34;shape for `images` and `keypoints` must match along axis 0.&#34;
+            )
+
+    data_generator = DataGenerator(datapath, dataset=dataset, mode=&#34;full&#34;)
+
+    if images.shape[1:] != data_generator.image_shape:
+        raise IndexError(
+            &#34;`images` shape {} does not match existing dataset {}&#34;.format(
+                images.shape[1:], data_generator.image_shape
+            )
+        )
+    if keypoints is not None:
+        if keypoints.shape[-1] == 3:
+            keypoints = keypoints[:, :, :2]
+        if keypoints.shape[1:] != data_generator.keypoints_shape:
+            raise IndexError(
+                &#34;`keypoints` shape {} does not match existing dataset {}&#34;.format(
+                    keypoints.shape[1:], data_generator.keypoints_shape
+                )
+            )
+
+    h5file = h5py.File(datapath, mode=&#34;r&#34;)
+
+    n_samples_merged = h5file[dataset].shape[0] + images.shape[0]
+
+    merged_h5file = h5py.File(merged_datapath, &#34;w&#34;)
+    merged_h5file.create_dataset(
+        dataset,
+        shape=(n_samples_merged,) + data_generator.image_shape,
+        dtype=np.uint8,
+        maxshape=(None,) + data_generator.image_shape,
+    )
+    merged_h5file.create_dataset(
+        &#34;annotations&#34;,
+        shape=(n_samples_merged,) + data_generator.keypoints_shape,
+        dtype=np.float64,
+        maxshape=(None,) + data_generator.keypoints_shape,
+    )
+    merged_h5file.create_dataset(
+        &#34;annotated&#34;,
+        (n_samples_merged, data_generator.keypoints_shape[0]),
+        dtype=bool,
+        maxshape=(None, data_generator.keypoints_shape[0]),
+    )
+    merged_h5file.create_dataset(
+        &#34;skeleton&#34;, h5file[&#34;skeleton&#34;].shape, dtype=np.int32, data=h5file[&#34;skeleton&#34;][:]
+    )
+
+    for idx in range(h5file[dataset].shape[0]):
+        merged_h5file[dataset][idx] = h5file[dataset][idx]
+        merged_h5file[&#34;annotations&#34;][idx] = h5file[&#34;annotations&#34;][idx]
+        merged_h5file[&#34;annotated&#34;][idx] = h5file[&#34;annotated&#34;][idx]
+
+    for idx in range(h5file[dataset].shape[0], n_samples_merged):
+        merged_h5file[dataset][idx] = images[idx - h5file[dataset].shape[0]]
+        if keypoints is not None:
+            merged_h5file[&#34;annotations&#34;][idx] = keypoints[
+                idx - h5file[dataset].shape[0]
+            ]
+        else:
+            merged_h5file[&#34;annotations&#34;][idx] = np.zeros(data_generator.keypoints_shape)
+        merged_h5file[&#34;annotated&#34;][idx] = np.zeros(
+            data_generator.keypoints_shape[0], dtype=bool
+        )
+
+    h5file.close()
+    merged_h5file.close()</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="deepposekit.io" href="index.html">deepposekit.io</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="deepposekit.io.utils.initialize_dataset" href="#deepposekit.io.utils.initialize_dataset">initialize_dataset</a></code></li>
+<li><code><a title="deepposekit.io.utils.initialize_skeleton" href="#deepposekit.io.utils.initialize_skeleton">initialize_skeleton</a></code></li>
+<li><code><a title="deepposekit.io.utils.merge_new_images" href="#deepposekit.io.utils.merge_new_images">merge_new_images</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

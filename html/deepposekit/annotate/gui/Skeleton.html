@@ -1,0 +1,485 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.0" />
+<title>deepposekit.annotate.gui.Skeleton API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>deepposekit.annotate.gui.Skeleton</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import numpy as np
+import cv2
+
+from deepposekit.annotate.gui.GUI import GUI
+from deepposekit.annotate.utils import hotkeys as keys
+
+__all__ = [&#34;Skeleton&#34;]
+
+
+class Skeleton(GUI):
+    &#34;&#34;&#34;
+    A GUI for initializing a skeleton for a new dataset.
+
+    ------------------------------------------------------------
+         Keys             |   Action
+    ------------------------------------------------------------
+    &gt;    +,-              |   Rescale the image
+    &gt;    Left mouse       |   Move active keypoint
+    &gt;    W, A, S, D       |   Move active keypoint
+    &gt;    space            |   Changes W,A,S,D mode (swaps between 1px or 10px)
+    &gt;    J, L             |   Load previous or next image
+    &gt;    &lt;, &gt;             |   Jump 10 images backward or forward
+    &gt;    I, K or          |
+         tab, shift+tab   |   Switch active keypoint
+    &gt;    R                |   Mark frame as unannotated, or &#34;reset&#34;
+    &gt;    F                |   Mark frame as annotated or &#34;finished&#34;
+    &gt;    Esc, Q           |   Quit the GUI
+    ------------------------------------------------------------
+
+    Parameters
+    ----------
+    image: str
+        Filepath of the image to be labeled.
+
+    skeleton: str
+        Filepath of the .csv or .xlsx file that has indexed information
+        on name of the keypoint (part, e.g. head), parent (the direct
+        connecting part, e.g. neck connects to head, parent is head),
+        and swap (swapping positions with a part when reflected over X)
+
+        Consult example of such a file for more information
+
+    scale: int/float, default 1
+        Scaling factor for the GUI (e.g. used in zooming).
+
+    text_scale: float
+        Scaling factor for the GUI font.
+        A text_scale of 1 works well for 1920x1080 (1080p) images
+
+    shuffle_colors: bool, default = True
+        Whether to shuffle the color order for drawing keypoints
+
+    refresh: int, default 100
+        Delay on receiving next keyboard input in milliseconds.
+
+    Attributes
+    ----------
+    window_name: str
+        Name of the Annotation window when running program.
+        Set to be &#39;Annotation&#39; unless otherwise changed.
+
+    n_images: int
+        Number of images in question (1 in this case).
+
+    key: int
+        The key that is pressed on the keyboard.
+
+    image_idx: int
+        Index of a specific image in the .h5 file.
+
+    save: method
+        Output method is set to be to_csv
+
+    Examples
+    --------
+    &gt;&gt;&gt; from deepposekit import Skeleton
+    &gt;&gt;&gt; app = Skeleton(&#39;input_image.png&#39;, &#39;skeleton.csv&#39;)
+    &gt;&gt;&gt; app.run()
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; app.save(&#39;skeleton_initialized.csv&#39;) # save the labels in skeleton.csv file
+
+    Note: must use app.save(&#39;file.csv&#39;) to save! Unlike the
+    Annotator, will not automatically save until that line runs.
+
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        image,
+        skeleton,
+        scale=1,
+        text_scale=0.15,
+        shuffle_colors=True,
+        refresh=100,
+    ):
+
+        if isinstance(image, str):
+            self.image = cv2.imread(image)
+        elif isinstance(image, np.ndarray):
+            self.image = image
+
+        super(GUI, self).__init__()
+        self.image_idx = 0
+        self.n_images = 1
+        self.window_name = &#34;Skeleton Creator&#34;
+        self.shuffle_colors = shuffle_colors
+        self._init_skeleton(skeleton)
+        self._init_gui(scale, text_scale, shuffle_colors, refresh)
+        self.save = self.skeleton.to_csv
+
+    def _hotkeys(self):
+        &#34;&#34;&#34; Activates all key bindings.
+        
+        Enables all the key functionalities described at the
+        start of the file.
+
+        &#34;&#34;&#34;
+        if self.key != keys.NONE:
+            self._wasd()
+            self._move_idx()
+            self._zoom()
+            self._update_canvas()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="deepposekit.annotate.gui.Skeleton.Skeleton"><code class="flex name class">
+<span>class <span class="ident">Skeleton</span></span>
+<span>(</span><span>image, skeleton, scale=1, text_scale=0.15, shuffle_colors=True, refresh=100)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>A GUI for initializing a skeleton for a new dataset.</p>
+<hr>
+<pre><code> Keys             |   Action
+</code></pre>
+<hr>
+<blockquote>
+<p>+,-
+|
+Rescale the image
+Left mouse
+|
+Move active keypoint
+W, A, S, D
+|
+Move active keypoint
+space
+|
+Changes W,A,S,D mode (swaps between 1px or 10px)
+J, L
+|
+Load previous or next image
+&lt;, &gt;
+|
+Jump 10 images backward or forward
+I, K or
+|
+tab, shift+tab
+|
+Switch active keypoint
+R
+|
+Mark frame as unannotated, or "reset"
+F
+|
+Mark frame as annotated or "finished"
+Esc, Q
+|
+Quit the GUI</p>
+</blockquote>
+<hr>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>image</code></strong> :&ensp;<code>str</code></dt>
+<dd>Filepath of the image to be labeled.</dd>
+<dt><strong><code>skeleton</code></strong> :&ensp;<code>str</code></dt>
+<dd>
+<p>Filepath of the .csv or .xlsx file that has indexed information
+on name of the keypoint (part, e.g. head), parent (the direct
+connecting part, e.g. neck connects to head, parent is head),
+and swap (swapping positions with a part when reflected over X)</p>
+<p>Consult example of such a file for more information</p>
+</dd>
+<dt><strong><code>scale</code></strong> :&ensp;<code>int</code>/<code>float</code>, default <code>1</code></dt>
+<dd>Scaling factor for the GUI (e.g. used in zooming).</dd>
+<dt><strong><code>text_scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Scaling factor for the GUI font.
+A text_scale of 1 works well for 1920x1080 (1080p) images</dd>
+<dt><strong><code>shuffle_colors</code></strong> :&ensp;<code>bool</code>, default = <code>True</code></dt>
+<dd>Whether to shuffle the color order for drawing keypoints</dd>
+<dt><strong><code>refresh</code></strong> :&ensp;<code>int</code>, default <code>100</code></dt>
+<dd>Delay on receiving next keyboard input in milliseconds.</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>window_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the Annotation window when running program.
+Set to be 'Annotation' unless otherwise changed.</dd>
+<dt><strong><code>n_images</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of images in question (1 in this case).</dd>
+<dt><strong><code>key</code></strong> :&ensp;<code>int</code></dt>
+<dd>The key that is pressed on the keyboard.</dd>
+<dt><strong><code>image_idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>Index of a specific image in the .h5 file.</dd>
+<dt><strong><code>save</code></strong> :&ensp;<code>method</code></dt>
+<dd>Output method is set to be to_csv</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code>&gt;&gt;&gt; from deepposekit import Skeleton
+&gt;&gt;&gt; app = Skeleton('input_image.png', 'skeleton.csv')
+&gt;&gt;&gt; app.run()
+&gt;&gt;&gt;
+&gt;&gt;&gt; app.save('skeleton_initialized.csv') # save the labels in skeleton.csv file
+</code></pre>
+<dl>
+<dt><strong><code>Note</code></strong> :&ensp;<code>must</code> <code>use</code> <code>app.save</code>(<code>'file.csv'</code>) <code>to</code> <code>save</code>! <code>Unlike</code> <code>the</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>Annotator, will not automatically save until that line runs.</p>
+<p>A GUI for annotating or marking up image(s).</p>
+<p>The GUI class works with a subclass to run a program that could be
+used to annotate or markup an image or a series of images.
+In order to extend the GUI class to make a subclass, a few things
+must be defined in the subclass.</p>
+<hr>
+<pre><code>Method      |
+</code></pre>
+<hr>
+<h2 id="_hotkeys-activates-all-the-hotkey-bindings">&gt;
+_hotkeys()
+|
+Activates all the hotkey bindings</h2>
+<pre><code>Attribute   |
+</code></pre>
+<hr>
+<blockquote>
+<p>window_name |
+Name of application window
+image_idx
+|
+Index of active image, important for multiple images
+n_images
+|
+Number of total images</p>
+</blockquote>
+<hr>
+<p>See the Annotator.py or Skeleton.py for an example of how this is done</p>
+<h2 id="attributes_1">Attributes</h2>
+<dl>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Scaling factor for the GUI (e.g. used in zooming).</dd>
+<dt><strong><code>text_scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Scaling factor for the GUI font.
+A text_scale of 1 is good for 1920x1080 (1080p) images</dd>
+<dt><strong><code>refresh</code></strong> :&ensp;<code>int</code></dt>
+<dd>Delay on receiving next keyboard input in milliseconds.</dd>
+<dt><strong><code>point</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>The coordinates of the mouse on the GUI.</dd>
+<dt><strong><code>image</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>One image accessed using image_idx.</dd>
+<dt><strong><code>canvas</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Canvas for the GUI itself.</dd>
+<dt><strong><code>skeleton</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>Store information from the skeleton data input.</dd>
+<dt><strong><code>idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>Index of the keypoint in question.</dd>
+<dt><strong><code>keypoint_idx</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Keeps track of the keypoints array.</dd>
+<dt><strong><code>n_keypoints</code></strong> :&ensp;<code>int</code></dt>
+<dd>Total number of keypoints in an image.</dd>
+<dt><strong><code>text_locs</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of text locations.</dd>
+<dt><strong><code>key</code></strong> :&ensp;<code>int</code></dt>
+<dd>The key that is pressed on the keyboard.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Skeleton(GUI):
+    &#34;&#34;&#34;
+    A GUI for initializing a skeleton for a new dataset.
+
+    ------------------------------------------------------------
+         Keys             |   Action
+    ------------------------------------------------------------
+    &gt;    +,-              |   Rescale the image
+    &gt;    Left mouse       |   Move active keypoint
+    &gt;    W, A, S, D       |   Move active keypoint
+    &gt;    space            |   Changes W,A,S,D mode (swaps between 1px or 10px)
+    &gt;    J, L             |   Load previous or next image
+    &gt;    &lt;, &gt;             |   Jump 10 images backward or forward
+    &gt;    I, K or          |
+         tab, shift+tab   |   Switch active keypoint
+    &gt;    R                |   Mark frame as unannotated, or &#34;reset&#34;
+    &gt;    F                |   Mark frame as annotated or &#34;finished&#34;
+    &gt;    Esc, Q           |   Quit the GUI
+    ------------------------------------------------------------
+
+    Parameters
+    ----------
+    image: str
+        Filepath of the image to be labeled.
+
+    skeleton: str
+        Filepath of the .csv or .xlsx file that has indexed information
+        on name of the keypoint (part, e.g. head), parent (the direct
+        connecting part, e.g. neck connects to head, parent is head),
+        and swap (swapping positions with a part when reflected over X)
+
+        Consult example of such a file for more information
+
+    scale: int/float, default 1
+        Scaling factor for the GUI (e.g. used in zooming).
+
+    text_scale: float
+        Scaling factor for the GUI font.
+        A text_scale of 1 works well for 1920x1080 (1080p) images
+
+    shuffle_colors: bool, default = True
+        Whether to shuffle the color order for drawing keypoints
+
+    refresh: int, default 100
+        Delay on receiving next keyboard input in milliseconds.
+
+    Attributes
+    ----------
+    window_name: str
+        Name of the Annotation window when running program.
+        Set to be &#39;Annotation&#39; unless otherwise changed.
+
+    n_images: int
+        Number of images in question (1 in this case).
+
+    key: int
+        The key that is pressed on the keyboard.
+
+    image_idx: int
+        Index of a specific image in the .h5 file.
+
+    save: method
+        Output method is set to be to_csv
+
+    Examples
+    --------
+    &gt;&gt;&gt; from deepposekit import Skeleton
+    &gt;&gt;&gt; app = Skeleton(&#39;input_image.png&#39;, &#39;skeleton.csv&#39;)
+    &gt;&gt;&gt; app.run()
+    &gt;&gt;&gt;
+    &gt;&gt;&gt; app.save(&#39;skeleton_initialized.csv&#39;) # save the labels in skeleton.csv file
+
+    Note: must use app.save(&#39;file.csv&#39;) to save! Unlike the
+    Annotator, will not automatically save until that line runs.
+
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        image,
+        skeleton,
+        scale=1,
+        text_scale=0.15,
+        shuffle_colors=True,
+        refresh=100,
+    ):
+
+        if isinstance(image, str):
+            self.image = cv2.imread(image)
+        elif isinstance(image, np.ndarray):
+            self.image = image
+
+        super(GUI, self).__init__()
+        self.image_idx = 0
+        self.n_images = 1
+        self.window_name = &#34;Skeleton Creator&#34;
+        self.shuffle_colors = shuffle_colors
+        self._init_skeleton(skeleton)
+        self._init_gui(scale, text_scale, shuffle_colors, refresh)
+        self.save = self.skeleton.to_csv
+
+    def _hotkeys(self):
+        &#34;&#34;&#34; Activates all key bindings.
+        
+        Enables all the key functionalities described at the
+        start of the file.
+
+        &#34;&#34;&#34;
+        if self.key != keys.NONE:
+            self._wasd()
+            self._move_idx()
+            self._zoom()
+            self._update_canvas()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="deepposekit.annotate.gui.GUI.GUI" href="GUI.html#deepposekit.annotate.gui.GUI.GUI">GUI</a></li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="deepposekit.annotate.gui.GUI.GUI" href="GUI.html#deepposekit.annotate.gui.GUI.GUI">GUI</a></b></code>:
+<ul class="hlist">
+<li><code><a title="deepposekit.annotate.gui.GUI.GUI.run" href="GUI.html#deepposekit.annotate.gui.GUI.GUI.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="deepposekit.annotate.gui" href="index.html">deepposekit.annotate.gui</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="deepposekit.annotate.gui.Skeleton.Skeleton" href="#deepposekit.annotate.gui.Skeleton.Skeleton">Skeleton</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

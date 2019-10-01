@@ -1,0 +1,744 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.0" />
+<title>deepposekit.models.engine API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>deepposekit.models.engine</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import numpy as np
+from tensorflow.keras import Model
+import warnings
+
+from deepposekit.models.layers.subpixel import SubpixelMaxima2D
+from deepposekit.models.layers.convolutional import Maxima2D
+from deepposekit.utils.image import largest_factor
+from deepposekit.utils.keypoints import keypoint_errors
+from deepposekit.models.saving import save_model
+
+
+class BaseModel:
+    def __init__(self, train_generator=None, subpixel=False, **kwargs):
+
+        self.train_generator = train_generator
+        self.subpixel = subpixel
+        if &#34;skip_init&#34; not in kwargs:
+            if self.train_model is NotImplemented:
+                self.__init_model__()
+                self.__init_train_model__()
+            if self.train_generator is not None:
+                config = self.train_generator.get_config()
+                if self.subpixel:
+                    output_sigma = config[&#34;output_sigma&#34;]
+                else:
+                    output_sigma = None
+                self.__init_predict_model__(
+                    config[&#34;output_shape&#34;],
+                    config[&#34;keypoints_shape&#34;],
+                    config[&#34;downsample_factor&#34;],
+                    config[&#34;output_sigma&#34;],
+                )
+
+    train_model = NotImplemented
+
+    def __init_train_model__(self):
+        if isinstance(self.train_model, Model):
+            self.compile = self.train_model.compile
+            self.n_outputs = len(self.train_model.outputs)
+        else:
+            raise TypeError(&#34;self.train_model must be keras.Model class&#34;)
+
+    def __init_model__(self):
+        raise NotImplementedError(
+            &#34;__init_model__ method must be&#34; &#34;implemented to define `self.train_model`&#34;
+        )
+
+    def __init_predict_model__(
+        self,
+        output_shape,
+        keypoints_shape,
+        downsample_factor,
+        output_sigma=None,
+        **kwargs
+    ):
+
+        output = self.train_model.outputs[-1]
+        if self.subpixel:
+            kernel_size = np.min(output_shape)
+            kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
+            sigma = output_sigma
+            keypoints = SubpixelMaxima2D(
+                kernel_size,
+                sigma,
+                upsample_factor=100,
+                index=keypoints_shape[0],
+                coordinate_scale=2 ** downsample_factor,
+                confidence_scale=255.0,
+            )(output)
+        else:
+            keypoints = Maxima2D(
+                index=keypoints_shape[0],
+                coordinate_scale=2 ** downsample_factor,
+                confidence_scale=255.0,
+            )(output)
+        input_layer = self.train_model.inputs[0]
+        self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
+        self.predict = self.predict_model.predict
+        self.predict_generator = self.predict_model.predict_generator
+        self.predict_on_batch = self.predict_model.predict_on_batch
+
+    def fit(
+        self,
+        batch_size,
+        validation_batch_size=1,
+        callbacks=[],
+        epochs=1,
+        use_multiprocessing=False,
+        n_workers=1,
+        steps_per_epoch=None,
+        **kwargs
+    ):
+        &#34;&#34;&#34;
+        Trains the model for a given number of epochs (iterations on a dataset).
+
+        Parameters
+        ----------
+        batch_size : int
+            Number of samples per training update.
+        validation_batch_size : int
+            Number of samples per validation batch used when evaluating the model.
+        callbacks : list or None
+            List of keras.callbacks.Callback instances or deepposekit callbacks.
+            List of callbacks to apply during training and validation.
+        epochs: int
+            Number of epochs to train the model. An epoch is an iteration over the entire dataset,
+            or for `steps_per_epoch` number of batches
+        use_multiprocessing: bool, default=False
+            Whether to use the multiprocessing module when generating batches of data.
+        n_workers: int
+            Number of processes to run for generating batches of data.
+        steps_per_epoch: int or None
+            Number of batches per epoch. If `None` this is automatically determined
+            based on the size of the dataset.
+        &#34;&#34;&#34;
+
+        if not self.train_model._is_compiled:
+            warnings.warn(
+                &#34;&#34;&#34;\nAutomatically compiling with default settings: model.compile(&#39;adam&#39;, &#39;mse&#39;)\n&#34;&#34;&#34;
+                &#34;Call model.compile() manually to use non-default settings.\n&#34;
+            )
+            self.train_model.compile(&#34;adam&#34;, &#34;mse&#34;)
+
+        train_generator = self.train_generator(
+            self.n_outputs, batch_size, validation=False, confidence=True
+        )
+        validation_generator = self.train_generator(
+            self.n_outputs, validation_batch_size, validation=True, confidence=True
+        )
+        validation_generator = (
+            None if len(validation_generator) == 0 else validation_generator
+        )
+        if validation_generator is None:
+            warnings.warn(
+                &#34;No validation set detected, so validation step will not be run and `val_loss` will not be available.&#34;
+            )
+
+        activated_callbacks = self.activate_callbacks(callbacks)
+
+        self.train_model.fit_generator(
+            generator=train_generator,
+            steps_per_epoch=steps_per_epoch,
+            epochs=epochs,
+            use_multiprocessing=use_multiprocessing,
+            workers=n_workers,
+            callbacks=activated_callbacks,
+            validation_data=validation_generator,
+            **kwargs
+        )
+
+    def activate_callbacks(self, callbacks):
+        activated_callbacks = []
+        if callbacks is not None:
+            if len(callbacks) &gt; 0:
+                for callback in callbacks:
+                    if hasattr(callback, &#34;pass_model&#34;):
+                        callback.pass_model(self)
+                    activated_callbacks.append(callback)
+        return activated_callbacks
+
+    def evaluate(self, batch_size):
+
+        if self.train_generator.n_validation &gt; 0:
+            keypoint_generator = self.train_generator(
+                n_outputs=1, batch_size=batch_size, validation=True, confidence=False
+            )
+
+        elif self.train_generator.n_validation == 0:
+            warnings.warn(
+                &#34;`n_validation` is 0, so the training set will be used for model evaluation&#34;
+            )
+            keypoint_generator = self.train_generator(
+                n_outputs=1, batch_size=batch_size, validation=False, confidence=False
+            )
+        y_pred_list = []
+        confidence_list = []
+        y_error_list = []
+        euclidean_list = []
+        for idx in range(len(keypoint_generator)):
+            X, y_true = keypoint_generator[idx]
+
+            y_pred = self.predict_model.predict_on_batch(X)
+            confidence_list.append(y_pred[..., -1])
+            y_pred_coords = y_pred[..., :2]
+            y_pred_list.append(y_pred_coords)
+
+            errors = keypoint_errors(y_true, y_pred_coords)
+            y_error, euclidean, mae, mse, rmse = errors
+            y_error_list.append(y_error)
+            euclidean_list.append(euclidean)
+
+        y_pred = np.concatenate(y_pred_list)
+        confidence = np.concatenate(confidence_list)
+        y_error = np.concatenate(y_error_list)
+        euclidean = np.concatenate(euclidean_list)
+
+        evaluation_dict = {
+            &#34;y_pred&#34;: y_pred,
+            &#34;y_error&#34;: y_error,
+            &#34;euclidean&#34;: euclidean,
+            &#34;confidence&#34;: confidence,
+        }
+
+        return evaluation_dict
+
+    def save(self, path, optimizer=True):
+        save_model(self, path, optimizer)
+
+    def get_config(self):
+        config = {}
+        if self.train_generator:
+            base_config = self.train_generator.get_config()
+            return dict(list(base_config.items()) + list(config.items()))
+        else:
+            return config</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="deepposekit.models.engine.BaseModel"><code class="flex name class">
+<span>class <span class="ident">BaseModel</span></span>
+<span>(</span><span>train_generator=None, subpixel=False, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class BaseModel:
+    def __init__(self, train_generator=None, subpixel=False, **kwargs):
+
+        self.train_generator = train_generator
+        self.subpixel = subpixel
+        if &#34;skip_init&#34; not in kwargs:
+            if self.train_model is NotImplemented:
+                self.__init_model__()
+                self.__init_train_model__()
+            if self.train_generator is not None:
+                config = self.train_generator.get_config()
+                if self.subpixel:
+                    output_sigma = config[&#34;output_sigma&#34;]
+                else:
+                    output_sigma = None
+                self.__init_predict_model__(
+                    config[&#34;output_shape&#34;],
+                    config[&#34;keypoints_shape&#34;],
+                    config[&#34;downsample_factor&#34;],
+                    config[&#34;output_sigma&#34;],
+                )
+
+    train_model = NotImplemented
+
+    def __init_train_model__(self):
+        if isinstance(self.train_model, Model):
+            self.compile = self.train_model.compile
+            self.n_outputs = len(self.train_model.outputs)
+        else:
+            raise TypeError(&#34;self.train_model must be keras.Model class&#34;)
+
+    def __init_model__(self):
+        raise NotImplementedError(
+            &#34;__init_model__ method must be&#34; &#34;implemented to define `self.train_model`&#34;
+        )
+
+    def __init_predict_model__(
+        self,
+        output_shape,
+        keypoints_shape,
+        downsample_factor,
+        output_sigma=None,
+        **kwargs
+    ):
+
+        output = self.train_model.outputs[-1]
+        if self.subpixel:
+            kernel_size = np.min(output_shape)
+            kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
+            sigma = output_sigma
+            keypoints = SubpixelMaxima2D(
+                kernel_size,
+                sigma,
+                upsample_factor=100,
+                index=keypoints_shape[0],
+                coordinate_scale=2 ** downsample_factor,
+                confidence_scale=255.0,
+            )(output)
+        else:
+            keypoints = Maxima2D(
+                index=keypoints_shape[0],
+                coordinate_scale=2 ** downsample_factor,
+                confidence_scale=255.0,
+            )(output)
+        input_layer = self.train_model.inputs[0]
+        self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
+        self.predict = self.predict_model.predict
+        self.predict_generator = self.predict_model.predict_generator
+        self.predict_on_batch = self.predict_model.predict_on_batch
+
+    def fit(
+        self,
+        batch_size,
+        validation_batch_size=1,
+        callbacks=[],
+        epochs=1,
+        use_multiprocessing=False,
+        n_workers=1,
+        steps_per_epoch=None,
+        **kwargs
+    ):
+        &#34;&#34;&#34;
+        Trains the model for a given number of epochs (iterations on a dataset).
+
+        Parameters
+        ----------
+        batch_size : int
+            Number of samples per training update.
+        validation_batch_size : int
+            Number of samples per validation batch used when evaluating the model.
+        callbacks : list or None
+            List of keras.callbacks.Callback instances or deepposekit callbacks.
+            List of callbacks to apply during training and validation.
+        epochs: int
+            Number of epochs to train the model. An epoch is an iteration over the entire dataset,
+            or for `steps_per_epoch` number of batches
+        use_multiprocessing: bool, default=False
+            Whether to use the multiprocessing module when generating batches of data.
+        n_workers: int
+            Number of processes to run for generating batches of data.
+        steps_per_epoch: int or None
+            Number of batches per epoch. If `None` this is automatically determined
+            based on the size of the dataset.
+        &#34;&#34;&#34;
+
+        if not self.train_model._is_compiled:
+            warnings.warn(
+                &#34;&#34;&#34;\nAutomatically compiling with default settings: model.compile(&#39;adam&#39;, &#39;mse&#39;)\n&#34;&#34;&#34;
+                &#34;Call model.compile() manually to use non-default settings.\n&#34;
+            )
+            self.train_model.compile(&#34;adam&#34;, &#34;mse&#34;)
+
+        train_generator = self.train_generator(
+            self.n_outputs, batch_size, validation=False, confidence=True
+        )
+        validation_generator = self.train_generator(
+            self.n_outputs, validation_batch_size, validation=True, confidence=True
+        )
+        validation_generator = (
+            None if len(validation_generator) == 0 else validation_generator
+        )
+        if validation_generator is None:
+            warnings.warn(
+                &#34;No validation set detected, so validation step will not be run and `val_loss` will not be available.&#34;
+            )
+
+        activated_callbacks = self.activate_callbacks(callbacks)
+
+        self.train_model.fit_generator(
+            generator=train_generator,
+            steps_per_epoch=steps_per_epoch,
+            epochs=epochs,
+            use_multiprocessing=use_multiprocessing,
+            workers=n_workers,
+            callbacks=activated_callbacks,
+            validation_data=validation_generator,
+            **kwargs
+        )
+
+    def activate_callbacks(self, callbacks):
+        activated_callbacks = []
+        if callbacks is not None:
+            if len(callbacks) &gt; 0:
+                for callback in callbacks:
+                    if hasattr(callback, &#34;pass_model&#34;):
+                        callback.pass_model(self)
+                    activated_callbacks.append(callback)
+        return activated_callbacks
+
+    def evaluate(self, batch_size):
+
+        if self.train_generator.n_validation &gt; 0:
+            keypoint_generator = self.train_generator(
+                n_outputs=1, batch_size=batch_size, validation=True, confidence=False
+            )
+
+        elif self.train_generator.n_validation == 0:
+            warnings.warn(
+                &#34;`n_validation` is 0, so the training set will be used for model evaluation&#34;
+            )
+            keypoint_generator = self.train_generator(
+                n_outputs=1, batch_size=batch_size, validation=False, confidence=False
+            )
+        y_pred_list = []
+        confidence_list = []
+        y_error_list = []
+        euclidean_list = []
+        for idx in range(len(keypoint_generator)):
+            X, y_true = keypoint_generator[idx]
+
+            y_pred = self.predict_model.predict_on_batch(X)
+            confidence_list.append(y_pred[..., -1])
+            y_pred_coords = y_pred[..., :2]
+            y_pred_list.append(y_pred_coords)
+
+            errors = keypoint_errors(y_true, y_pred_coords)
+            y_error, euclidean, mae, mse, rmse = errors
+            y_error_list.append(y_error)
+            euclidean_list.append(euclidean)
+
+        y_pred = np.concatenate(y_pred_list)
+        confidence = np.concatenate(confidence_list)
+        y_error = np.concatenate(y_error_list)
+        euclidean = np.concatenate(euclidean_list)
+
+        evaluation_dict = {
+            &#34;y_pred&#34;: y_pred,
+            &#34;y_error&#34;: y_error,
+            &#34;euclidean&#34;: euclidean,
+            &#34;confidence&#34;: confidence,
+        }
+
+        return evaluation_dict
+
+    def save(self, path, optimizer=True):
+        save_model(self, path, optimizer)
+
+    def get_config(self):
+        config = {}
+        if self.train_generator:
+            base_config = self.train_generator.get_config()
+            return dict(list(base_config.items()) + list(config.items()))
+        else:
+            return config</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="deepposekit.models.StackedDenseNet.StackedDenseNet" href="StackedDenseNet.html#deepposekit.models.StackedDenseNet.StackedDenseNet">StackedDenseNet</a></li>
+<li><a title="deepposekit.models.StackedHourglass.StackedHourglass" href="StackedHourglass.html#deepposekit.models.StackedHourglass.StackedHourglass">StackedHourglass</a></li>
+<li><a title="deepposekit.models.LEAP.LEAP" href="LEAP.html#deepposekit.models.LEAP.LEAP">LEAP</a></li>
+<li><a title="deepposekit.models.DeepLabCut.DeepLabCut" href="DeepLabCut.html#deepposekit.models.DeepLabCut.DeepLabCut">DeepLabCut</a></li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="deepposekit.models.engine.BaseModel.train_model"><code class="name">var <span class="ident">train_model</span></code></dt>
+<dd>
+<section class="desc"></section>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="deepposekit.models.engine.BaseModel.activate_callbacks"><code class="name flex">
+<span>def <span class="ident">activate_callbacks</span></span>(<span>self, callbacks)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def activate_callbacks(self, callbacks):
+    activated_callbacks = []
+    if callbacks is not None:
+        if len(callbacks) &gt; 0:
+            for callback in callbacks:
+                if hasattr(callback, &#34;pass_model&#34;):
+                    callback.pass_model(self)
+                activated_callbacks.append(callback)
+    return activated_callbacks</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.engine.BaseModel.evaluate"><code class="name flex">
+<span>def <span class="ident">evaluate</span></span>(<span>self, batch_size)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def evaluate(self, batch_size):
+
+    if self.train_generator.n_validation &gt; 0:
+        keypoint_generator = self.train_generator(
+            n_outputs=1, batch_size=batch_size, validation=True, confidence=False
+        )
+
+    elif self.train_generator.n_validation == 0:
+        warnings.warn(
+            &#34;`n_validation` is 0, so the training set will be used for model evaluation&#34;
+        )
+        keypoint_generator = self.train_generator(
+            n_outputs=1, batch_size=batch_size, validation=False, confidence=False
+        )
+    y_pred_list = []
+    confidence_list = []
+    y_error_list = []
+    euclidean_list = []
+    for idx in range(len(keypoint_generator)):
+        X, y_true = keypoint_generator[idx]
+
+        y_pred = self.predict_model.predict_on_batch(X)
+        confidence_list.append(y_pred[..., -1])
+        y_pred_coords = y_pred[..., :2]
+        y_pred_list.append(y_pred_coords)
+
+        errors = keypoint_errors(y_true, y_pred_coords)
+        y_error, euclidean, mae, mse, rmse = errors
+        y_error_list.append(y_error)
+        euclidean_list.append(euclidean)
+
+    y_pred = np.concatenate(y_pred_list)
+    confidence = np.concatenate(confidence_list)
+    y_error = np.concatenate(y_error_list)
+    euclidean = np.concatenate(euclidean_list)
+
+    evaluation_dict = {
+        &#34;y_pred&#34;: y_pred,
+        &#34;y_error&#34;: y_error,
+        &#34;euclidean&#34;: euclidean,
+        &#34;confidence&#34;: confidence,
+    }
+
+    return evaluation_dict</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.engine.BaseModel.fit"><code class="name flex">
+<span>def <span class="ident">fit</span></span>(<span>self, batch_size, validation_batch_size=1, callbacks=[], epochs=1, use_multiprocessing=False, n_workers=1, steps_per_epoch=None, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Trains the model for a given number of epochs (iterations on a dataset).</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of samples per training update.</dd>
+<dt><strong><code>validation_batch_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of samples per validation batch used when evaluating the model.</dd>
+<dt><strong><code>callbacks</code></strong> :&ensp;<code>list</code> or <code>None</code></dt>
+<dd>List of keras.callbacks.Callback instances or deepposekit callbacks.
+List of callbacks to apply during training and validation.</dd>
+<dt><strong><code>epochs</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of epochs to train the model. An epoch is an iteration over the entire dataset,
+or for <code>steps_per_epoch</code> number of batches</dd>
+<dt><strong><code>use_multiprocessing</code></strong> :&ensp;<code>bool</code>, default=<code>False</code></dt>
+<dd>Whether to use the multiprocessing module when generating batches of data.</dd>
+<dt><strong><code>n_workers</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of processes to run for generating batches of data.</dd>
+<dt><strong><code>steps_per_epoch</code></strong> :&ensp;<code>int</code> or <code>None</code></dt>
+<dd>Number of batches per epoch. If <code>None</code> this is automatically determined
+based on the size of the dataset.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fit(
+    self,
+    batch_size,
+    validation_batch_size=1,
+    callbacks=[],
+    epochs=1,
+    use_multiprocessing=False,
+    n_workers=1,
+    steps_per_epoch=None,
+    **kwargs
+):
+    &#34;&#34;&#34;
+    Trains the model for a given number of epochs (iterations on a dataset).
+
+    Parameters
+    ----------
+    batch_size : int
+        Number of samples per training update.
+    validation_batch_size : int
+        Number of samples per validation batch used when evaluating the model.
+    callbacks : list or None
+        List of keras.callbacks.Callback instances or deepposekit callbacks.
+        List of callbacks to apply during training and validation.
+    epochs: int
+        Number of epochs to train the model. An epoch is an iteration over the entire dataset,
+        or for `steps_per_epoch` number of batches
+    use_multiprocessing: bool, default=False
+        Whether to use the multiprocessing module when generating batches of data.
+    n_workers: int
+        Number of processes to run for generating batches of data.
+    steps_per_epoch: int or None
+        Number of batches per epoch. If `None` this is automatically determined
+        based on the size of the dataset.
+    &#34;&#34;&#34;
+
+    if not self.train_model._is_compiled:
+        warnings.warn(
+            &#34;&#34;&#34;\nAutomatically compiling with default settings: model.compile(&#39;adam&#39;, &#39;mse&#39;)\n&#34;&#34;&#34;
+            &#34;Call model.compile() manually to use non-default settings.\n&#34;
+        )
+        self.train_model.compile(&#34;adam&#34;, &#34;mse&#34;)
+
+    train_generator = self.train_generator(
+        self.n_outputs, batch_size, validation=False, confidence=True
+    )
+    validation_generator = self.train_generator(
+        self.n_outputs, validation_batch_size, validation=True, confidence=True
+    )
+    validation_generator = (
+        None if len(validation_generator) == 0 else validation_generator
+    )
+    if validation_generator is None:
+        warnings.warn(
+            &#34;No validation set detected, so validation step will not be run and `val_loss` will not be available.&#34;
+        )
+
+    activated_callbacks = self.activate_callbacks(callbacks)
+
+    self.train_model.fit_generator(
+        generator=train_generator,
+        steps_per_epoch=steps_per_epoch,
+        epochs=epochs,
+        use_multiprocessing=use_multiprocessing,
+        workers=n_workers,
+        callbacks=activated_callbacks,
+        validation_data=validation_generator,
+        **kwargs
+    )</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.engine.BaseModel.get_config"><code class="name flex">
+<span>def <span class="ident">get_config</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_config(self):
+    config = {}
+    if self.train_generator:
+        base_config = self.train_generator.get_config()
+        return dict(list(base_config.items()) + list(config.items()))
+    else:
+        return config</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.models.engine.BaseModel.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, path, optimizer=True)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save(self, path, optimizer=True):
+    save_model(self, path, optimizer)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="deepposekit.models" href="index.html">deepposekit.models</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="deepposekit.models.engine.BaseModel" href="#deepposekit.models.engine.BaseModel">BaseModel</a></code></h4>
+<ul class="two-column">
+<li><code><a title="deepposekit.models.engine.BaseModel.activate_callbacks" href="#deepposekit.models.engine.BaseModel.activate_callbacks">activate_callbacks</a></code></li>
+<li><code><a title="deepposekit.models.engine.BaseModel.evaluate" href="#deepposekit.models.engine.BaseModel.evaluate">evaluate</a></code></li>
+<li><code><a title="deepposekit.models.engine.BaseModel.fit" href="#deepposekit.models.engine.BaseModel.fit">fit</a></code></li>
+<li><code><a title="deepposekit.models.engine.BaseModel.get_config" href="#deepposekit.models.engine.BaseModel.get_config">get_config</a></code></li>
+<li><code><a title="deepposekit.models.engine.BaseModel.save" href="#deepposekit.models.engine.BaseModel.save">save</a></code></li>
+<li><code><a title="deepposekit.models.engine.BaseModel.train_model" href="#deepposekit.models.engine.BaseModel.train_model">train_model</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
