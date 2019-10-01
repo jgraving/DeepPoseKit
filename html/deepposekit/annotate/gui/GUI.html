@@ -1,0 +1,1417 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.0" />
+<title>deepposekit.annotate.gui.GUI API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>deepposekit.annotate.gui.GUI</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import cv2
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
+from deepposekit.annotate.utils import hotkeys as keys
+
+
+def _mouse_click(event, x, y, flags, param):
+    &#34;&#34;&#34; Handles mouse click by annotating at the point and updating canvas
+
+    Parameters
+    ----------
+    event: int
+        OpenCV mouse event
+
+    x: int
+        x-coordinate of the mouse on click
+
+    y: int
+        y-coordinate of the mouse on click
+
+    flags: int
+        Flags for OpenCV
+
+    param:
+        Pass `self` for callback
+    &#34;&#34;&#34;
+
+    self = param
+    if event is cv2.EVENT_LBUTTONDOWN:
+        self.point = np.array([x, y])
+        self.skeleton.loc[self.idx, [&#34;x&#34;, &#34;y&#34;]] = self.point / self.scale
+        self._set_annotated()
+        self._update_canvas()
+    # elif event is cv2.EVENT_LBUTTONDOWN:
+    #    self.point = np.array([x, y])
+    #    keypoints = self.skeleton.loc[:, [&#39;x&#39;, &#39;y&#39;]].values
+    #    distances = (keypoints - self.point[None])**2
+    #    self.idx = np.argmin(distances.sum(1))
+    #    self.skeleton.loc[self.idx, [&#39;x&#39;, &#39;y&#39;]] = self.point / self.scale
+    #    self._set_annotated()
+    #    self._update_canvas()
+
+
+class GUI:
+    def __init__(self):
+        &#34;&#34;&#34; A GUI for annotating or marking up image(s).
+
+        The GUI class works with a subclass to run a program that could be
+        used to annotate or markup an image or a series of images.
+        In order to extend the GUI class to make a subclass, a few things
+        must be defined in the subclass.
+        ------------------------------------------------------------------------
+            Method      |   
+        ------------------------------------------------------------------------
+        &gt;   _hotkeys()  |   Activates all the hotkey bindings
+        ------------------------------------------------------------------------
+            Attribute   |   
+        ------------------------------------------------------------------------
+        &gt;   window_name |   Name of application window
+        &gt;   image_idx   |   Index of active image, important for multiple images
+        &gt;   n_images    |   Number of total images
+        ------------------------------------------------------------------------
+
+        See the Annotator.py or Skeleton.py for an example of how this is done
+
+        Attributes
+        ----------
+        scale: float
+            Scaling factor for the GUI (e.g. used in zooming).
+
+        text_scale: float
+            Scaling factor for the GUI font.
+            A text_scale of 1 is good for 1920x1080 (1080p) images
+
+        refresh: int
+            Delay on receiving next keyboard input in milliseconds.
+
+        point: numpy.ndarray
+            The coordinates of the mouse on the GUI.
+
+        image: numpy.ndarray
+            One image accessed using image_idx.
+
+        canvas: numpy.ndarray
+            Canvas for the GUI itself.
+
+        skeleton: pandas.DataFrame
+            Store information from the skeleton data input.
+
+        idx: int
+            Index of the keypoint in question.
+
+        keypoint_idx: numpy.ndarray
+            Keeps track of the keypoints array.
+
+        n_keypoints: int
+            Total number of keypoints in an image.
+
+        text_locs: list
+            List of text locations.
+
+        key: int
+            The key that is pressed on the keyboard.
+
+        &#34;&#34;&#34;
+        pass
+
+    def _init_gui(self, scale, text_scale, shuffle_colors=True, refresh=100):
+        &#34;&#34;&#34; Initializes the GUI
+
+        Takes in the scaling factor and keyboard input delay. In addition,
+        this function creates the window, names it, and updates the
+        canvas and text.
+
+        Parameters
+        ----------
+        scale: float
+            Scaling factor for the GUI (e.g. used in zooming).
+        text_scale: float
+            Scaling factor for the GUI font.
+            A text_scale of 1 is good for 1920x1080 (1080p) images
+        shuffle_colors: bool
+            Whether to shuffle the color order for keypoint drawing
+        refresh: int
+            Delay on receiving next keyboard input in milliseconds.
+        
+        &#34;&#34;&#34;
+        self.scale = float(scale)
+        self.text_scale = float(text_scale)
+        self.refresh = refresh
+        self.point = np.array([-1, -1])
+        self.shuffle_colors = shuffle_colors
+
+        if max(self.image.shape) * self.scale &lt; 512:
+            self.scale = 512.0 / max(self.image.shape)
+        if max(self.image.shape) * self.scale &gt; 1024:
+            self.scale = 1024.0 / max(self.image.shape)
+        self.wasd_mode = True
+        self.move_len = 1.0
+
+        cv2.namedWindow(self.window_name)
+        cv2.moveWindow(self.window_name, 0, 0)
+        self._update_canvas_size()
+        self._update_text_locs()
+        self._update_canvas()
+
+    def _check_grayscale(self):
+        &#34;&#34;&#34; Convert image to RGB if it is not in RGB
+
+        An image can be checked if it is in color based on dimensions.
+        If the image shape is less than 3, then it does not have 
+        color channels. If there is only 1 color channel, it is in
+        grayscale.
+
+        &#34;&#34;&#34;
+        if len(self.image.shape) == 2 or self.image.shape[-1] == 1:
+            self.image = cv2.cvtColor(self.image, cv2.COLOR_GRAY2BGR)
+
+    def _set_annotated(self):
+        &#34;&#34;&#34; Set the specific keypoint as annotated.
+
+        &#34;&#34;&#34;
+        self.skeleton.loc[self.idx, &#34;annotated&#34;] = True
+
+    def _init_skeleton(self, skeleton):
+        &#34;&#34;&#34; Initialize the skeleton from input data.
+
+        Takes in either a .csv or .xlsx file and makes a DataFrame.
+
+        Parameters
+        ----------
+        skeleton: pandas.DataFrame
+            Filepath of the .csv or .xlsx file that has indexed information
+            on name of the keypoint (part, e.g. head), parent (the direct
+            connecting part, e.g. neck connects to head, parent is head),
+            and swap (swapping positions with a part when reflected over X).
+
+            Consult example of such a file for more information.
+            
+        &#34;&#34;&#34;
+
+        if isinstance(skeleton, str):
+            if skeleton.endswith(&#34;.csv&#34;):
+                skeleton = pd.read_csv(skeleton)
+            elif skeleton.endswith(&#34;.xlsx&#34;):
+                skeleton = pd.read_excel(skeleton)
+            else:
+                raise ValueError(&#34;skeleton must be .csv or .xlsx file&#34;)
+        else:
+            raise TypeError(&#34;skeleton must be type `str`&#34;)
+
+        if &#34;name&#34; not in skeleton.columns:
+            raise KeyError(&#34;skeleton file must contain a `name` column&#34;)
+        elif &#34;parent&#34; not in skeleton.columns:
+            raise KeyError(&#34;skeleton file must contain a `parent` column&#34;)
+
+        if &#34;x&#34; not in skeleton.columns:
+            skeleton[&#34;x&#34;] = -1
+        if &#34;y&#34; not in skeleton.columns:
+            skeleton[&#34;y&#34;] = -1
+        if &#34;annotated&#34; not in skeleton.columns:
+            skeleton[&#34;annotated&#34;] = False
+
+        if &#34;tree&#34; not in skeleton.columns:
+            skeleton[&#34;tree&#34;] = -1
+            for idx, name in enumerate(skeleton[&#34;parent&#34;].values):
+                branch = np.where(skeleton[&#34;name&#34;] == name)[0]
+                if branch.shape[0] &gt; 0:
+                    branch = branch[0]
+                    skeleton.loc[idx, &#34;tree&#34;] = branch
+        if &#34;swap_index&#34; not in skeleton.columns:
+            skeleton[&#34;swap_index&#34;] = -1
+            for idx, name in enumerate(skeleton[&#34;name&#34;].values):
+                for jdx, swap_name in enumerate(skeleton[&#34;swap&#34;].values):
+                    if swap_name == name:
+                        skeleton.loc[idx, &#34;swap_index&#34;] = jdx
+
+        self.skeleton = skeleton
+        self.keypoint_index = self.skeleton.index
+        self.n_keypoints = self.skeleton.index.shape[0]
+        colors = (
+            plt.cm.hsv(np.linspace(0, 1, self.n_keypoints))[..., :-1] * 255
+        ).astype(np.uint8)
+        if self.shuffle_colors:
+            np.random.shuffle(colors)
+        self.colors = colors
+        self.inv_colors = np.bitwise_not(colors)
+        self.idx = 0
+
+    def _init_canvas(self):
+        &#34;&#34;&#34; Initialize the canvas of the GUI.
+        
+        Create the canvas when the program runs.
+
+        &#34;&#34;&#34;
+        self.canvas = cv2.resize(
+            self.image.copy(), (0, 0), None, self.scale, self.scale, cv2.INTER_NEAREST
+        )
+        empty_size = (self.canvas.shape[0], int(self.canvas.shape[1] / 4.0), 3)
+        empty = np.zeros(empty_size, dtype=np.uint8)
+        self.canvas = np.concatenate((self.canvas, empty), axis=1)
+
+    def _last_keypoint(self):
+        &#34;&#34;&#34; Check if the idx is on the last keypoint
+
+        Returns
+        -------
+        bool
+            True if the index is on the last keypoint. False otherwise.
+
+        &#34;&#34;&#34;
+        return self.idx == self.n_keypoints - 1
+
+    def _update_text_locs(self):
+        &#34;&#34;&#34; Update the text locations.
+
+        Update the location based on the canvas.
+
+        &#34;&#34;&#34;
+        self.text_locs = [
+            (int(self.canvas_size[0] * 1.025), int(self.canvas_size[1] * 0.05) * idx)
+            for idx in range(1, self.n_keypoints + 2)
+        ]
+
+    def _draw_text(self):
+        &#34;&#34;&#34; Draw in the texts
+        
+        Go through the skeleton to get the appropriate texts.
+
+        &#34;&#34;&#34;
+
+        text = str(self.image_idx) + &#34;/&#34; + str(self.n_images - 1)
+        if len(text) &gt; 9:
+            text = text[:6] + &#34;...&#34;
+        loc = self.text_locs[0]
+        fontscale = self.text_scale * self.scale
+        cv2.putText(
+            img=self.canvas,
+            text=text,
+            org=loc,
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=fontscale,
+            color=(0, 0, 0),
+            thickness=4,
+            lineType=cv2.LINE_AA,
+        )
+        cv2.putText(
+            img=self.canvas,
+            text=text,
+            org=loc,
+            fontFace=cv2.FONT_ITALIC,
+            fontScale=fontscale,
+            color=(255, 255, 255),
+            thickness=1,
+            lineType=cv2.LINE_AA,
+        )
+        self.text_locs = self.text_locs[1:]
+        for idx, loc in enumerate(self.text_locs):
+            idx %= len(self.text_locs)
+            text_idx = self.idx + idx
+            text_idx %= self.n_keypoints
+
+            if idx == 0:
+                if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+                    color = (254, 79, 48)
+                    border_color = (255, 255, 255)
+                else:
+                    color = self.colors[self.idx]  # (34, 87, 255)
+                    border_color = np.bitwise_not(color)
+                # color = (3, 255, 118)
+                thickness = 8
+
+            else:
+                if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+                    color = (254, 79, 48)
+                else:
+                    color = self.colors[idx]  # (34, 87, 255)
+                thickness = 2
+                border_color = (0, 0, 0)
+
+            text = self.skeleton.loc[text_idx, &#34;name&#34;]
+            loc = self.text_locs[(idx + len(self.text_locs) // 4) % len(self.text_locs)]
+            cv2.putText(
+                img=self.canvas,
+                text=text,
+                org=loc,
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=fontscale,
+                color=(
+                    int(border_color[0]),
+                    int(border_color[1]),
+                    int(border_color[2]),
+                ),
+                thickness=thickness,
+                lineType=cv2.LINE_AA,
+            )
+            cv2.putText(
+                img=self.canvas,
+                text=text,
+                org=loc,
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=fontscale,
+                color=(int(color[0]), int(color[1]), int(color[2])),
+                thickness=1,
+                lineType=cv2.LINE_AA,
+            )
+
+    def _draw_crosshairs(self, center, radius, color, thickness):
+        &#34;&#34;&#34; Draws the crosshair on the point
+
+        Draws an &#39;+&#39; crosshair on the point of interest
+        
+        Parameters
+        ----------
+        center: tuple
+            (x,y) coordinates of the point.
+
+        radius: int
+            The radius of the crosshair.
+
+        color: tuple
+            The color of the crosshair in BGR.
+
+        thickness: int
+            Thickness of the drawing.
+
+        &#34;&#34;&#34;
+
+        ypt1 = (center[0], center[1] + radius)
+        ypt2 = (center[0], center[1] - radius)
+
+        xpt1 = (center[0] + radius, center[1])
+        xpt2 = (center[0] - radius, center[1])
+        color = (int(color[0]), int(color[1]), int(color[2]))
+        cv2.line(self.canvas, ypt1, ypt2, color, thickness, cv2.LINE_AA)
+        cv2.line(self.canvas, xpt1, xpt2, color, thickness, cv2.LINE_AA)
+
+    def _get_scaled_coords(self, idx):
+        &#34;&#34;&#34; Get the scaled coordinates
+
+        Parameters
+        ----------
+        idx: int
+            Index of the keypoint in the skeleton DataFrame.
+
+        &#34;&#34;&#34;
+        coords = self.skeleton.loc[idx, [&#34;x&#34;, &#34;y&#34;]].values * self.scale
+        coords = tuple([int(x) for x in coords])
+        return coords
+
+    def _draw_point(self, center, radius, color, thickness=1):
+        &#34;&#34;&#34; Draw a single point.
+
+        Draws a single point at the center with specified radius and color.
+
+        Parameters
+        ----------
+        center: tuple
+            (x,y) coordinates of the point.
+
+        radius: int
+            The radius of the point.
+
+        color: tuple
+            The color of the crosshair in BGR.
+
+        &#34;&#34;&#34;
+        cv2.circle(
+            img=self.canvas,
+            center=center,
+            radius=radius,
+            color=(int(color[0]), int(color[1]), int(color[2])),
+            thickness=thickness,
+            lineType=cv2.LINE_AA,
+        )
+        cv2.circle(
+            img=self.canvas,
+            center=center,
+            radius=1,
+            color=(int(color[0]), int(color[1]), int(color[2])),
+            thickness=thickness,
+            lineType=cv2.LINE_AA,
+        )
+
+    def _draw_points(self):
+        &#34;&#34;&#34; Draws multiple points.
+
+        Draws all the annotated points in addition to the new point
+
+        &#34;&#34;&#34;
+        for idx in self.keypoint_index:
+            if idx != self.idx:
+                if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+                    color = self.colors[idx]
+                    inv_color = (254, 79, 48)
+                    # inv_color = None
+                else:
+                    # color = (34, 87, 255)
+                    color = self.colors[idx]
+                    inv_color = self.inv_colors[idx]
+                center = self._get_scaled_coords(idx)
+                radius = 5
+                if inv_color is not None:
+                    self._draw_point(center, radius, inv_color, 2)
+                self._draw_point(center, radius, color)
+
+        center = self._get_scaled_coords(self.idx)
+        radius = 8
+        # color = (3, 255, 118)
+        color = self.colors[self.idx]
+        inv_color = self.inv_colors[self.idx]
+        self._draw_point(center, radius, inv_color, 2)
+        self._draw_crosshairs(center, radius + 3, inv_color, 2)
+        self._draw_point(center, radius, color)
+        self._draw_crosshairs(center, radius + 3, color, 1)
+
+    def _draw_lines(self):
+        &#34;&#34;&#34; Draw lines
+
+        Connect every keypoint with a line if they are annotated.
+
+        &#34;&#34;&#34;
+        if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+            color = (254, 79, 48)
+        else:
+            color = (34, 87, 255)
+        for idx in self.keypoint_index:
+            tree = self.skeleton.loc[idx, &#34;tree&#34;]
+            if tree &gt;= 0:
+                pt1 = self._get_scaled_coords(idx)
+                pt2 = self._get_scaled_coords(tree)
+                cv2.line(
+                    img=self.canvas,
+                    pt1=pt1,
+                    pt2=pt2,
+                    color=color,
+                    thickness=1,
+                    lineType=cv2.LINE_AA,
+                )
+
+    def _update_canvas(self):
+        &#34;&#34;&#34; Update the canvas
+
+        Make a canvas, draw in text, lines, and points over 
+        the existing window.
+
+        &#34;&#34;&#34;
+        self._update_canvas_size()
+        self._update_text_locs()
+        self._init_canvas()
+        self._draw_text()
+        self._draw_lines()
+        self._draw_points()
+        cv2.imshow(self.window_name, self.canvas)
+
+    def _update_canvas_size(self):
+        &#34;&#34;&#34; Update the size of the canvas.
+
+        Change the canvas size based on the scale attribute.
+
+        &#34;&#34;&#34;
+        self.canvas_size = tuple([x * self.scale for x in self.image.shape[:2][::-1]])
+
+    def _zoom(self):
+        &#34;&#34;&#34; Key bindings for zooming.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    +                |   Zoom in by scale factor
+        &gt;    -                |   Zoom out by scale factor
+        ------------------------------------------------------------
+
+        Also, if the scale is less than 1, then it sets the scale to 1.
+
+        &#34;&#34;&#34;
+
+        if self.key is keys.PLUS:
+            self.scale += 0.1
+
+        if self.key is keys.MINUS:
+            self.scale -= 0.1
+            self._update_text_locs()
+            self._update_canvas_size()
+
+        # if self.scale &lt; 1:
+        #    self.scale = 1.
+
+    def _wasd(self):
+        &#34;&#34;&#34; Key bindings for WASD.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    W/A/S/D          |   Move active keypoint 1px
+        &gt;    Shift + W/A/S/D  |   Move active keypoint 10px
+        ------------------------------------------------------------
+
+        This allows the user to make finer adjustments as needed.
+
+        &#34;&#34;&#34;
+        if self.key is keys.SPACE:
+            if self.wasd_mode:
+                self.wasd_mode = False
+                self.move_len = 10.0
+            else:
+                self.wasd_mode = True
+                self.move_len = 1.0
+
+        if self.key is keys.W:
+            self.skeleton.loc[self.idx, &#34;y&#34;] -= self.move_len / self.scale
+        if self.key is keys.S:
+            self.skeleton.loc[self.idx, &#34;y&#34;] += self.move_len / self.scale
+        if self.key is keys.A:
+            self.skeleton.loc[self.idx, &#34;x&#34;] -= self.move_len / self.scale
+        if self.key is keys.D:
+            self.skeleton.loc[self.idx, &#34;x&#34;] += self.move_len / self.scale
+
+    def _move_idx(self):
+        &#34;&#34;&#34; Key bindings for WASD.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    Up key, Ctrl-Y,  |   
+             Shift-Tab        |   Move up in active keypoint list
+        &gt;    Down key, Ctrl-I,|
+             Tab              |   Move down in active keypoint list
+        ------------------------------------------------------------
+
+        This allows the user to make finer adjustments as needed.
+
+        &#34;&#34;&#34;
+
+        # Moving down
+        if self.key in [keys.DOWNARROW, keys.TAB]:
+            if self._last_keypoint():
+                self.idx = 0
+            else:
+                self.idx += 1
+            self._set_annotated()
+
+        # Moving up
+        if self.key in [keys.UPARROW, keys.SHIFT_TAB]:
+            if self.idx == 0:
+                self.idx = self.n_keypoints - 1
+            else:
+                self.idx -= 1
+            self._set_annotated()
+
+    def _exit(self):
+        &#34;&#34;&#34; Key bindings for WASD.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    Esc, 0, Q        |   Exit the program
+        ------------------------------------------------------------
+
+        &#34;&#34;&#34;
+        return self.key in [keys.Q, keys.ESC]
+
+    def _hotkeys(self):
+        raise NotImplementedError
+
+    def run(self):
+        &#34;&#34;&#34; Run the program.
+
+        Runs the program by continually calling for hotkeys function
+        defined in the subclasses.
+
+        &#34;&#34;&#34;
+        cv2.namedWindow(self.window_name)
+        cv2.setMouseCallback(self.window_name, _mouse_click, self)
+        self._update_canvas()
+        while True:
+            self.key = cv2.waitKey(self.refresh) &amp; 0xFF
+            self._hotkeys()
+            if self._exit():
+                break
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="deepposekit.annotate.gui.GUI.GUI"><code class="flex name class">
+<span>class <span class="ident">GUI</span></span>
+</code></dt>
+<dd>
+<section class="desc"><p>A GUI for annotating or marking up image(s).</p>
+<p>The GUI class works with a subclass to run a program that could be
+used to annotate or markup an image or a series of images.
+In order to extend the GUI class to make a subclass, a few things
+must be defined in the subclass.</p>
+<hr>
+<pre><code>Method      |
+</code></pre>
+<hr>
+<h2 id="_hotkeys-activates-all-the-hotkey-bindings">&gt;
+_hotkeys()
+|
+Activates all the hotkey bindings</h2>
+<pre><code>Attribute   |
+</code></pre>
+<hr>
+<blockquote>
+<p>window_name |
+Name of application window
+image_idx
+|
+Index of active image, important for multiple images
+n_images
+|
+Number of total images</p>
+</blockquote>
+<hr>
+<p>See the Annotator.py or Skeleton.py for an example of how this is done</p>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Scaling factor for the GUI (e.g. used in zooming).</dd>
+<dt><strong><code>text_scale</code></strong> :&ensp;<code>float</code></dt>
+<dd>Scaling factor for the GUI font.
+A text_scale of 1 is good for 1920x1080 (1080p) images</dd>
+<dt><strong><code>refresh</code></strong> :&ensp;<code>int</code></dt>
+<dd>Delay on receiving next keyboard input in milliseconds.</dd>
+<dt><strong><code>point</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>The coordinates of the mouse on the GUI.</dd>
+<dt><strong><code>image</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>One image accessed using image_idx.</dd>
+<dt><strong><code>canvas</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Canvas for the GUI itself.</dd>
+<dt><strong><code>skeleton</code></strong> :&ensp;<code>pandas.DataFrame</code></dt>
+<dd>Store information from the skeleton data input.</dd>
+<dt><strong><code>idx</code></strong> :&ensp;<code>int</code></dt>
+<dd>Index of the keypoint in question.</dd>
+<dt><strong><code>keypoint_idx</code></strong> :&ensp;<code>numpy.ndarray</code></dt>
+<dd>Keeps track of the keypoints array.</dd>
+<dt><strong><code>n_keypoints</code></strong> :&ensp;<code>int</code></dt>
+<dd>Total number of keypoints in an image.</dd>
+<dt><strong><code>text_locs</code></strong> :&ensp;<code>list</code></dt>
+<dd>List of text locations.</dd>
+<dt><strong><code>key</code></strong> :&ensp;<code>int</code></dt>
+<dd>The key that is pressed on the keyboard.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GUI:
+    def __init__(self):
+        &#34;&#34;&#34; A GUI for annotating or marking up image(s).
+
+        The GUI class works with a subclass to run a program that could be
+        used to annotate or markup an image or a series of images.
+        In order to extend the GUI class to make a subclass, a few things
+        must be defined in the subclass.
+        ------------------------------------------------------------------------
+            Method      |   
+        ------------------------------------------------------------------------
+        &gt;   _hotkeys()  |   Activates all the hotkey bindings
+        ------------------------------------------------------------------------
+            Attribute   |   
+        ------------------------------------------------------------------------
+        &gt;   window_name |   Name of application window
+        &gt;   image_idx   |   Index of active image, important for multiple images
+        &gt;   n_images    |   Number of total images
+        ------------------------------------------------------------------------
+
+        See the Annotator.py or Skeleton.py for an example of how this is done
+
+        Attributes
+        ----------
+        scale: float
+            Scaling factor for the GUI (e.g. used in zooming).
+
+        text_scale: float
+            Scaling factor for the GUI font.
+            A text_scale of 1 is good for 1920x1080 (1080p) images
+
+        refresh: int
+            Delay on receiving next keyboard input in milliseconds.
+
+        point: numpy.ndarray
+            The coordinates of the mouse on the GUI.
+
+        image: numpy.ndarray
+            One image accessed using image_idx.
+
+        canvas: numpy.ndarray
+            Canvas for the GUI itself.
+
+        skeleton: pandas.DataFrame
+            Store information from the skeleton data input.
+
+        idx: int
+            Index of the keypoint in question.
+
+        keypoint_idx: numpy.ndarray
+            Keeps track of the keypoints array.
+
+        n_keypoints: int
+            Total number of keypoints in an image.
+
+        text_locs: list
+            List of text locations.
+
+        key: int
+            The key that is pressed on the keyboard.
+
+        &#34;&#34;&#34;
+        pass
+
+    def _init_gui(self, scale, text_scale, shuffle_colors=True, refresh=100):
+        &#34;&#34;&#34; Initializes the GUI
+
+        Takes in the scaling factor and keyboard input delay. In addition,
+        this function creates the window, names it, and updates the
+        canvas and text.
+
+        Parameters
+        ----------
+        scale: float
+            Scaling factor for the GUI (e.g. used in zooming).
+        text_scale: float
+            Scaling factor for the GUI font.
+            A text_scale of 1 is good for 1920x1080 (1080p) images
+        shuffle_colors: bool
+            Whether to shuffle the color order for keypoint drawing
+        refresh: int
+            Delay on receiving next keyboard input in milliseconds.
+        
+        &#34;&#34;&#34;
+        self.scale = float(scale)
+        self.text_scale = float(text_scale)
+        self.refresh = refresh
+        self.point = np.array([-1, -1])
+        self.shuffle_colors = shuffle_colors
+
+        if max(self.image.shape) * self.scale &lt; 512:
+            self.scale = 512.0 / max(self.image.shape)
+        if max(self.image.shape) * self.scale &gt; 1024:
+            self.scale = 1024.0 / max(self.image.shape)
+        self.wasd_mode = True
+        self.move_len = 1.0
+
+        cv2.namedWindow(self.window_name)
+        cv2.moveWindow(self.window_name, 0, 0)
+        self._update_canvas_size()
+        self._update_text_locs()
+        self._update_canvas()
+
+    def _check_grayscale(self):
+        &#34;&#34;&#34; Convert image to RGB if it is not in RGB
+
+        An image can be checked if it is in color based on dimensions.
+        If the image shape is less than 3, then it does not have 
+        color channels. If there is only 1 color channel, it is in
+        grayscale.
+
+        &#34;&#34;&#34;
+        if len(self.image.shape) == 2 or self.image.shape[-1] == 1:
+            self.image = cv2.cvtColor(self.image, cv2.COLOR_GRAY2BGR)
+
+    def _set_annotated(self):
+        &#34;&#34;&#34; Set the specific keypoint as annotated.
+
+        &#34;&#34;&#34;
+        self.skeleton.loc[self.idx, &#34;annotated&#34;] = True
+
+    def _init_skeleton(self, skeleton):
+        &#34;&#34;&#34; Initialize the skeleton from input data.
+
+        Takes in either a .csv or .xlsx file and makes a DataFrame.
+
+        Parameters
+        ----------
+        skeleton: pandas.DataFrame
+            Filepath of the .csv or .xlsx file that has indexed information
+            on name of the keypoint (part, e.g. head), parent (the direct
+            connecting part, e.g. neck connects to head, parent is head),
+            and swap (swapping positions with a part when reflected over X).
+
+            Consult example of such a file for more information.
+            
+        &#34;&#34;&#34;
+
+        if isinstance(skeleton, str):
+            if skeleton.endswith(&#34;.csv&#34;):
+                skeleton = pd.read_csv(skeleton)
+            elif skeleton.endswith(&#34;.xlsx&#34;):
+                skeleton = pd.read_excel(skeleton)
+            else:
+                raise ValueError(&#34;skeleton must be .csv or .xlsx file&#34;)
+        else:
+            raise TypeError(&#34;skeleton must be type `str`&#34;)
+
+        if &#34;name&#34; not in skeleton.columns:
+            raise KeyError(&#34;skeleton file must contain a `name` column&#34;)
+        elif &#34;parent&#34; not in skeleton.columns:
+            raise KeyError(&#34;skeleton file must contain a `parent` column&#34;)
+
+        if &#34;x&#34; not in skeleton.columns:
+            skeleton[&#34;x&#34;] = -1
+        if &#34;y&#34; not in skeleton.columns:
+            skeleton[&#34;y&#34;] = -1
+        if &#34;annotated&#34; not in skeleton.columns:
+            skeleton[&#34;annotated&#34;] = False
+
+        if &#34;tree&#34; not in skeleton.columns:
+            skeleton[&#34;tree&#34;] = -1
+            for idx, name in enumerate(skeleton[&#34;parent&#34;].values):
+                branch = np.where(skeleton[&#34;name&#34;] == name)[0]
+                if branch.shape[0] &gt; 0:
+                    branch = branch[0]
+                    skeleton.loc[idx, &#34;tree&#34;] = branch
+        if &#34;swap_index&#34; not in skeleton.columns:
+            skeleton[&#34;swap_index&#34;] = -1
+            for idx, name in enumerate(skeleton[&#34;name&#34;].values):
+                for jdx, swap_name in enumerate(skeleton[&#34;swap&#34;].values):
+                    if swap_name == name:
+                        skeleton.loc[idx, &#34;swap_index&#34;] = jdx
+
+        self.skeleton = skeleton
+        self.keypoint_index = self.skeleton.index
+        self.n_keypoints = self.skeleton.index.shape[0]
+        colors = (
+            plt.cm.hsv(np.linspace(0, 1, self.n_keypoints))[..., :-1] * 255
+        ).astype(np.uint8)
+        if self.shuffle_colors:
+            np.random.shuffle(colors)
+        self.colors = colors
+        self.inv_colors = np.bitwise_not(colors)
+        self.idx = 0
+
+    def _init_canvas(self):
+        &#34;&#34;&#34; Initialize the canvas of the GUI.
+        
+        Create the canvas when the program runs.
+
+        &#34;&#34;&#34;
+        self.canvas = cv2.resize(
+            self.image.copy(), (0, 0), None, self.scale, self.scale, cv2.INTER_NEAREST
+        )
+        empty_size = (self.canvas.shape[0], int(self.canvas.shape[1] / 4.0), 3)
+        empty = np.zeros(empty_size, dtype=np.uint8)
+        self.canvas = np.concatenate((self.canvas, empty), axis=1)
+
+    def _last_keypoint(self):
+        &#34;&#34;&#34; Check if the idx is on the last keypoint
+
+        Returns
+        -------
+        bool
+            True if the index is on the last keypoint. False otherwise.
+
+        &#34;&#34;&#34;
+        return self.idx == self.n_keypoints - 1
+
+    def _update_text_locs(self):
+        &#34;&#34;&#34; Update the text locations.
+
+        Update the location based on the canvas.
+
+        &#34;&#34;&#34;
+        self.text_locs = [
+            (int(self.canvas_size[0] * 1.025), int(self.canvas_size[1] * 0.05) * idx)
+            for idx in range(1, self.n_keypoints + 2)
+        ]
+
+    def _draw_text(self):
+        &#34;&#34;&#34; Draw in the texts
+        
+        Go through the skeleton to get the appropriate texts.
+
+        &#34;&#34;&#34;
+
+        text = str(self.image_idx) + &#34;/&#34; + str(self.n_images - 1)
+        if len(text) &gt; 9:
+            text = text[:6] + &#34;...&#34;
+        loc = self.text_locs[0]
+        fontscale = self.text_scale * self.scale
+        cv2.putText(
+            img=self.canvas,
+            text=text,
+            org=loc,
+            fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+            fontScale=fontscale,
+            color=(0, 0, 0),
+            thickness=4,
+            lineType=cv2.LINE_AA,
+        )
+        cv2.putText(
+            img=self.canvas,
+            text=text,
+            org=loc,
+            fontFace=cv2.FONT_ITALIC,
+            fontScale=fontscale,
+            color=(255, 255, 255),
+            thickness=1,
+            lineType=cv2.LINE_AA,
+        )
+        self.text_locs = self.text_locs[1:]
+        for idx, loc in enumerate(self.text_locs):
+            idx %= len(self.text_locs)
+            text_idx = self.idx + idx
+            text_idx %= self.n_keypoints
+
+            if idx == 0:
+                if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+                    color = (254, 79, 48)
+                    border_color = (255, 255, 255)
+                else:
+                    color = self.colors[self.idx]  # (34, 87, 255)
+                    border_color = np.bitwise_not(color)
+                # color = (3, 255, 118)
+                thickness = 8
+
+            else:
+                if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+                    color = (254, 79, 48)
+                else:
+                    color = self.colors[idx]  # (34, 87, 255)
+                thickness = 2
+                border_color = (0, 0, 0)
+
+            text = self.skeleton.loc[text_idx, &#34;name&#34;]
+            loc = self.text_locs[(idx + len(self.text_locs) // 4) % len(self.text_locs)]
+            cv2.putText(
+                img=self.canvas,
+                text=text,
+                org=loc,
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=fontscale,
+                color=(
+                    int(border_color[0]),
+                    int(border_color[1]),
+                    int(border_color[2]),
+                ),
+                thickness=thickness,
+                lineType=cv2.LINE_AA,
+            )
+            cv2.putText(
+                img=self.canvas,
+                text=text,
+                org=loc,
+                fontFace=cv2.FONT_HERSHEY_SIMPLEX,
+                fontScale=fontscale,
+                color=(int(color[0]), int(color[1]), int(color[2])),
+                thickness=1,
+                lineType=cv2.LINE_AA,
+            )
+
+    def _draw_crosshairs(self, center, radius, color, thickness):
+        &#34;&#34;&#34; Draws the crosshair on the point
+
+        Draws an &#39;+&#39; crosshair on the point of interest
+        
+        Parameters
+        ----------
+        center: tuple
+            (x,y) coordinates of the point.
+
+        radius: int
+            The radius of the crosshair.
+
+        color: tuple
+            The color of the crosshair in BGR.
+
+        thickness: int
+            Thickness of the drawing.
+
+        &#34;&#34;&#34;
+
+        ypt1 = (center[0], center[1] + radius)
+        ypt2 = (center[0], center[1] - radius)
+
+        xpt1 = (center[0] + radius, center[1])
+        xpt2 = (center[0] - radius, center[1])
+        color = (int(color[0]), int(color[1]), int(color[2]))
+        cv2.line(self.canvas, ypt1, ypt2, color, thickness, cv2.LINE_AA)
+        cv2.line(self.canvas, xpt1, xpt2, color, thickness, cv2.LINE_AA)
+
+    def _get_scaled_coords(self, idx):
+        &#34;&#34;&#34; Get the scaled coordinates
+
+        Parameters
+        ----------
+        idx: int
+            Index of the keypoint in the skeleton DataFrame.
+
+        &#34;&#34;&#34;
+        coords = self.skeleton.loc[idx, [&#34;x&#34;, &#34;y&#34;]].values * self.scale
+        coords = tuple([int(x) for x in coords])
+        return coords
+
+    def _draw_point(self, center, radius, color, thickness=1):
+        &#34;&#34;&#34; Draw a single point.
+
+        Draws a single point at the center with specified radius and color.
+
+        Parameters
+        ----------
+        center: tuple
+            (x,y) coordinates of the point.
+
+        radius: int
+            The radius of the point.
+
+        color: tuple
+            The color of the crosshair in BGR.
+
+        &#34;&#34;&#34;
+        cv2.circle(
+            img=self.canvas,
+            center=center,
+            radius=radius,
+            color=(int(color[0]), int(color[1]), int(color[2])),
+            thickness=thickness,
+            lineType=cv2.LINE_AA,
+        )
+        cv2.circle(
+            img=self.canvas,
+            center=center,
+            radius=1,
+            color=(int(color[0]), int(color[1]), int(color[2])),
+            thickness=thickness,
+            lineType=cv2.LINE_AA,
+        )
+
+    def _draw_points(self):
+        &#34;&#34;&#34; Draws multiple points.
+
+        Draws all the annotated points in addition to the new point
+
+        &#34;&#34;&#34;
+        for idx in self.keypoint_index:
+            if idx != self.idx:
+                if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+                    color = self.colors[idx]
+                    inv_color = (254, 79, 48)
+                    # inv_color = None
+                else:
+                    # color = (34, 87, 255)
+                    color = self.colors[idx]
+                    inv_color = self.inv_colors[idx]
+                center = self._get_scaled_coords(idx)
+                radius = 5
+                if inv_color is not None:
+                    self._draw_point(center, radius, inv_color, 2)
+                self._draw_point(center, radius, color)
+
+        center = self._get_scaled_coords(self.idx)
+        radius = 8
+        # color = (3, 255, 118)
+        color = self.colors[self.idx]
+        inv_color = self.inv_colors[self.idx]
+        self._draw_point(center, radius, inv_color, 2)
+        self._draw_crosshairs(center, radius + 3, inv_color, 2)
+        self._draw_point(center, radius, color)
+        self._draw_crosshairs(center, radius + 3, color, 1)
+
+    def _draw_lines(self):
+        &#34;&#34;&#34; Draw lines
+
+        Connect every keypoint with a line if they are annotated.
+
+        &#34;&#34;&#34;
+        if np.all(self.skeleton.loc[:, &#34;annotated&#34;]):
+            color = (254, 79, 48)
+        else:
+            color = (34, 87, 255)
+        for idx in self.keypoint_index:
+            tree = self.skeleton.loc[idx, &#34;tree&#34;]
+            if tree &gt;= 0:
+                pt1 = self._get_scaled_coords(idx)
+                pt2 = self._get_scaled_coords(tree)
+                cv2.line(
+                    img=self.canvas,
+                    pt1=pt1,
+                    pt2=pt2,
+                    color=color,
+                    thickness=1,
+                    lineType=cv2.LINE_AA,
+                )
+
+    def _update_canvas(self):
+        &#34;&#34;&#34; Update the canvas
+
+        Make a canvas, draw in text, lines, and points over 
+        the existing window.
+
+        &#34;&#34;&#34;
+        self._update_canvas_size()
+        self._update_text_locs()
+        self._init_canvas()
+        self._draw_text()
+        self._draw_lines()
+        self._draw_points()
+        cv2.imshow(self.window_name, self.canvas)
+
+    def _update_canvas_size(self):
+        &#34;&#34;&#34; Update the size of the canvas.
+
+        Change the canvas size based on the scale attribute.
+
+        &#34;&#34;&#34;
+        self.canvas_size = tuple([x * self.scale for x in self.image.shape[:2][::-1]])
+
+    def _zoom(self):
+        &#34;&#34;&#34; Key bindings for zooming.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    +                |   Zoom in by scale factor
+        &gt;    -                |   Zoom out by scale factor
+        ------------------------------------------------------------
+
+        Also, if the scale is less than 1, then it sets the scale to 1.
+
+        &#34;&#34;&#34;
+
+        if self.key is keys.PLUS:
+            self.scale += 0.1
+
+        if self.key is keys.MINUS:
+            self.scale -= 0.1
+            self._update_text_locs()
+            self._update_canvas_size()
+
+        # if self.scale &lt; 1:
+        #    self.scale = 1.
+
+    def _wasd(self):
+        &#34;&#34;&#34; Key bindings for WASD.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    W/A/S/D          |   Move active keypoint 1px
+        &gt;    Shift + W/A/S/D  |   Move active keypoint 10px
+        ------------------------------------------------------------
+
+        This allows the user to make finer adjustments as needed.
+
+        &#34;&#34;&#34;
+        if self.key is keys.SPACE:
+            if self.wasd_mode:
+                self.wasd_mode = False
+                self.move_len = 10.0
+            else:
+                self.wasd_mode = True
+                self.move_len = 1.0
+
+        if self.key is keys.W:
+            self.skeleton.loc[self.idx, &#34;y&#34;] -= self.move_len / self.scale
+        if self.key is keys.S:
+            self.skeleton.loc[self.idx, &#34;y&#34;] += self.move_len / self.scale
+        if self.key is keys.A:
+            self.skeleton.loc[self.idx, &#34;x&#34;] -= self.move_len / self.scale
+        if self.key is keys.D:
+            self.skeleton.loc[self.idx, &#34;x&#34;] += self.move_len / self.scale
+
+    def _move_idx(self):
+        &#34;&#34;&#34; Key bindings for WASD.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    Up key, Ctrl-Y,  |   
+             Shift-Tab        |   Move up in active keypoint list
+        &gt;    Down key, Ctrl-I,|
+             Tab              |   Move down in active keypoint list
+        ------------------------------------------------------------
+
+        This allows the user to make finer adjustments as needed.
+
+        &#34;&#34;&#34;
+
+        # Moving down
+        if self.key in [keys.DOWNARROW, keys.TAB]:
+            if self._last_keypoint():
+                self.idx = 0
+            else:
+                self.idx += 1
+            self._set_annotated()
+
+        # Moving up
+        if self.key in [keys.UPARROW, keys.SHIFT_TAB]:
+            if self.idx == 0:
+                self.idx = self.n_keypoints - 1
+            else:
+                self.idx -= 1
+            self._set_annotated()
+
+    def _exit(self):
+        &#34;&#34;&#34; Key bindings for WASD.
+
+        Creates additional key bindings for the program.
+        The bindings are as follows:
+        
+        ------------------------------------------------------------
+             Keys             |   Action                           
+        ------------------------------------------------------------
+        &gt;    Esc, 0, Q        |   Exit the program
+        ------------------------------------------------------------
+
+        &#34;&#34;&#34;
+        return self.key in [keys.Q, keys.ESC]
+
+    def _hotkeys(self):
+        raise NotImplementedError
+
+    def run(self):
+        &#34;&#34;&#34; Run the program.
+
+        Runs the program by continually calling for hotkeys function
+        defined in the subclasses.
+
+        &#34;&#34;&#34;
+        cv2.namedWindow(self.window_name)
+        cv2.setMouseCallback(self.window_name, _mouse_click, self)
+        self._update_canvas()
+        while True:
+            self.key = cv2.waitKey(self.refresh) &amp; 0xFF
+            self._hotkeys()
+            if self._exit():
+                break
+        cv2.destroyAllWindows()
+        cv2.waitKey(1)</code></pre>
+</details>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="deepposekit.annotate.gui.Annotator.Annotator" href="Annotator.html#deepposekit.annotate.gui.Annotator.Annotator">Annotator</a></li>
+<li><a title="deepposekit.annotate.gui.Skeleton.Skeleton" href="Skeleton.html#deepposekit.annotate.gui.Skeleton.Skeleton">Skeleton</a></li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="deepposekit.annotate.gui.GUI.GUI.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Run the program.</p>
+<p>Runs the program by continually calling for hotkeys function
+defined in the subclasses.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(self):
+    &#34;&#34;&#34; Run the program.
+
+    Runs the program by continually calling for hotkeys function
+    defined in the subclasses.
+
+    &#34;&#34;&#34;
+    cv2.namedWindow(self.window_name)
+    cv2.setMouseCallback(self.window_name, _mouse_click, self)
+    self._update_canvas()
+    while True:
+        self.key = cv2.waitKey(self.refresh) &amp; 0xFF
+        self._hotkeys()
+        if self._exit():
+            break
+    cv2.destroyAllWindows()
+    cv2.waitKey(1)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="deepposekit.annotate.gui" href="index.html">deepposekit.annotate.gui</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="deepposekit.annotate.gui.GUI.GUI" href="#deepposekit.annotate.gui.GUI.GUI">GUI</a></code></h4>
+<ul class="">
+<li><code><a title="deepposekit.annotate.gui.GUI.GUI.run" href="#deepposekit.annotate.gui.GUI.GUI.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

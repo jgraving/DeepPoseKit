@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.0" />
+<title>deepposekit.annotate.KMeansSampler API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>deepposekit.annotate.KMeansSampler</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python"># -*- coding: utf-8 -*-
+# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+#
+# Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#    http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an &#34;AS IS&#34; BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.cluster import MiniBatchKMeans
+from sklearn.utils.validation import check_is_fitted
+from deepposekit.annotate.utils.image import check_image_array
+
+
+class KMeansSampler(MiniBatchKMeans):
+    def __init__(
+        self,
+        n_clusters=10,
+        init=&#34;k-means++&#34;,
+        max_iter=100,
+        batch_size=100,
+        verbose=0,
+        compute_labels=True,
+        random_state=None,
+        tol=0.0,
+        max_no_improvement=10,
+        init_size=None,
+        n_init=3,
+        reassignment_ratio=0.01,
+    ):
+
+        super(KMeansSampler, self).__init__(
+            n_clusters=n_clusters,
+            init=init,
+            max_iter=max_iter,
+            batch_size=batch_size,
+            verbose=verbose,
+            compute_labels=compute_labels,
+            random_state=random_state,
+            tol=tol,
+            max_no_improvement=max_no_improvement,
+            init_size=init_size,
+            n_init=n_init,
+            reassignment_ratio=reassignment_ratio,
+        )
+        self._fit = super(KMeansSampler, self).fit
+        self._partial_fit = super(KMeansSampler, self).partial_fit
+        self._predict = super(KMeansSampler, self).predict
+
+    def sample_idx(self, X, n_samples_per_label=100):
+        labels = self.predict(X)
+
+        X_new = []
+        y_new = []
+        index = np.arange(X.shape[0])
+        for idx in np.unique(labels):
+            label_idx = index[labels == idx]
+            if label_idx.shape[0] &gt; 0:
+                if label_idx.shape[0] &lt; n_samples_per_label:
+                    n_samples = label_idx.shape[0]
+                else:
+                    n_samples = n_samples_per_label
+                sample_idx = np.random.choice(label_idx, n_samples, replace=False)
+                X_new.append(sample_idx)
+                y_new.append(np.ones_like(sample_idx, dtype=np.int32) * idx)
+        X_new = np.concatenate(X_new)
+        y_new = np.concatenate(y_new)
+
+        return X_new, y_new
+
+    def sample_data(self, X, n_samples_per_label=100):
+        &#34;&#34;&#34;Sample evenly from each cluster for X.
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, rows, cols, channels]
+            Coordinates of the data points to cluster.
+        n_samples_per_label : int
+            Number of samples per cluster label.
+            If X does not contain enough samples in
+            a cluster, all samples for that cluster
+            are used without replacement.
+        Returns
+        -------
+        X_new : array-like, shape = [n_samples, rows, cols, channels]
+            The sampled data
+        y_new : array-like, shape = [n_samples,]
+            The cluster labels each sample
+
+        &#34;&#34;&#34;
+        labels = self.predict(X)
+
+        X_new, y_new = self.sample_idx(X, n_samples_per_label)
+        X_new = X[X_new]
+        return X_new, y_new
+
+    def fit(self, X, y=None):
+        &#34;&#34;&#34;Compute the centroids on X by chunking it into mini-batches.
+        Parameters
+        ----------
+        X : array-like or sparse matrix, shape = [n_samples, rows, cols, channels]
+            Training instances to cluster.
+        y : Ignored
+        &#34;&#34;&#34;
+        X = check_image_array(self, X)
+
+        return self._fit(X, y)
+
+    def partial_fit(self, X, y=None):
+        &#34;&#34;&#34;Update k means estimate on a single mini-batch X.
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, rows, cols, channels]
+            Coordinates of the data points to cluster.
+        y : Ignored
+        &#34;&#34;&#34;
+        X = check_image_array(self, X)
+
+        return self._partial_fit(X, y)
+
+    def predict(self, X):
+        &#34;&#34;&#34;Predict the closest cluster each sample in X belongs to.
+        In the vector quantization literature, `cluster_centers_` is called
+        the code book and each value returned by `predict` is the index of
+        the closest code in the code book.
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, rows, cols, channels]
+            New data to predict.
+        Returns
+        -------
+        labels : array, shape [n_samples,]
+            Index of the cluster each sample belongs to.
+        &#34;&#34;&#34;
+        check_is_fitted(self, &#34;cluster_centers_&#34;)
+        X = check_image_array(self, X)
+
+        return self._predict(X)
+
+    def plot_centers(self, n_rows=2, figsize=(20, 20)):
+
+        check_is_fitted(self, &#34;cluster_centers_&#34;)
+
+        n_cols = self.n_clusters // n_rows
+
+        mean = self.cluster_centers_.mean(0)
+        centers = self.cluster_centers_ - mean[None, ...]
+        centers = centers.reshape(n_rows, n_cols, self.rows, self.cols, self.channels)
+        centers = centers.swapaxes(1, 2).reshape(
+            n_rows * self.rows, n_cols * self.cols, self.channels
+        )
+        if self.channels == 1:
+            centers = centers[..., 0]
+        fig = plt.figure(figsize=figsize)
+        plt.imshow(centers, cmap=&#34;seismic&#34;, vmin=-255, vmax=255)
+
+        return fig</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler"><code class="flex name class">
+<span>class <span class="ident">KMeansSampler</span></span>
+<span>(</span><span>n_clusters=10, init='k-means++', max_iter=100, batch_size=100, verbose=0, compute_labels=True, random_state=None, tol=0.0, max_no_improvement=10, init_size=None, n_init=3, reassignment_ratio=0.01)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Mini-Batch K-Means clustering</p>
+<p>Read more in the :ref:<code>User Guide &lt;mini_batch_kmeans&gt;</code>.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>n_clusters</code></strong> :&ensp;<code>int</code>, optional, default: <code>8</code></dt>
+<dd>The number of clusters to form as well as the number of
+centroids to generate.</dd>
+<dt><strong><code>init</code></strong> :&ensp;{<code>'k</code>-<code>means</code>++<code>'</code>, <code>'random'</code> or <code>an</code> <code>ndarray</code>}, default: <code>'k</code>-<code>means</code>++<code>'</code></dt>
+<dd>
+<p>Method for initialization, defaults to 'k-means++':</p>
+<p>'k-means++' : selects initial cluster centers for k-mean
+clustering in a smart way to speed up convergence. See section
+Notes in k_init for more details.</p>
+<p>'random': choose k observations (rows) at random from data for
+the initial centroids.</p>
+<p>If an ndarray is passed, it should be of shape (n_clusters, n_features)
+and gives the initial centers.</p>
+</dd>
+<dt><strong><code>max_iter</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>Maximum number of iterations over the complete dataset before
+stopping independently of any early stopping criterion heuristics.</dd>
+<dt><strong><code>batch_size</code></strong> :&ensp;<code>int</code>, optional, default: <code>100</code></dt>
+<dd>Size of the mini batches.</dd>
+<dt><strong><code>verbose</code></strong> :&ensp;<code>boolean</code>, optional</dt>
+<dd>Verbosity mode.</dd>
+<dt><strong><code>compute_labels</code></strong> :&ensp;<code>boolean</code>, default=<code>True</code></dt>
+<dd>Compute label assignment and inertia for the complete dataset
+once the minibatch optimization has converged in fit.</dd>
+<dt><strong><code>random_state</code></strong> :&ensp;<code>int</code>, <code>RandomState</code> <code>instance</code> or <code>None</code> (default)</dt>
+<dd>Determines random number generation for centroid initialization and
+random reassignment. Use an int to make the randomness deterministic.
+See :term:<code>Glossary &lt;random_state&gt;</code>.</dd>
+<dt><strong><code>tol</code></strong> :&ensp;<code>float</code>, default: <code>0.0</code></dt>
+<dd>
+<p>Control early stopping based on the relative center changes as
+measured by a smoothed, variance-normalized of the mean center
+squared position changes. This early stopping heuristics is
+closer to the one used for the batch variant of the algorithms
+but induces a slight computational and memory overhead over the
+inertia heuristic.</p>
+<p>To disable convergence detection based on normalized center
+change, set tol to 0.0 (default).</p>
+</dd>
+<dt><strong><code>max_no_improvement</code></strong> :&ensp;<code>int</code>, default: <code>10</code></dt>
+<dd>
+<p>Control early stopping based on the consecutive number of mini
+batches that does not yield an improvement on the smoothed inertia.</p>
+<p>To disable convergence detection based on inertia, set
+max_no_improvement to None.</p>
+</dd>
+<dt><strong><code>init_size</code></strong> :&ensp;<code>int</code>, optional, default: <code>3</code> * <code>batch_size</code></dt>
+<dd>Number of samples to randomly sample for speeding up the
+initialization (sometimes at the expense of accuracy): the
+only algorithm is initialized by running a batch KMeans on a
+random subset of the data. This needs to be larger than n_clusters.</dd>
+<dt><strong><code>n_init</code></strong> :&ensp;<code>int</code>, default=<code>3</code></dt>
+<dd>Number of random initializations that are tried.
+In contrast to KMeans, the algorithm is only run once, using the
+best of the <code>n_init</code> initializations as measured by inertia.</dd>
+<dt><strong><code>reassignment_ratio</code></strong> :&ensp;<code>float</code>, default: <code>0.01</code></dt>
+<dd>Control the fraction of the maximum number of counts for a
+center to be reassigned. A higher value means that low count
+centers are more easily reassigned, which means that the
+model will take longer to converge, but should converge in a
+better clustering.</dd>
+</dl>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>cluster_centers_</code></strong> :&ensp;<code>array</code>, [<code>n_clusters</code>, <code>n_features</code>]</dt>
+<dd>Coordinates of cluster centers</dd>
+</dl>
+<p>labels_ :
+Labels of each point (if compute_labels is set to True).</p>
+<dl>
+<dt><strong><code>inertia_</code></strong> :&ensp;<code>float</code></dt>
+<dd>The value of the inertia criterion associated with the chosen
+partition (if compute_labels is set to True). The inertia is
+defined as the sum of square distances of samples to their nearest
+neighbor.</dd>
+</dl>
+<h2 id="examples">Examples</h2>
+<pre><code>&gt;&gt;&gt; from sklearn.cluster import MiniBatchKMeans
+&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; X = np.array([[1, 2], [1, 4], [1, 0],
+...               [4, 2], [4, 0], [4, 4],
+...               [4, 5], [0, 1], [2, 2],
+...               [3, 2], [5, 5], [1, -1]])
+&gt;&gt;&gt; # manually fit on batches
+&gt;&gt;&gt; kmeans = MiniBatchKMeans(n_clusters=2,
+...                          random_state=0,
+...                          batch_size=6)
+&gt;&gt;&gt; kmeans = kmeans.partial_fit(X[0:6,:])
+&gt;&gt;&gt; kmeans = kmeans.partial_fit(X[6:12,:])
+&gt;&gt;&gt; kmeans.cluster_centers_
+array([[1, 1],
+
+
+   [3, 4]])
+
+&gt;&gt;&gt; kmeans.predict([[0, 0], [4, 4]])
+array([0, 1], dtype=int32)
+&gt;&gt;&gt; # fit on the whole data
+&gt;&gt;&gt; kmeans = MiniBatchKMeans(n_clusters=2,
+...                          random_state=0,
+...                          batch_size=6,
+...                          max_iter=10).fit(X)
+&gt;&gt;&gt; kmeans.cluster_centers_
+array([[3.95918367, 2.40816327],
+
+
+   [1.12195122, 1.3902439 ]])
+
+&gt;&gt;&gt; kmeans.predict([[0, 0], [4, 4]])
+array([1, 0], dtype=int32)
+</code></pre>
+<h2 id="see-also">See also</h2>
+<p><code>KMeans</code>
+<code>The classic implementation of the clustering method based on the</code>
+<code>Lloyd's algorithm. It consumes the whole set of input data at each</code>
+<code>iteration.</code></p>
+<h2 id="notes">Notes</h2>
+<p>See <a href="https://www.eecs.tufts.edu/~dsculley/papers/fastkmeans.pdf">https://www.eecs.tufts.edu/~dsculley/papers/fastkmeans.pdf</a></p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class KMeansSampler(MiniBatchKMeans):
+    def __init__(
+        self,
+        n_clusters=10,
+        init=&#34;k-means++&#34;,
+        max_iter=100,
+        batch_size=100,
+        verbose=0,
+        compute_labels=True,
+        random_state=None,
+        tol=0.0,
+        max_no_improvement=10,
+        init_size=None,
+        n_init=3,
+        reassignment_ratio=0.01,
+    ):
+
+        super(KMeansSampler, self).__init__(
+            n_clusters=n_clusters,
+            init=init,
+            max_iter=max_iter,
+            batch_size=batch_size,
+            verbose=verbose,
+            compute_labels=compute_labels,
+            random_state=random_state,
+            tol=tol,
+            max_no_improvement=max_no_improvement,
+            init_size=init_size,
+            n_init=n_init,
+            reassignment_ratio=reassignment_ratio,
+        )
+        self._fit = super(KMeansSampler, self).fit
+        self._partial_fit = super(KMeansSampler, self).partial_fit
+        self._predict = super(KMeansSampler, self).predict
+
+    def sample_idx(self, X, n_samples_per_label=100):
+        labels = self.predict(X)
+
+        X_new = []
+        y_new = []
+        index = np.arange(X.shape[0])
+        for idx in np.unique(labels):
+            label_idx = index[labels == idx]
+            if label_idx.shape[0] &gt; 0:
+                if label_idx.shape[0] &lt; n_samples_per_label:
+                    n_samples = label_idx.shape[0]
+                else:
+                    n_samples = n_samples_per_label
+                sample_idx = np.random.choice(label_idx, n_samples, replace=False)
+                X_new.append(sample_idx)
+                y_new.append(np.ones_like(sample_idx, dtype=np.int32) * idx)
+        X_new = np.concatenate(X_new)
+        y_new = np.concatenate(y_new)
+
+        return X_new, y_new
+
+    def sample_data(self, X, n_samples_per_label=100):
+        &#34;&#34;&#34;Sample evenly from each cluster for X.
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, rows, cols, channels]
+            Coordinates of the data points to cluster.
+        n_samples_per_label : int
+            Number of samples per cluster label.
+            If X does not contain enough samples in
+            a cluster, all samples for that cluster
+            are used without replacement.
+        Returns
+        -------
+        X_new : array-like, shape = [n_samples, rows, cols, channels]
+            The sampled data
+        y_new : array-like, shape = [n_samples,]
+            The cluster labels each sample
+
+        &#34;&#34;&#34;
+        labels = self.predict(X)
+
+        X_new, y_new = self.sample_idx(X, n_samples_per_label)
+        X_new = X[X_new]
+        return X_new, y_new
+
+    def fit(self, X, y=None):
+        &#34;&#34;&#34;Compute the centroids on X by chunking it into mini-batches.
+        Parameters
+        ----------
+        X : array-like or sparse matrix, shape = [n_samples, rows, cols, channels]
+            Training instances to cluster.
+        y : Ignored
+        &#34;&#34;&#34;
+        X = check_image_array(self, X)
+
+        return self._fit(X, y)
+
+    def partial_fit(self, X, y=None):
+        &#34;&#34;&#34;Update k means estimate on a single mini-batch X.
+        Parameters
+        ----------
+        X : array-like, shape = [n_samples, rows, cols, channels]
+            Coordinates of the data points to cluster.
+        y : Ignored
+        &#34;&#34;&#34;
+        X = check_image_array(self, X)
+
+        return self._partial_fit(X, y)
+
+    def predict(self, X):
+        &#34;&#34;&#34;Predict the closest cluster each sample in X belongs to.
+        In the vector quantization literature, `cluster_centers_` is called
+        the code book and each value returned by `predict` is the index of
+        the closest code in the code book.
+        Parameters
+        ----------
+        X : {array-like, sparse matrix}, shape = [n_samples, rows, cols, channels]
+            New data to predict.
+        Returns
+        -------
+        labels : array, shape [n_samples,]
+            Index of the cluster each sample belongs to.
+        &#34;&#34;&#34;
+        check_is_fitted(self, &#34;cluster_centers_&#34;)
+        X = check_image_array(self, X)
+
+        return self._predict(X)
+
+    def plot_centers(self, n_rows=2, figsize=(20, 20)):
+
+        check_is_fitted(self, &#34;cluster_centers_&#34;)
+
+        n_cols = self.n_clusters // n_rows
+
+        mean = self.cluster_centers_.mean(0)
+        centers = self.cluster_centers_ - mean[None, ...]
+        centers = centers.reshape(n_rows, n_cols, self.rows, self.cols, self.channels)
+        centers = centers.swapaxes(1, 2).reshape(
+            n_rows * self.rows, n_cols * self.cols, self.channels
+        )
+        if self.channels == 1:
+            centers = centers[..., 0]
+        fig = plt.figure(figsize=figsize)
+        plt.imshow(centers, cmap=&#34;seismic&#34;, vmin=-255, vmax=255)
+
+        return fig</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>sklearn.cluster.k_means_.MiniBatchKMeans</li>
+<li>sklearn.cluster.k_means_.KMeans</li>
+<li>sklearn.base.BaseEstimator</li>
+<li>sklearn.base.ClusterMixin</li>
+<li>sklearn.base.TransformerMixin</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler.fit"><code class="name flex">
+<span>def <span class="ident">fit</span></span>(<span>self, X, y=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Compute the centroids on X by chunking it into mini-batches.
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>array</code>-<code>like</code> or <code>sparse</code> <code>matrix</code>, <code>shape</code> = [<code>n_samples</code>, <code>rows</code>, <code>cols</code>, <code>channels</code>]</dt>
+<dd>Training instances to cluster.</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>Ignored</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fit(self, X, y=None):
+    &#34;&#34;&#34;Compute the centroids on X by chunking it into mini-batches.
+    Parameters
+    ----------
+    X : array-like or sparse matrix, shape = [n_samples, rows, cols, channels]
+        Training instances to cluster.
+    y : Ignored
+    &#34;&#34;&#34;
+    X = check_image_array(self, X)
+
+    return self._fit(X, y)</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler.partial_fit"><code class="name flex">
+<span>def <span class="ident">partial_fit</span></span>(<span>self, X, y=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Update k means estimate on a single mini-batch X.
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>array</code>-<code>like</code>, <code>shape</code> = [<code>n_samples</code>, <code>rows</code>, <code>cols</code>, <code>channels</code>]</dt>
+<dd>Coordinates of the data points to cluster.</dd>
+<dt><strong><code>y</code></strong> :&ensp;<code>Ignored</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def partial_fit(self, X, y=None):
+    &#34;&#34;&#34;Update k means estimate on a single mini-batch X.
+    Parameters
+    ----------
+    X : array-like, shape = [n_samples, rows, cols, channels]
+        Coordinates of the data points to cluster.
+    y : Ignored
+    &#34;&#34;&#34;
+    X = check_image_array(self, X)
+
+    return self._partial_fit(X, y)</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler.plot_centers"><code class="name flex">
+<span>def <span class="ident">plot_centers</span></span>(<span>self, n_rows=2, figsize=(20, 20))</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_centers(self, n_rows=2, figsize=(20, 20)):
+
+    check_is_fitted(self, &#34;cluster_centers_&#34;)
+
+    n_cols = self.n_clusters // n_rows
+
+    mean = self.cluster_centers_.mean(0)
+    centers = self.cluster_centers_ - mean[None, ...]
+    centers = centers.reshape(n_rows, n_cols, self.rows, self.cols, self.channels)
+    centers = centers.swapaxes(1, 2).reshape(
+        n_rows * self.rows, n_cols * self.cols, self.channels
+    )
+    if self.channels == 1:
+        centers = centers[..., 0]
+    fig = plt.figure(figsize=figsize)
+    plt.imshow(centers, cmap=&#34;seismic&#34;, vmin=-255, vmax=255)
+
+    return fig</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler.predict"><code class="name flex">
+<span>def <span class="ident">predict</span></span>(<span>self, X)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Predict the closest cluster each sample in X belongs to.
+In the vector quantization literature, <code>cluster_centers_</code> is called
+the code book and each value returned by <code>predict</code> is the index of
+the closest code in the code book.
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;{<code>array</code>-<code>like</code>, <code>sparse</code> <code>matrix</code>}, <code>shape</code> = [<code>n_samples</code>, <code>rows</code>, <code>cols</code>, <code>channels</code>]</dt>
+<dd>New data to predict.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>labels</code></strong> :&ensp;<code>array</code>, <code>shape</code> [<code>n_samples</code>,]</dt>
+<dd>Index of the cluster each sample belongs to.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def predict(self, X):
+    &#34;&#34;&#34;Predict the closest cluster each sample in X belongs to.
+    In the vector quantization literature, `cluster_centers_` is called
+    the code book and each value returned by `predict` is the index of
+    the closest code in the code book.
+    Parameters
+    ----------
+    X : {array-like, sparse matrix}, shape = [n_samples, rows, cols, channels]
+        New data to predict.
+    Returns
+    -------
+    labels : array, shape [n_samples,]
+        Index of the cluster each sample belongs to.
+    &#34;&#34;&#34;
+    check_is_fitted(self, &#34;cluster_centers_&#34;)
+    X = check_image_array(self, X)
+
+    return self._predict(X)</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler.sample_data"><code class="name flex">
+<span>def <span class="ident">sample_data</span></span>(<span>self, X, n_samples_per_label=100)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sample evenly from each cluster for X.
+Parameters</p>
+<hr>
+<dl>
+<dt><strong><code>X</code></strong> :&ensp;<code>array</code>-<code>like</code>, <code>shape</code> = [<code>n_samples</code>, <code>rows</code>, <code>cols</code>, <code>channels</code>]</dt>
+<dd>Coordinates of the data points to cluster.</dd>
+<dt><strong><code>n_samples_per_label</code></strong> :&ensp;<code>int</code></dt>
+<dd>Number of samples per cluster label.
+If X does not contain enough samples in
+a cluster, all samples for that cluster
+are used without replacement.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>X_new</code></strong> :&ensp;<code>array</code>-<code>like</code>, <code>shape</code> = [<code>n_samples</code>, <code>rows</code>, <code>cols</code>, <code>channels</code>]</dt>
+<dd>The sampled data</dd>
+<dt><strong><code>y_new</code></strong> :&ensp;<code>array</code>-<code>like</code>, <code>shape</code> = [<code>n_samples</code>,]</dt>
+<dd>The cluster labels each sample</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sample_data(self, X, n_samples_per_label=100):
+    &#34;&#34;&#34;Sample evenly from each cluster for X.
+    Parameters
+    ----------
+    X : array-like, shape = [n_samples, rows, cols, channels]
+        Coordinates of the data points to cluster.
+    n_samples_per_label : int
+        Number of samples per cluster label.
+        If X does not contain enough samples in
+        a cluster, all samples for that cluster
+        are used without replacement.
+    Returns
+    -------
+    X_new : array-like, shape = [n_samples, rows, cols, channels]
+        The sampled data
+    y_new : array-like, shape = [n_samples,]
+        The cluster labels each sample
+
+    &#34;&#34;&#34;
+    labels = self.predict(X)
+
+    X_new, y_new = self.sample_idx(X, n_samples_per_label)
+    X_new = X[X_new]
+    return X_new, y_new</code></pre>
+</details>
+</dd>
+<dt id="deepposekit.annotate.KMeansSampler.KMeansSampler.sample_idx"><code class="name flex">
+<span>def <span class="ident">sample_idx</span></span>(<span>self, X, n_samples_per_label=100)</span>
+</code></dt>
+<dd>
+<section class="desc"></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sample_idx(self, X, n_samples_per_label=100):
+    labels = self.predict(X)
+
+    X_new = []
+    y_new = []
+    index = np.arange(X.shape[0])
+    for idx in np.unique(labels):
+        label_idx = index[labels == idx]
+        if label_idx.shape[0] &gt; 0:
+            if label_idx.shape[0] &lt; n_samples_per_label:
+                n_samples = label_idx.shape[0]
+            else:
+                n_samples = n_samples_per_label
+            sample_idx = np.random.choice(label_idx, n_samples, replace=False)
+            X_new.append(sample_idx)
+            y_new.append(np.ones_like(sample_idx, dtype=np.int32) * idx)
+    X_new = np.concatenate(X_new)
+    y_new = np.concatenate(y_new)
+
+    return X_new, y_new</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="deepposekit.annotate" href="index.html">deepposekit.annotate</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler" href="#deepposekit.annotate.KMeansSampler.KMeansSampler">KMeansSampler</a></code></h4>
+<ul class="two-column">
+<li><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler.fit" href="#deepposekit.annotate.KMeansSampler.KMeansSampler.fit">fit</a></code></li>
+<li><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler.partial_fit" href="#deepposekit.annotate.KMeansSampler.KMeansSampler.partial_fit">partial_fit</a></code></li>
+<li><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler.plot_centers" href="#deepposekit.annotate.KMeansSampler.KMeansSampler.plot_centers">plot_centers</a></code></li>
+<li><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler.predict" href="#deepposekit.annotate.KMeansSampler.KMeansSampler.predict">predict</a></code></li>
+<li><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler.sample_data" href="#deepposekit.annotate.KMeansSampler.KMeansSampler.sample_data">sample_data</a></code></li>
+<li><code><a title="deepposekit.annotate.KMeansSampler.KMeansSampler.sample_idx" href="#deepposekit.annotate.KMeansSampler.KMeansSampler.sample_idx">sample_idx</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.0</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
