@@ -46,8 +46,8 @@ class StackedDenseNet(BaseModel):
         **kwargs
     ):
         """
-        Define a Stacked Fully-Convolutional DenseNet model
-        for pose estimation.
+        Define a Stacked DenseNet model
+        for pose estimation [1].
         See `References` for details on the model architecture.
 
         Parameters
@@ -103,18 +103,21 @@ class StackedDenseNet(BaseModel):
 
         References
         ----------
-        [1] Jégou, S., Drozdzal, M., Vazquez, D., Romero, A., & Bengio, Y. (2017).
+        [1] Graving, J.M., Chae, D., Naik, H., Li, L., Koger, B., Costelloe, B.R.,
+            Couzin, I.D. (2019) DeepPoseKit, a software toolkit for fast and robust
+            animal pose estimation using deep learning. eLife, 8, e47994
+        [2] Jégou, S., Drozdzal, M., Vazquez, D., Romero, A., & Bengio, Y. (2017).
             The one hundred layers tiramisu: Fully convolutional densenets for
             semantic segmentation. In Computer Vision and Pattern Recognition
             Workshops (CVPRW), 2017 IEEE Conference on (pp. 1175-1183). IEEE.
-        [2] Newell, A., Yang, K., & Deng, J. (2016). Stacked hourglass networks
+        [3] Newell, A., Yang, K., & Deng, J. (2016). Stacked hourglass networks
             for human pose estimation. In European Conference on Computer
             Vision (pp. 483-499). Springer, Cham.
-        [3] Huang, G., Liu, Z., Weinberger, K. Q., & van der Maaten, L. (2017).
+        [4] Huang, G., Liu, Z., Weinberger, K. Q., & van der Maaten, L. (2017).
             Densely connected convolutional networks. In Proceedings of the IEEE
             conference on computer vision and pattern recognition
             (Vol. 1, No. 2, p. 3).
-        [4] Klambauer, G., Unterthiner, T., Mayr, A., & Hochreiter, S. (2017).
+        [5] Klambauer, G., Unterthiner, T., Mayr, A., & Hochreiter, S. (2017).
             Self-normalizing neural networks. In Advances in Neural Information
             Processing Systems (pp. 972-981).
         """
