@@ -54,16 +54,19 @@ reader = VideoReader('/path/to/video.mp4')
 predictions = model.predict(reader)
 ```
 
-Using DeepPoseKit is a 4-step process:
+**Using DeepPoseKit is a 4-step process:**
 - **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb) <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI (no Colab support)
-- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our [`StackedDenseNet`](https://htmlpreview.github.io/?https://raw.githubusercontent.com/jgraving/DeepPoseKit/master/html/deepposekit/models/StackedDenseNet.html) model and the [`DeepLabCut`](https://htmlpreview.github.io/?https://raw.githubusercontent.com/jgraving/DeepPoseKit/master/html/deepposekit/models/DeepLabCut.html) model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our [`StackedDenseNet`](http://jakegraving.com/DeepPoseKit/docs/models/StackedDenseNet.html) model and the [`DeepLabCut`](http://jakegraving.com/DeepPoseKit/docs/models/DeepLabCut.html) model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **4.** Use the trained model to:
 	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-[See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/), [read the documentation](http://htmlpreview.github.io/?https://github.com/jgraving/DeepPoseKit/blob/master/html/deepposekit/index.html), and [read our paper](https://doi.org/10.7554/eLife.47994) for more details.
+**For more details:**
+- See [our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/)
+- Check the [documentation](http://jakegraving.com/DeepPoseKit/docs/)
+- Read [our paper](https://doi.org/10.7554/eLife.47994)
 
 "I already have annotated data"
 ---------------------------------
