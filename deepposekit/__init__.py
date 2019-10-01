@@ -26,4 +26,6 @@ from deepposekit.annotate.KMeansSampler import KMeansSampler
 
 from deepposekit.io.video import VideoReader, VideoWriter
 
+
+__doc__ = open('README.md').read()
 __version__ = "0.3.1.dev"
