@@ -22,7 +22,7 @@ DeepPoseKit is currently limited to *individual pose esimation*. If individuals 
 
 Localization (without tracking) can also be achieved with deep learning software like [keras-retinanet](https://github.com/fizyr/keras-retinanet), the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), or [MatterPort's Mask R-CNN](https://github.com/matterport/Mask_RCNN).
 
-[Check out our preprint](https://doi.org/10.1101/620245) to find out more.
+[Check out our paper](https://doi.org/10.7554/eLife.47994) to find out more.
 
 **NOTE:** This software is still in early-release development. *Expect some adventures.*
 
@@ -57,19 +57,19 @@ predictions = model.predict(reader)
 Using DeepPoseKit is a 4-step process:
 - **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb) <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI (no Colab support)
-- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our `StackedDenseNet` model and the `DeepLabCut` model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+- **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our [`StackedDenseNet`](https://github.com/jgraving/DeepPoseKit/blob/master/deepposekit/models/StackedDenseNet.py) model and the [`DeepLabCut`](https://github.com/jgraving/DeepPoseKit/blob/master/deepposekit/models/DeepLabCut.py) model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **4.** Use the trained model to:
 	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-[See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) and [read our preprint](https://doi.org/10.1101/620245) for more details.
+[See our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/) and [read our paper](https://doi.org/10.7554/eLife.47994) for more details.
 
 "I already have annotated data"
 ---------------------------------
 DeepPoseKit is designed to be extensible, so loading data in other formats is possible.
 
-If you have data from DeepLabCut (http://deeplabcut.org), try [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplacut_data_example.ipynb) for loading data in this format. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/deeplabcut_data_example.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+If you have data from DeepLabCut (http://deeplabcut.org), try [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplabcut_data_example.ipynb) for loading data in this format. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/deeplabcut_data_example.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 Have data in another format? You can write your own custom generator to load it.
 Check out the [example for writing custom data generators](https://github.com/jgraving/DeepPoseKit/blob/master/examples/custom_data_generator.ipynb). <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/custom_data_generator.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
@@ -129,9 +129,21 @@ Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/d
 
 References
 ---------------------------------
-If you use DeepPoseKit for your research please cite [our preprint](https://doi.org/10.1101/620245):
+If you use DeepPoseKit for your research please cite [our paper](https://doi.org/10.7554/eLife.47994):
 
     @article{graving2019deepposekit,
+             title={DeepPoseKit, a software toolkit for fast and robust pose estimation using deep learning},
+             author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
+             journal={eLife},
+             volume={8},
+             pages={e47994},
+             year={2019},
+             publisher={eLife Sciences Publications Limited}
+             }
+
+You can also read [our open-access preprint](http://preprint.deepposekit.org):
+
+    @article{graving2019preprint,
              title={DeepPoseKit, a software toolkit for fast and robust pose estimation using deep learning},
              author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
              journal={bioRxiv},
@@ -143,6 +155,8 @@ If you use DeepPoseKit for your research please cite [our preprint](https://doi.
 
 News
 ---------------------------------
-
-- **September 2019:** v0.3.0 is released. See [the release notes](https://github.com/jgraving/DeepPoseKit/releases/tag/v0.3.0).
+- **October 2019:** [Our paper](https://doi.org/10.7554/eLife.47994) describing DeepPoseKit is published at eLife
+- **September 2019**: 
+    - Nature News covers DeepPoseKit: [Deep learning powers a motion-tracking revolution](http://doi.org/10.1038/d41586-019-02942-5)
+    - v0.3.0 is released. See [the release notes](https://github.com/jgraving/DeepPoseKit/releases/tag/v0.3.0).
 - **April 2019:** The DeepPoseKit preprint is on biorxiv (http://preprint.deepposekit.org)
