@@ -1,24 +1,23 @@
-"""DenseNet models for Keras.
-# Reference paper
-- [Densely Connected Convolutional Networks]
-  (https://arxiv.org/abs/1608.06993) (CVPR 2017 Best Paper Award)
-# Reference implementation
-- [Torch DenseNets]
-  (https://github.com/liuzhuang13/DenseNet/blob/master/models/densenet.lua)
-- [TensorNets]
-  (https://github.com/taehoonlee/tensornets/blob/master/tensornets/densenets.py)
+# DenseNet models for Keras.
+## Reference paper
+# - [Densely Connected Convolutional Networks]
+#  (https://arxiv.org/abs/1608.06993) (CVPR 2017 Best Paper Award)
+## Reference implementation
+# - [Torch DenseNets]
+#  (https://github.com/liuzhuang13/DenseNet/blob/master/models/densenet.lua)
+# - [TensorNets]
+#  (https://github.com/taehoonlee/tensornets/blob/master/tensornets/densenets.py)
 
-Modified by Jacob M. Graving from:
-https://github.com/keras-team/keras-applications/blob/
-master/keras_applications/densenet.py
+# Modified by Jacob M. Graving from:
+# https://github.com/keras-team/keras-applications/blob/
+# master/keras_applications/densenet.py
 
-to match the stride 16 ResNet found here:
-https://github.com/tensorflow/tensorflow/blob/
-master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
+# to match the stride 16 ResNet found here:
+# https://github.com/tensorflow/tensorflow/blob/
+# master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
 
-All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
+# All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
 
-"""
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
@@ -217,7 +216,7 @@ def DenseNet(
             img_input = input_tensor
 
     bn_axis = 3 if backend.image_data_format() == "channels_last" else 1
-    
+
     res_outputs = []
     x = layers.ZeroPadding2D(padding=((3, 3), (3, 3)))(img_input)
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name="conv1/conv")(x)
@@ -236,7 +235,6 @@ def DenseNet(
     x = dense_block(x, blocks[2], name="conv4")
     x = transition_block(x, 0.5, name="pool4", pool=False)
     x = dense_block(x, blocks[3], name="conv5", dilation=2)
-
 
     x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name="bn")(x)
     x = layers.Activation("relu", name="relu")(x)

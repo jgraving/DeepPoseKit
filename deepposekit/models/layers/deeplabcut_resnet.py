@@ -1,24 +1,24 @@
-"""ResNet models for Keras.
+# ResNet models for Keras.
 # Reference papers
-- [Deep Residual Learning for Image Recognition]
-  (https://arxiv.org/abs/1512.03385) (CVPR 2016 Best Paper Award)
+# - [Deep Residual Learning for Image Recognition]
+#  (https://arxiv.org/abs/1512.03385) (CVPR 2016 Best Paper Award)
 # Reference implementations
-- [TensorNets]
-  (https://github.com/taehoonlee/tensornets/blob/master/tensornets/resnets.py)
-- [Caffe ResNet]
-  (https://github.com/KaimingHe/deep-residual-networks/tree/master/prototxt)
+# - [TensorNets]
+#  (https://github.com/taehoonlee/tensornets/blob/master/tensornets/resnets.py)
+# - [Caffe ResNet]
+#  (https://github.com/KaimingHe/deep-residual-networks/tree/master/prototxt)
+#
+# Modified by Jacob M. Graving from:
+# https://github.com/keras-team/keras-applications/blob/
+# master/keras_applications/resnet_common.py
 
-Modified by Jacob M. Graving from:
-https://github.com/keras-team/keras-applications/blob/
-master/keras_applications/resnet_common.py
+# to match the stride 16 ResNet found here:
+# https://github.com/tensorflow/tensorflow/blob/
+# master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
 
-to match the stride 16 ResNet found here:
-https://github.com/tensorflow/tensorflow/blob/
-master/tensorflow/contrib/slim/python/slim/nets/resnet_v1.py
+# All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
 
-All modifications are Copyright 2019 Jacob M. Graving <jgraving@gmail.com>
 
-"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
