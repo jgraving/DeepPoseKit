@@ -257,7 +257,7 @@ def Xception(
     x = layers.BatchNormalization(axis=channel_axis, name="block13_sepconv2_bn")(x)
 
     x = layers.MaxPooling2D(
-        (1, 1), strides=(1, 1), padding="same", name="block13_pool"
+        (3, 3), strides=(1, 1), padding="same", name="block13_pool"
     )(x)
     x = layers.add([x, residual])
 
