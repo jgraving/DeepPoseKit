@@ -20,10 +20,10 @@ from __future__ import print_function
 import os
 from tensorflow.keras.layers import Layer
 
-from tensorflow.python.keras.applications import resnet50 as resnet
-from tensorflow.python.keras.applications import mobilenet_v2
-from tensorflow.python.keras.applications import densenet
-from tensorflow.python.keras.applications import xception
+from tensorflow.keras.applications import resnet50 as resnet
+from tensorflow.keras.applications import mobilenet_v2
+from tensorflow.keras.applications import densenet
+from tensorflow.keras.applications import xception
 
 from deepposekit.models.layers.deeplabcut_resnet import MODELS as RESNET_MODELS
 from deepposekit.models.layers.deeplabcut_mobile import MODELS as MOBILE_MODELS
