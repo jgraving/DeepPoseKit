@@ -20,13 +20,15 @@ from __future__ import print_function
 import os
 from tensorflow.keras.layers import Layer
 
-from tensorflow.python.keras.applications import resnet
+from tensorflow.python.keras.applications import resnet50 as resnet
 from tensorflow.python.keras.applications import mobilenet_v2
 from tensorflow.python.keras.applications import densenet
+from tensorflow.python.keras.applications import xception
 
 from deepposekit.models.layers.deeplabcut_resnet import MODELS as RESNET_MODELS
 from deepposekit.models.layers.deeplabcut_mobile import MODELS as MOBILE_MODELS
 from deepposekit.models.layers.deeplabcut_densenet import MODELS as DENSENET_MODELS
+from deepposekit.models.layers.deeplabcut_xception import MODELS as XCEPTION_MODELS
 
 
 class ImageNetPreprocess(Layer):
@@ -50,9 +52,11 @@ class ImageNetPreprocess(Layer):
         if network.startswith("mobile"):
             self.preprocess_input = mobilenet_v2.preprocess_input
         elif network.startswith("resnet"):
-            self.preprocess_input = resnet50.preprocess_input
+            self.preprocess_input = resnet.preprocess_input
         elif network.startswith("densenet"):
             self.preprocess_input = densenet.preprocess_input
+        elif network.startswith("xception"):
+            self.preprocess_input = xception.preprocess_input
 
         super(ImageNetPreprocess, self).__init__(**kwargs)
 
@@ -72,6 +76,7 @@ MODELS = (
     list(RESNET_MODELS.items())
     + list(MOBILE_MODELS.items())
     + list(DENSENET_MODELS.items())
+    + list(XCEPTION_MODELS.items())
 )
 MODELS = dict(MODELS)
 
