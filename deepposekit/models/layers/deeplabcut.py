@@ -20,7 +20,7 @@ from __future__ import print_function
 import os
 from tensorflow.keras.layers import Layer
 
-from tensorflow.python.keras.applications import resnet50
+from tensorflow.python.keras.applications import resnet
 from tensorflow.python.keras.applications import mobilenet_v2
 from tensorflow.python.keras.applications import densenet
 
