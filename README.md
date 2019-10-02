@@ -1,12 +1,12 @@
 <p align="center">
-<img src="https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg" height="512px">
+<img src="https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg" height="320px">
 </p>
 
 
 You have just found DeepPoseKit.
 ---------------------------------
 <p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" max-height:256px>
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" height="128px">
 </p>
 
 DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation of user-defined keypoints using deep learning—written in Python and built using [Tensorflow](https://github.com/tensorflow/tensorflow) and [Keras](https://www.tensorflow.org/guide/keras). Use DeepPoseKit if you need:
@@ -18,7 +18,7 @@ DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation o
 
 DeepPoseKit is designed with a focus on *usability* and *extensibility*, as being able to go from idea to result with the least possible delay is key to doing good research.
 
-DeepPoseKit is currently limited to *individual pose esimation*. If individuals can be easily distinguished visually (i.e., they have differently colored bodies or are marked in some way), then multiple individuals can simply be labeled with separate keypoints (head1, tail1, head2, tail2, etc.). Otherwise DeepPoseKit can be extended to multiple individuals by first localizing, tracking, and cropping individuals with additional software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor).
+DeepPoseKit is currently limited to *individual pose estimation*. If individuals can be easily distinguished visually (i.e., they have differently colored bodies or are marked in some way), then multiple individuals can simply be labeled with separate keypoints (head1, tail1, head2, tail2, etc.). Otherwise DeepPoseKit can be extended to multiple individuals by first localizing, tracking, and cropping individuals with additional software such as [idtracker.ai](https://idtracker.ai/), [pinpoint](https://github.com/jgraving/pinpoint), or [Tracktor](https://github.com/vivekhsridhar/tracktor).
 
 Localization (without tracking) can also be achieved with deep learning software like [keras-retinanet](https://github.com/fizyr/keras-retinanet), the [Tensorflow Object Detection API](https://github.com/tensorflow/models/tree/master/research/object_detection), or [MatterPort's Mask R-CNN](https://github.com/matterport/Mask_RCNN).
 
@@ -27,8 +27,8 @@ Localization (without tracking) can also be achieved with deep learning software
 **NOTE:** This software is still in early-release development. *Expect some adventures.*
 
 <p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" max-height:256px>
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" max-height:256px>
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" height="256px">
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="256px">
 </p>
 
 How to use DeepPoseKit
@@ -54,16 +54,15 @@ reader = VideoReader('/path/to/video.mp4')
 predictions = model.predict(reader)
 ```
 
-**Using DeepPoseKit is a 4-step process:**
+### Using DeepPoseKit is a 4-step process:
 - **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb) <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI (no Colab support)
 - **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our [`StackedDenseNet`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/StackedDenseNet.html) model and the [`DeepLabCut`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/DeepLabCut.html) model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **4.** Use the trained model to:
 	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-
 	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-**For more details:**
+### For more details:
 - See [our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/)
 - Check the [documentation](http://docs.deepposekit.org)
 - Read [our paper](https://doi.org/10.7554/eLife.47994)
@@ -84,7 +83,7 @@ Installation
 DeepPoseKit requires [Tensorflow](https://github.com/tensorflow/tensorflow) for training and using pose estimation models. [Tensorflow](https://github.com/tensorflow/tensorflow) should be manually installed, along with dependencies such as CUDA and cuDNN, before installing DeepPoseKit:
 
 - [Tensorflow Installation Instructions](https://www.tensorflow.org/install)
-- **Note**: [Tensorflow 2.0](https://www.tensorflow.org/beta) is not yet supported, but an update is in the works.
+- **NOTE**: DeepPoseKit uses `tensorflow.keras` for building and training models, so any Tensorflow version >=1.10.0 should be compatible (including 2.0).
 
 DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended system for using the toolkit. 
 
@@ -122,6 +121,8 @@ We welcome community involvement and public contributions to the toolkit. If you
 
 If you'd like to get involved with developing DeepPoseKit, get in touch (jgraving@gmail.com) and check out [our development roadmap](https://github.com/jgraving/DeepPoseKit/blob/master/DEVELOPMENT.md) to see future plans for the package.  
 
+Issues  
+--------------------------------- 
 Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible.
 
 If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
@@ -132,7 +133,7 @@ Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/d
 
 References
 ---------------------------------
-If you use DeepPoseKit for your research please cite [our paper](https://doi.org/10.7554/eLife.47994):
+If you use DeepPoseKit for your research please cite [our open-access paper](https://doi.org/10.7554/eLife.47994):
 
     @article{graving2019deepposekit,
              title={DeepPoseKit, a software toolkit for fast and robust pose estimation using deep learning},
@@ -158,7 +159,7 @@ You can also read [our open-access preprint](http://preprint.deepposekit.org):
 
 News
 ---------------------------------
-- **October 2019:** [Our paper](https://doi.org/10.7554/eLife.47994) describing DeepPoseKit is published at eLife
+- **October 2019:** [Our paper](https://doi.org/10.7554/eLife.47994) describing DeepPoseKit is published at eLife!
 - **September 2019**: 
     - Nature News covers DeepPoseKit: [Deep learning powers a motion-tracking revolution](http://doi.org/10.1038/d41586-019-02942-5)
     - v0.3.0 is released. See [the release notes](https://github.com/jgraving/DeepPoseKit/releases/tag/v0.3.0).
