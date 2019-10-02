@@ -381,17 +381,17 @@ def MobileNetV2(
     )
 
     x = _inverted_res_block(
-        x, filters=160, alpha=alpha, stride=1, expansion=6, block_id=13, dilation=2
+        x, filters=160, alpha=alpha, stride=1, expansion=6, block_id=13
     )
     x = _inverted_res_block(
-        x, filters=160, alpha=alpha, stride=1, expansion=6, block_id=14
+        x, filters=160, alpha=alpha, stride=1, expansion=6, block_id=14, dilation=2
     )
     x = _inverted_res_block(
-        x, filters=160, alpha=alpha, stride=1, expansion=6, block_id=15
+        x, filters=160, alpha=alpha, stride=1, expansion=6, block_id=15, dilation=2
     )
 
     x = _inverted_res_block(
-        x, filters=320, alpha=alpha, stride=1, expansion=6, block_id=16
+        x, filters=320, alpha=alpha, stride=1, expansion=6, block_id=16, dilation=2
     )
 
     # no alpha applied to last conv as stated in the paper:
