@@ -159,7 +159,7 @@ You can also read [our open-access preprint](http://preprint.deepposekit.org):
 
 News
 ---------------------------------
-- **October 2019:** [Our paper](https://doi.org/10.7554/eLife.47994) describing DeepPoseKit is published at eLife!
+- **October 2019:** Our paper describing DeepPoseKit is published at eLife! (http://paper.deepposekit.org)
 - **September 2019**: 
     - Nature News covers DeepPoseKit: [Deep learning powers a motion-tracking revolution](http://doi.org/10.1038/d41586-019-02942-5)
     - v0.3.0 is released. See [the release notes](https://github.com/jgraving/DeepPoseKit/releases/tag/v0.3.0).
