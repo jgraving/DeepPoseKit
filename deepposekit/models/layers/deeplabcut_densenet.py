@@ -95,8 +95,7 @@ def transition_block(x, reduction, name, pool=True):
         use_bias=False,
         name=name + "_conv",
     )(x)
-    if pool:
-        x = layers.AveragePooling2D(2, strides=2, name=name + "_pool")(x)
+    x = layers.AveragePooling2D(2 if pool else 1, strides=2 if pool else 1, name=name + "_pool")(x)
     return x
 
 
