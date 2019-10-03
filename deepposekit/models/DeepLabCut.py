@@ -113,7 +113,7 @@ class DeepLabCut(BaseModel):
             )
         backbone = MODELS[self.backbone]
         if self.backbone in list(MODELS.keys()):
-            input_shape = self.input_shape[:-1] + (3,)
+            input_shape = None  # self.input_shape[:-1] + (3,)
         if self.backbone.startswith("mobile"):
             input_shape = None
             backbone = partial(backbone, alpha=self.alpha)
