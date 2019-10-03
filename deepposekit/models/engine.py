@@ -105,7 +105,8 @@ class BaseModel:
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
-
+        if hasattr(self.train_model, "_in_multi_worker_mode"):
+            self._in_multi_worker_mode = self.train_model._in_multi_worker_mode
     def fit(
         self,
         batch_size,
