@@ -31,12 +31,12 @@ class BaseModel:
         self.train_generator = train_generator
         self.subpixel = subpixel
         if "skip_init" not in kwargs:
+            config = self.train_generator.get_config()
             if self.train_model is NotImplemented:
-                self.__init_input__()
+                self.__init_input__(config["image_shape"])
                 self.__init_model__()
                 self.__init_train_model__()
             if self.train_generator is not None:
-                config = self.train_generator.get_config()
                 if self.subpixel:
                     output_sigma = config["output_sigma"]
                 else:
@@ -50,15 +50,9 @@ class BaseModel:
 
     train_model = NotImplemented
 
-    def __init_input__(self):
-        self.input_shape = (
-            self.train_generator.height,
-            self.train_generator.width,
-            self.train_generator.n_channels,
-        )
-
+    def __init_input__(self, image_shape):
+        self.input_shape = image_shape
         self.inputs = Input(self.input_shape)
-
 
     def __init_train_model__(self):
         if isinstance(self.train_model, Model):
@@ -106,10 +100,11 @@ class BaseModel:
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
-        
+
         # Fix for passing model to callbacks.ModelCheckpoint
         if hasattr(self.train_model, "_in_multi_worker_mode"):
             self._in_multi_worker_mode = self.train_model._in_multi_worker_mode
+
     def fit(
         self,
         batch_size,

@@ -121,7 +121,9 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None):
     model = Model(**kwargs)
     model.train_model = train_model
     model.__init_train_model__()
+    model.__init_input__(model_config["image_shape"])
 
+    model
     kwargs = {}
     kwargs["output_shape"] = model_config["output_shape"]
     kwargs["keypoints_shape"] = model_config["keypoints_shape"]
