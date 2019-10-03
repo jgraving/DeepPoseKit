@@ -170,8 +170,9 @@ when using this layer as the first layer in a model.
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>Assumes that the layer will be built
-to match that input shape provided.</p>
+<p>If the layer has not been built, this method will call <code>build</code> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>
@@ -267,8 +268,9 @@ when using this layer as the first layer in a model.
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>Assumes that the layer will be built
-to match that input shape provided.</p>
+<p>If the layer has not been built, this method will call <code>build</code> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>

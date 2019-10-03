@@ -458,8 +458,9 @@ data_format: A string,
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>Assumes that the layer will be built
-to match that input shape provided.</p>
+<p>If the layer has not been built, this method will call <code>build</code> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>
@@ -698,8 +699,9 @@ layer instantiation and layer call.</p>
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>Assumes that the layer will be built
-to match that input shape provided.</p>
+<p>If the layer has not been built, this method will call <code>build</code> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>
@@ -943,8 +945,9 @@ layer instantiation and layer call.</p>
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>Assumes that the layer will be built
-to match that input shape provided.</p>
+<p>If the layer has not been built, this method will call <code>build</code> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>
@@ -1120,7 +1123,11 @@ If you never set it, then it will be "channels_last".</dd>
         interpolation=self.interpolation)
 
   def get_config(self):
-    config = {&#39;size&#39;: self.size, &#39;data_format&#39;: self.data_format}
+    config = {
+        &#39;size&#39;: self.size,
+        &#39;data_format&#39;: self.data_format,
+        &#39;interpolation&#39;: self.interpolation
+    }
     base_config = super(UpSampling2D, self).get_config()
     return dict(list(base_config.items()) + list(config.items()))</code></pre>
 </details>
@@ -1162,8 +1169,9 @@ If you never set it, then it will be "channels_last".</dd>
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>Assumes that the layer will be built
-to match that input shape provided.</p>
+<p>If the layer has not been built, this method will call <code>build</code> on the
+layer. This assumes that the layer will later be used with inputs that
+match the input shape provided here.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>
@@ -1215,7 +1223,11 @@ by <code>Network</code> (one layer of abstraction above).</p>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def get_config(self):
-  config = {&#39;size&#39;: self.size, &#39;data_format&#39;: self.data_format}
+  config = {
+      &#39;size&#39;: self.size,
+      &#39;data_format&#39;: self.data_format,
+      &#39;interpolation&#39;: self.interpolation
+  }
   base_config = super(UpSampling2D, self).get_config()
   return dict(list(base_config.items()) + list(config.items()))</code></pre>
 </details>

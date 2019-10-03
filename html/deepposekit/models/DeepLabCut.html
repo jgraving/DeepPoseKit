@@ -86,15 +86,15 @@ __docstring__ = &#34;&#34;&#34;
 
     References
     ----------
-    [1] Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
+    1.  Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
         Mathis, M. W., &amp; Bethge, M. (2018). DeepLabCut: markerless pose
         estimation of user-defined body parts with deep learning (p. 1).
         Nature Publishing Group.
-    [2] Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
+    2.  Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
         &amp; Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
         pose estimation across species and behaviors. Nature protocols,
         14(7), 2152-2176.
-    [3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
+    3.  Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
         Pretraining boosts out-of-domain-robustness for pose estimation.
         arXiv cs.CV https://arxiv.org/abs/1909.11229
 
@@ -224,7 +224,7 @@ keypoint coordinates in the prediction model.</dd>
 weights pretrained on imagenet. None uses randomly initialized
 weights.</dd>
 <dt><strong><code>backbone</code></strong> :&ensp;<code>string</code>, default <code>is</code> <code>"resnet50"</code></dt>
-<dd>pretrained backbone network to use. Must be one of ['resnet50', 'resnet101', 'resnet152', 'mobilenetv2', 'densenet121', 'densenet169', 'densenet201']. See [3].</dd>
+<dd>pretrained backbone network to use. Must be one of ['resnet50', 'resnet101', 'resnet152', 'mobilenetv2', 'densenet121', 'densenet169', 'densenet201', 'xception']. See [3].</dd>
 <dt><strong><code>alpha</code></strong> :&ensp;<code>float</code>, default <code>is</code> <code>1.0</code></dt>
 <dd>Which MobileNetV2 to use. Must be one of:
 [0.35, 0.5, 0.75, 1.0, 1.3, 1.4]
@@ -242,17 +242,19 @@ SubpixelMaxima2D layers at the output of the network.</dd>
 <p>Both of these models share the same computational graph,
 so training train_model updates the weights of predict_model</p>
 <h2 id="references">References</h2>
-<p>[1] Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
+<ol>
+<li>Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
 Mathis, M. W., &amp; Bethge, M. (2018). DeepLabCut: markerless pose
 estimation of user-defined body parts with deep learning (p. 1).
-Nature Publishing Group.
-[2] Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
+Nature Publishing Group.</li>
+<li>Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
 &amp; Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
 pose estimation across species and behaviors. Nature protocols,
-14(7), 2152-2176.
-[3] Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
+14(7), 2152-2176.</li>
+<li>Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
 Pretraining boosts out-of-domain-robustness for pose estimation.
-arXiv cs.CV <a href="https://arxiv.org/abs/1909.11229">https://arxiv.org/abs/1909.11229</a></p></section>
+arXiv cs.CV <a href="https://arxiv.org/abs/1909.11229">https://arxiv.org/abs/1909.11229</a></li>
+</ol></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>

@@ -6,7 +6,7 @@
 <meta name="generator" content="pdoc 0.7.0" />
 <title>deepposekit API documentation</title>
 <meta name="description" content="&lt;p align=&#34;center&#34;&gt;
-&lt;img src=&#34;https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg&#34; height=&#34;512px&#34;&gt;
+&lt;img src=&#34;https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg&#34; height=&#34;320px&#34;&gt;
 &lt;/p&gt; …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -23,11 +23,11 @@
 </header>
 <section id="section-intro">
 <p align="center">
-<img src="https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg" height="512px">
+<img src="https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg" height="320px">
 </p>
 <h2 id="you-have-just-found-deepposekit">You have just found DeepPoseKit.</h2>
 <p><p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" max-height:256px>
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" height="128px">
 </p></p>
 <p>DeepPoseKit is a software toolkit with a high-level API for 2D pose estimation of user-defined keypoints using deep learning—written in Python and built using <a href="https://github.com/tensorflow/tensorflow">Tensorflow</a> and <a href="https://www.tensorflow.org/guide/keras">Keras</a>. Use DeepPoseKit if you need:</p>
 <ul>
@@ -37,13 +37,13 @@
 <li>easy-to-use methods for saving and loading models and making predictions on new data</li>
 </ul>
 <p>DeepPoseKit is designed with a focus on <em>usability</em> and <em>extensibility</em>, as being able to go from idea to result with the least possible delay is key to doing good research.</p>
-<p>DeepPoseKit is currently limited to <em>individual pose esimation</em>. If individuals can be easily distinguished visually (i.e., they have differently colored bodies or are marked in some way), then multiple individuals can simply be labeled with separate keypoints (head1, tail1, head2, tail2, etc.). Otherwise DeepPoseKit can be extended to multiple individuals by first localizing, tracking, and cropping individuals with additional software such as <a href="https://idtracker.ai/">idtracker.ai</a>, <a href="https://github.com/jgraving/pinpoint">pinpoint</a>, or <a href="https://github.com/vivekhsridhar/tracktor">Tracktor</a>.</p>
+<p>DeepPoseKit is currently limited to <em>individual pose estimation</em>. If individuals can be easily distinguished visually (i.e., they have differently colored bodies or are marked in some way), then multiple individuals can simply be labeled with separate keypoints (head1, tail1, head2, tail2, etc.). Otherwise DeepPoseKit can be extended to multiple individuals by first localizing, tracking, and cropping individuals with additional software such as <a href="https://idtracker.ai/">idtracker.ai</a>, <a href="https://github.com/jgraving/pinpoint">pinpoint</a>, or <a href="https://github.com/vivekhsridhar/tracktor">Tracktor</a>.</p>
 <p>Localization (without tracking) can also be achieved with deep learning software like <a href="https://github.com/fizyr/keras-retinanet">keras-retinanet</a>, the <a href="https://github.com/tensorflow/models/tree/master/research/object_detection">Tensorflow Object Detection API</a>, or <a href="https://github.com/matterport/Mask_RCNN">MatterPort's Mask R-CNN</a>.</p>
 <p><a href="https://doi.org/10.7554/eLife.47994">Check out our paper</a> to find out more.</p>
 <p><strong>NOTE:</strong> This software is still in early-release development. <em>Expect some adventures.</em></p>
 <p align="center">
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" max-height:256px>
-<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" max-height:256px>
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" height="256px">
+<img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="256px">
 </p>
 <h2 id="how-to-use-deepposekit">How to use DeepPoseKit</h2>
 <p>DeepPoseKit is designed for easy use. For example, training and saving a model requires only a few lines of code:</p>
@@ -64,18 +64,21 @@ model = load_model('/path/to/saved_model.h5')
 reader = VideoReader('/path/to/video.mp4')
 predictions = model.predict(reader)
 </code></pre>
-<p><strong>Using DeepPoseKit is a 4-step process:</strong>
-- <strong>1.</strong> <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb">Create an annotation set</a> <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-- <strong>2.</strong> <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb">Annotate your data</a> with our built-in GUI (no Colab support)
-- <strong>3.</strong> <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb">Select and train a model</a> including our <a href="http://jakegraving.com/DeepPoseKit/html/deepposekit/models/StackedDenseNet.html"><code>StackedDenseNet</code></a> model and the <a href="http://jakegraving.com/DeepPoseKit/html/deepposekit/models/DeepLabCut.html"><code>DeepLabCut</code></a> model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
-- <strong>4.</strong> Use the trained model to:
-- a) <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb">Initialize keypoints for unannotated data in the annotation set</a> for faster annotations with <em>active learning</em>. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
-<pre><code>    - b) [Predict on new data and refine the training set](&lt;https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb&gt;) to improve performance. &lt;a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"&gt;&lt;img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/&gt;&lt;/a&gt;
-</code></pre>
-<p><strong>For more details:</strong>
-- See <a href="https://github.com/jgraving/deepposekit/blob/master/examples/">our example notebooks</a>
-- Check the <a href="http://docs.deepposekit.org">documentation</a>
-- Read <a href="https://doi.org/10.7554/eLife.47994">our paper</a></p>
+<h3 id="using-deepposekit-is-a-4-step-process">Using DeepPoseKit is a 4-step process:</h3>
+<ul>
+<li><strong>1.</strong> <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb">Create an annotation set</a> <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></li>
+<li><strong>2.</strong> <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb">Annotate your data</a> with our built-in GUI (no Colab support)</li>
+<li><strong>3.</strong> <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb">Select and train a model</a> including our <a href="http://jakegraving.com/DeepPoseKit/html/deepposekit/models/StackedDenseNet.html"><code>StackedDenseNet</code></a> model and the <a href="http://jakegraving.com/DeepPoseKit/html/deepposekit/models/DeepLabCut.html"><code>DeepLabCut</code></a> model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></li>
+<li><strong>4.</strong> Use the trained model to:
+- a) <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb">Initialize keypoints for unannotated data in the annotation set</a> for faster annotations with <em>active learning</em>. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
+- b) <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb">Predict on new data and refine the training set</a> to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></li>
+</ul>
+<h3 id="for-more-details">For more details:</h3>
+<ul>
+<li>See <a href="https://github.com/jgraving/deepposekit/blob/master/examples/">our example notebooks</a></li>
+<li>Check the <a href="http://docs.deepposekit.org">documentation</a></li>
+<li>Read <a href="https://doi.org/10.7554/eLife.47994">our paper</a></li>
+</ul>
 <h2 id="i-already-have-annotated-data">"I already have annotated data"</h2>
 <p>DeepPoseKit is designed to be extensible, so loading data in other formats is possible.</p>
 <p>If you have data from DeepLabCut (<a href="http://deeplabcut.org">http://deeplabcut.org</a>), try <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplabcut_data_example.ipynb">our (experimental) example notebook </a> for loading data in this format. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/deeplabcut_data_example.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>
@@ -85,7 +88,7 @@ Check out the <a href="https://github.com/jgraving/DeepPoseKit/blob/master/examp
 <p>DeepPoseKit requires <a href="https://github.com/tensorflow/tensorflow">Tensorflow</a> for training and using pose estimation models. <a href="https://github.com/tensorflow/tensorflow">Tensorflow</a> should be manually installed, along with dependencies such as CUDA and cuDNN, before installing DeepPoseKit:</p>
 <ul>
 <li><a href="https://www.tensorflow.org/install">Tensorflow Installation Instructions</a></li>
-<li><strong>Note</strong>: <a href="https://www.tensorflow.org/beta">Tensorflow 2.0</a> is not yet supported, but an update is in the works.</li>
+<li><strong>NOTE</strong>: DeepPoseKit uses <code>tensorflow.keras</code> for building and training models, so any Tensorflow version &gt;=1.10.0 should be compatible (including 2.0).</li>
 </ul>
 <p>DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended system for using the toolkit. </p>
 <p>Install the latest stable release with pip:</p>
@@ -111,12 +114,13 @@ conda install imgaug -c conda-forge
 <p>We welcome community involvement and public contributions to the toolkit. If you wish to contribute, please <a href="https://help.github.com/en/articles/fork-a-repo">fork the repository</a> to make your modifications and <a href="https://help.github.com/en/articles/creating-a-pull-request-from-a-fork">submit a pull request</a>.</p>
 <p>If you'd like to get involved with developing DeepPoseKit, get in touch (jgraving@gmail.com) and check out <a href="https://github.com/jgraving/DeepPoseKit/blob/master/DEVELOPMENT.md">our development roadmap</a> to see future plans for the package.
 </p>
+<h2 id="issues">Issues</h2>
 <p>Please submit bugs or feature requests to the <a href="https://github.com/jgraving/deepposekit/issues/new">GitHub issue tracker</a>. Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible.</p>
 <p>If you experience problems with <a href="https://github.com/tensorflow/tensorflow">Tensorflow</a>, such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.</p>
 <h2 id="license">License</h2>
 <p>Released under a Apache 2.0 License. See <a href="https://github.com/jgraving/deepposekit/blob/master/LICENSE">LICENSE</a> for details.</p>
 <h2 id="references">References</h2>
-<p>If you use DeepPoseKit for your research please cite <a href="https://doi.org/10.7554/eLife.47994">our paper</a>:</p>
+<p>If you use DeepPoseKit for your research please cite <a href="https://doi.org/10.7554/eLife.47994">our open-access paper</a>:</p>
 <pre><code>@article{graving2019deepposekit,
          title={DeepPoseKit, a software toolkit for fast and robust pose estimation using deep learning},
          author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
@@ -139,7 +143,7 @@ conda install imgaug -c conda-forge
 </code></pre>
 <h2 id="news">News</h2>
 <ul>
-<li><strong>October 2019:</strong> <a href="https://doi.org/10.7554/eLife.47994">Our paper</a> describing DeepPoseKit is published at eLife</li>
+<li><strong>October 2019:</strong> Our paper describing DeepPoseKit is published at eLife! (<a href="http://paper.deepposekit.org">http://paper.deepposekit.org</a>)</li>
 <li><strong>September 2019</strong>: <ul>
 <li>Nature News covers DeepPoseKit: <a href="http://doi.org/10.1038/d41586-019-02942-5">Deep learning powers a motion-tracking revolution</a></li>
 <li>v0.3.0 is released. See <a href="https://github.com/jgraving/DeepPoseKit/releases/tag/v0.3.0">the release notes</a>.</li>
@@ -225,13 +229,18 @@ __version__ = &#34;0.3.1.dev&#34;</code></pre>
 <div class="toc">
 <ul>
 <li><a href="#you-have-just-found-deepposekit">You have just found DeepPoseKit.</a></li>
-<li><a href="#how-to-use-deepposekit">How to use DeepPoseKit</a></li>
+<li><a href="#how-to-use-deepposekit">How to use DeepPoseKit</a><ul>
+<li><a href="#using-deepposekit-is-a-4-step-process">Using DeepPoseKit is a 4-step process:</a></li>
+<li><a href="#for-more-details">For more details:</a></li>
+</ul>
+</li>
 <li><a href="#i-already-have-annotated-data">"I already have annotated data"</a></li>
 <li><a href="#installation">Installation</a><ul>
 <li><a href="#installing-with-anaconda">Installing with Anaconda</a></li>
 </ul>
 </li>
 <li><a href="#contributors-and-development">Contributors and Development</a></li>
+<li><a href="#issues">Issues</a></li>
 <li><a href="#license">License</a></li>
 <li><a href="#references">References</a></li>
 <li><a href="#news">News</a></li>
