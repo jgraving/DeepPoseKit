@@ -222,15 +222,16 @@ def DenseNet(
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name="conv1/conv")(x)
     x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name="conv1/bn")(x)
     x = layers.Activation("relu", name="conv1/relu")(x)
-    res_outputs.append(x)
     x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)))(x)
     x = layers.MaxPooling2D(3, strides=2, name="pool1")(x)
 
     x = dense_block(x, blocks[0], name="conv2")
-    res_outputs.append(x)
+    if residuals == 2:
+        res_outputs = x
     x = transition_block(x, 0.5, name="pool2")
     x = dense_block(x, blocks[1], name="conv3")
-    res_outputs.append(x)
+    if residuals == 3:
+        res_outputs = x
     x = transition_block(x, 0.5, name="pool3")
     x = dense_block(x, blocks[2], name="conv4")
     x = transition_block(x, 0.5, name="pool4", pool=False)

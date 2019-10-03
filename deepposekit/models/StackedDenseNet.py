@@ -186,6 +186,7 @@ class StackedDenseNet(BaseModel):
             front_outputs = ImageNetFrontEnd(
                 input_shape=batch_shape[1:],
                 n_downsample=self.train_generator.downsample_factor,
+                compression_factor=self.compression_factor,
             )(normalized)
         else:
             normalized = ImageNormalization()(to_float)

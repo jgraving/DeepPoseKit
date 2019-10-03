@@ -301,27 +301,18 @@ class ImageNetFrontEnd:  # (layers.Layer):
         # super(FrontEnd, self).__init__(self, **kwargs)
         self.input_shape = input_shape
         self.compression_factor = compression_factor
+        self.n_downsample = n_downsample
         if n_downsample > 3:
             raise ValueError("ImageNetFrontEnd does not support `n_downsample` > 3")
-        self.n_downsample = n_downsample
-        self.pool_input = SubPixelDownscaling(2 ** n_downsample)
-        self.pooled_outputs = [
-            TransitionDown(compression_factor, pool_size=2 ** (n_downsample - idx))
-            for idx in range(1, n_downsample)
-        ]
 
     def call(self, inputs):
-        pretrained_model = DenseNet121(input_shape=self.input_shape, residuals=True)
+        pretrained_model = DenseNet121(
+            input_shape=self.input_shape, residuals=self.n_downsample
+        )
         outputs = pretrained_model(inputs)
-        res_outputs = outputs[: self.n_downsample]
-        res_outputs = [
-            pool(output)[0] for pool, output in zip(self.pooled_outputs, res_outputs)
-        ]
-        outputs = [outputs[-1]]
-        [outputs.append(output) for output in res_outputs]
-        outputs = [layers.Activation("selu")(output) for output in outputs]
-        outputs = [Compression(self.compression_factor)(output) for output in outputs]
-        outputs = Concatenate()(outputs)
+        outputs = layers.BatchNormalization()(outputs)
+        outputs = layers.Activation("relu")(outputs)
+        outputs = Compression(self.compression_factor)(outputs)
         return [outputs]
 
     def __call__(self, inputs):
