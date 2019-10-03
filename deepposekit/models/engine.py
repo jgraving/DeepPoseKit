@@ -31,6 +31,7 @@ class BaseModel:
         self.subpixel = subpixel
         if "skip_init" not in kwargs:
             if self.train_model is NotImplemented:
+                self.__init_input__()
                 self.__init_model__()
                 self.__init_train_model__()
             if self.train_generator is not None:
@@ -47,6 +48,16 @@ class BaseModel:
                 )
 
     train_model = NotImplemented
+
+    def __init_input__(self):
+        self.input_shape = (
+            self.train_generator.height,
+            self.train_generator.width,
+            self.train_generator.n_channels,
+        )
+
+        self.inputs = Input(self.input_shape)
+
 
     def __init_train_model__(self):
         if isinstance(self.train_model, Model):

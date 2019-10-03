@@ -371,17 +371,7 @@ class StackedHourglass(BaseModel):
                 " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
             )
 
-        batch_shape = (
-            None,
-            self.train_generator.height,
-            self.train_generator.width,
-            self.train_generator.n_channels,
-        )
-
-        input_layer = Input(batch_shape=batch_shape, dtype="uint8")
-        to_float = Float()(input_layer)
-        normalized = ImageNormalization()(to_float)
-
+        normalized = ImageNormalization()(self.inputs)
         n_downsample = self.train_generator.downsample_factor
         front_module = FrontModule(self.filters, n_downsample, self.bottleneck_factor)
         front_output = front_module(normalized)
@@ -396,7 +386,7 @@ class StackedHourglass(BaseModel):
             )
             outputs.append(outputs_x)
 
-        self.train_model = Model(input_layer, outputs, name=self.__class__.__name__)
+        self.train_model = Model(self.inputs, outputs, name=self.__class__.__name__)
 
     def get_config(self):
         config = {

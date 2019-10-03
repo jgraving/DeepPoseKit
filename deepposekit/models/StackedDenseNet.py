@@ -159,13 +159,6 @@ class StackedDenseNet(BaseModel):
                 "{1}".format(-max_transitions + 1, max_transitions)
             )
 
-        batch_shape = (
-            None,
-            self.train_generator.height,
-            self.train_generator.width,
-            self.train_generator.n_channels,
-        )
-
         if self.train_generator.downsample_factor < 2:
             raise ValueError(
                 "StackedDenseNet is only compatible with `downsample_factor` >= 2."
@@ -176,20 +169,21 @@ class StackedDenseNet(BaseModel):
                 "`n_transitions` <= `downsample_factor`. Increase `n_transitions` or decrease `downsample_factor`."
                 " If `n_transitions` is -1 (the default), check that your image resolutions can be repeatedly downsampled (are divisible by 2 repeatedly)."
             )
-        input_layer = Input(batch_shape=batch_shape, dtype="uint8")
-        to_float = Float()(input_layer)
         if self.pretrained:
-            if batch_shape[-1] is 1:
-                to_float = Concatenate()([to_float] * 3)
-                batch_shape = batch_shape[:-1] + (3,)
-            normalized = ImageNetPreprocess("densenet121")(to_float)
+            if self.input_shape[-1] is 1:
+                inputs = Concatenate()([self.inputs] * 3)
+                input_shape = self.input_shape[:-1] + (3,)
+            else:
+                inputs = self.inputs
+                input_shape = self.input_shape
+            normalized = ImageNetPreprocess("densenet121")(inputs)
             front_outputs = ImageNetFrontEnd(
-                input_shape=batch_shape[1:],
+                input_shape=input_shape,
                 n_downsample=self.train_generator.downsample_factor,
                 compression_factor=self.compression_factor,
             )(normalized)
         else:
-            normalized = ImageNormalization()(to_float)
+            normalized = ImageNormalization()(self.inputs)
             front_outputs = FrontEnd(
                 growth_rate=self.growth_rate,
                 n_downsample=self.train_generator.downsample_factor,
@@ -221,7 +215,7 @@ class StackedDenseNet(BaseModel):
             model_outputs_list.append(model_outputs)
 
         self.train_model = Model(
-            input_layer, model_outputs_list, name=self.__class__.__name__
+            self.inputs, model_outputs_list, name=self.__class__.__name__
         )
 
     def get_config(self):

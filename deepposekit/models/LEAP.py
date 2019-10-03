@@ -116,16 +116,7 @@ class LEAP(BaseModel):
     def __init_model__(self):
         if self.train_generator.downsample_factor is not 0:
             raise ValueError("LEAP is only compatible with a downsample_factor of 0")
-        batch_shape = (
-            None,
-            self.train_generator.height,
-            self.train_generator.width,
-            self.train_generator.n_channels,
-        )
-
-        input_layer = Input(batch_shape=batch_shape, dtype="uint8")
-        to_float = Float()(input_layer)
-        normalized = ImageNormalization()(to_float)
+        normalized = ImageNormalization()(self.inputs)
 
         x1 = ConvPool2D(
             n_layers=3,
@@ -200,7 +191,7 @@ class LEAP(BaseModel):
                 kernel_initializer="glorot_normal",
             )(x4)
 
-        self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
+        self.train_model = Model(self.inputs, x_out, name=self.__class__.__name__)
 
     def get_config(self):
         config = {
