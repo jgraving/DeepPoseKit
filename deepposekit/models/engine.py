@@ -82,6 +82,8 @@ class BaseModel:
     ):
 
         outputs = self.train_model(self.inputs)
+        if isinstance(outputs, list):
+            outputs = outputs[-1]
         if self.subpixel:
             kernel_size = np.min(output_shape)
             kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
