@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Utilities for ImageNet data preprocessing & prediction decoding.
 """
-# Modified from 
+# Modified from
 # https://github.com/keras-team/keras-applications/blob/master/keras_applications/imagenet_utils.py
 # All Modifications Copyright 2018-2019 Jacob M. Graving <jgraving@gmail.com>
 #
@@ -29,6 +29,8 @@ from deepposekit.models.layers.deeplabcut_resnet import MODELS as RESNET_MODELS
 from deepposekit.models.layers.deeplabcut_mobile import MODELS as MOBILE_MODELS
 from deepposekit.models.layers.deeplabcut_densenet import MODELS as DENSENET_MODELS
 from deepposekit.models.layers.deeplabcut_xception import MODELS as XCEPTION_MODELS
+
+from functools import partial
 
 
 def _preprocess_symbolic_input(x, data_format, mode, **kwargs):
@@ -114,9 +116,7 @@ def preprocess_input(x, data_format=None, mode="caffe", **kwargs):
         data_format = backend.image_data_format()
     if data_format not in {"channels_first", "channels_last"}:
         raise ValueError("Unknown data_format " + str(data_format))
-    return _preprocess_symbolic_input(
-        x, data_format=data_format, mode=mode, **kwargs
-    )
+    return _preprocess_symbolic_input(x, data_format=data_format, mode=mode, **kwargs)
 
 
 class ImageNetPreprocess(Layer):
