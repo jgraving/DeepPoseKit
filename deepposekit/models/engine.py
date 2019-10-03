@@ -15,6 +15,7 @@
 
 import numpy as np
 from tensorflow.keras import Model
+from tensorflow.keras.layers import Input
 import warnings
 
 from deepposekit.models.layers.subpixel import SubpixelMaxima2D
