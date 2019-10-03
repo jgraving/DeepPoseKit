@@ -2,9 +2,7 @@
 <img src="https://github.com/jgraving/DeepPoseKit/blob/master/assets/deepposekit_logo.svg" height="320px">
 </p>
 
-
-You have just found DeepPoseKit.
----------------------------------
+# You have just found DeepPoseKit.
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/Figure1video1.gif" height="128px">
 </p>
@@ -31,8 +29,8 @@ Localization (without tracking) can also be achieved with deep learning software
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="256px">
 </p>
 
-How to use DeepPoseKit
----------------------------------
+# How to use DeepPoseKit
+
 DeepPoseKit is designed for easy use. For example, training and saving a model requires only a few lines of code:
 ```python
 from deepposekit.io import DataGenerator, TrainingGenerator
@@ -54,7 +52,8 @@ reader = VideoReader('/path/to/video.mp4')
 predictions = model.predict(reader)
 ```
 
-### Using DeepPoseKit is a 4-step process:
+## Using DeepPoseKit is a 4-step process:
+
 - **1.** [Create an annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step1_create_annotation_set.ipynb) <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step1_create_annotation_set.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 - **2.** [Annotate your data](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step2_annotate_data.ipynb) with our built-in GUI (no Colab support)
 - **3.** [Select and train a model](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step3_train_model.ipynb) including our [`StackedDenseNet`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/StackedDenseNet.html) model and the [`DeepLabCut`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/DeepLabCut.html) model. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step3_train_model.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
@@ -63,12 +62,13 @@ predictions = model.predict(reader)
 	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 ### For more details:
+
 - See [our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/)
 - Check the [documentation](http://docs.deepposekit.org)
 - Read [our paper](https://doi.org/10.7554/eLife.47994)
 
-"I already have annotated data"
----------------------------------
+## "I already have annotated data"
+
 DeepPoseKit is designed to be extensible, so loading data in other formats is possible.
 
 If you have data from DeepLabCut (http://deeplabcut.org), try [our (experimental) example notebook ](https://github.com/jgraving/DeepPoseKit/blob/master/examples/deeplabcut_data_example.ipynb) for loading data in this format. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/deeplabcut_data_example.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
@@ -77,8 +77,7 @@ Have data in another format? You can write your own custom generator to load it.
 Check out the [example for writing custom data generators](https://github.com/jgraving/DeepPoseKit/blob/master/examples/custom_data_generator.ipynb). <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/custom_data_generator.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
 
-Installation
----------------------------------
+# Installation
 
 DeepPoseKit requires [Tensorflow](https://github.com/tensorflow/tensorflow) for training and using pose estimation models. [Tensorflow](https://github.com/tensorflow/tensorflow) should be manually installed, along with dependencies such as CUDA and cuDNN, before installing DeepPoseKit:
 
@@ -104,6 +103,7 @@ git clone https://www.github.com/jgraving/deepposekit-data
 ```
 
 ### Installing with Anaconda
+
 Anaconda cannot install the [imgaug package](https://github.com/aleju/imgaug) using pip, therefore as a temporary workaround we recommend installing imgaug manually:
 ```bash
 conda config --add channels conda-forge
@@ -114,27 +114,27 @@ We also recommend installing DeepPoseKit from within Python rather than using th
 import sys
 !{sys.executable} -m pip install --update deepposekit
 ```
-Contributors and Development  
----------------------------------   
+## Contributors and Development  
+   
 DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. .
 
 We welcome community involvement and public contributions to the toolkit. If you wish to contribute, please [fork the repository](https://help.github.com/en/articles/fork-a-repo) to make your modifications and [submit a pull request](https://help.github.com/en/articles/creating-a-pull-request-from-a-fork).
 
 If you'd like to get involved with developing DeepPoseKit, get in touch (jgraving@gmail.com) and check out [our development roadmap](https://github.com/jgraving/DeepPoseKit/blob/master/DEVELOPMENT.md) to see future plans for the package.  
 
-Issues  
---------------------------------- 
+## Issues  
+ 
 Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible.
 
 If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
 
-License
----------------------------------
+## License
+
 Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
 
-References
----------------------------------
-If you use DeepPoseKit for your research please cite [our open-access paper](https://doi.org/10.7554/eLife.47994):
+## References
+
+If you use DeepPoseKit for your research please cite [our open-access paper](http://paper.deepposekit.org):
 
     @article{graving2019deepposekit,
              title={DeepPoseKit, a software toolkit for fast and robust animal pose estimation using deep learning},
@@ -158,8 +158,8 @@ You can also read [our open-access preprint](http://preprint.deepposekit.org):
              }
 
 
-News
----------------------------------
+## News
+
 - **October 2019:** Our paper describing DeepPoseKit is published at eLife! (http://paper.deepposekit.org)
 - **September 2019**: 
     - Nature News covers DeepPoseKit: [Deep learning powers a motion-tracking revolution](http://doi.org/10.1038/d41586-019-02942-5)
