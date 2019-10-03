@@ -82,8 +82,7 @@ Check out the [example for writing custom data generators](https://github.com/jg
 DeepPoseKit requires [Tensorflow](https://github.com/tensorflow/tensorflow) for training and using pose estimation models. [Tensorflow](https://github.com/tensorflow/tensorflow) should be manually installed, along with dependencies such as CUDA and cuDNN, before installing DeepPoseKit:
 
 - [Tensorflow Installation Instructions](https://www.tensorflow.org/install)
-- Any Tensorflow version >=1.10.0 should be compatible (up to v1.15.0).
-- Tensorflow 2.0 is not yet supported, but an update is in the works.
+- Any Tensorflow version >=1.13.0 should be compatible (including 2.0).
 
 DeepPoseKit has only been tested on Ubuntu 18.04, which is the recommended system for using the toolkit. 
 
