@@ -136,7 +136,7 @@ References
 If you use DeepPoseKit for your research please cite [our open-access paper](https://doi.org/10.7554/eLife.47994):
 
     @article{graving2019deepposekit,
-             title={DeepPoseKit, a software toolkit for fast and robust pose estimation using deep learning},
+             title={DeepPoseKit, a software toolkit for fast and robust animal pose estimation using deep learning},
              author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
              journal={eLife},
              volume={8},
@@ -148,7 +148,7 @@ If you use DeepPoseKit for your research please cite [our open-access paper](htt
 You can also read [our open-access preprint](http://preprint.deepposekit.org):
 
     @article{graving2019preprint,
-             title={DeepPoseKit, a software toolkit for fast and robust pose estimation using deep learning},
+             title={DeepPoseKit, a software toolkit for fast and robust animal pose estimation using deep learning},
              author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
              journal={bioRxiv},
              pages={620245},
