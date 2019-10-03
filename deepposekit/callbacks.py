@@ -235,11 +235,6 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
             monitored metric may potentially be less reliable (it could reflect as
             little as 1 batch, since the metrics get reset every epoch). Defaults to
             `'epoch'`
-        optimizer: bool, default is True.
-            Whether to save the optimizer with the model at each checkpoint.
-            This allows the model to resume training when loaded, but takes
-            longer to save and load.
-
     """
 
     def __init__(
@@ -250,7 +245,6 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
         save_best_only=True,
         mode="auto",
         save_freq="epoch",
-        optimizer=True,
         **kwargs
     ):
         super(ModelCheckpoint, self).__init__(
@@ -262,60 +256,12 @@ class ModelCheckpoint(callbacks.ModelCheckpoint):
             save_freq=save_freq,
             **kwargs
         )
-        self.optimizer = optimizer
-
-    def _save_model(self, epoch, logs):
-        """Saves the model.
-        Arguments:
-            epoch: the epoch this iteration is in.
-            logs: the `logs` dict passed in to `on_batch_end` or `on_epoch_end`.
-        """
-        logs = logs or {}
-        if (
-            isinstance(self.save_freq, int)
-            or self.epochs_since_last_save >= self.period
-        ):
-            self.epochs_since_last_save = 0
-            file_handle, filepath = self._get_file_handle_and_path(epoch, logs)
-
-            if self.save_best_only:
-                current = logs.get(self.monitor)
-                if current is None:
-                    logging.warning(
-                        "Can save best model only with %s available, " "skipping.",
-                        self.monitor,
-                    )
-                else:
-                    if self.monitor_op(current, self.best):
-                        if self.verbose > 0:
-                            print(
-                                "\nEpoch %05d: %s improved from %0.5f to %0.5f,"
-                                " saving model to %s"
-                                % (
-                                    epoch + 1,
-                                    self.monitor,
-                                    self.best,
-                                    current,
-                                    filepath,
-                                )
-                            )
-                        self.best = current
-                        self.save_model.save(filepath, optimizer=self.optimizer)
-                    else:
-                        if self.verbose > 0:
-                            print(
-                                "\nEpoch %05d: %s did not improve from %0.5f"
-                                % (epoch + 1, self.monitor, self.best)
-                            )
-            else:
-                if self.verbose > 0:
-                    print("\nEpoch %05d: saving model to %s" % (epoch + 1, filepath))
-                self.save_model.save(filepath, optimizer=self.optimizer)
-
-            self._maybe_remove_file(file_handle, filepath)
 
     def pass_model(self, model):
         if isinstance(model, BaseModel):
-            self.save_model = model
+            self.model = model
         else:
             raise TypeError("model must be a deepposekit BaseModel class")
+
+    def set_model(self, model):
+        pass

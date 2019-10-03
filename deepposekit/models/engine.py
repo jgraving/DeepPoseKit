@@ -218,8 +218,8 @@ class BaseModel:
 
         return evaluation_dict
 
-    def save(self, path, optimizer=True):
-        save_model(self, path, optimizer)
+    def save(self, path, overwrite=True):
+        save_model(self, path)
 
     def get_config(self):
         config = {}

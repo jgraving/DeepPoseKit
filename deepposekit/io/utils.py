@@ -308,4 +308,3 @@ def merge_new_images(
 
     h5file.close()
     merged_h5file.close()
-
