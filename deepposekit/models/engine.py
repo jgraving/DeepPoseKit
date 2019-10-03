@@ -81,7 +81,7 @@ class BaseModel:
         **kwargs
     ):
 
-        output = self.train_model.outputs[-1]
+        outputs = self.train_model(self.inputs)
         if self.subpixel:
             kernel_size = np.min(output_shape)
             kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
@@ -93,18 +93,19 @@ class BaseModel:
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.0,
-            )(output)
+            )(outputs)
         else:
             keypoints = Maxima2D(
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.0,
-            )(output)
-        input_layer = self.train_model.inputs[0]
-        self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
+            )(outputs)
+        self.predict_model = Model(self.inputs, keypoints, name=self.train_model.name)
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
+        
+        # Fix for passing model to callbacks.ModelCheckpoint
         if hasattr(self.train_model, "_in_multi_worker_mode"):
             self._in_multi_worker_mode = self.train_model._in_multi_worker_mode
     def fit(
