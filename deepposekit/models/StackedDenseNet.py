@@ -19,7 +19,7 @@ from tensorflow.keras.layers import BatchNormalization
 
 import deepposekit.utils.image as image_utils
 from deepposekit.models.engine import BaseModel
-from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.util import ImageNormalization
 from deepposekit.models.layers.deeplabcut import ImageNetPreprocess
 from deepposekit.models.layers.densenet import (
     FrontEnd,

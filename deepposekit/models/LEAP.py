@@ -17,7 +17,7 @@ from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
 
 from deepposekit.models.layers.convolutional import UpSampling2D
-from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.util import ImageNormalization
 from deepposekit.models.layers.leap import ConvBlock2D, ConvPool2D
 from deepposekit.models.engine import BaseModel
 

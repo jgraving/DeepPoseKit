@@ -15,7 +15,6 @@
 
 from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2DTranspose, Concatenate
-from deepposekit.models.layers.util import Float
 from deepposekit.models.layers.deeplabcut import ImageNetPreprocess, MODELS
 from deepposekit.models.layers.convolutional import SubPixelUpscaling
 

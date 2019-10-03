@@ -19,7 +19,7 @@ import h5py
 import json
 import inspect
 
-from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.util import ImageNormalization
 from deepposekit.models.layers.convolutional import (
     UpSampling2D,
     SubPixelDownscaling,
@@ -42,7 +42,6 @@ MODELS = {
 
 
 CUSTOM_LAYERS = {
-    "Float": Float,
     "ImageNormalization": ImageNormalization,
     "UpSampling2D": UpSampling2D,
     "SubPixelDownscaling": SubPixelDownscaling,
