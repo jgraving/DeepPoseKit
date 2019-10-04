@@ -61,7 +61,7 @@ predictions = model.predict(reader)
 	- a) [Initialize keypoints for unannotated data in the annotation set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4a_initialize_annotations.ipynb) for faster annotations with *active learning*. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4a_initialize_annotations.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 	- b) [Predict on new data and refine the training set](https://github.com/jgraving/DeepPoseKit/blob/master/examples/step4b_predict_new_data.ipynb) to improve performance. <a href="https://colab.research.google.com/github/jgraving/deepposekit/blob/master/examples/step4b_predict_new_data.ipynb" target="_parent"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a>
 
-### For more details:
+## For more details:
 
 - See [our example notebooks](https://github.com/jgraving/deepposekit/blob/master/examples/)
 - Check the [documentation](http://docs.deepposekit.org)
@@ -101,7 +101,7 @@ You can download example datasets from our [DeepPoseKit Data](https://github.com
 git clone https://www.github.com/jgraving/deepposekit-data
 ```
 
-### Installing with Anaconda
+## Installing with Anaconda
 
 Anaconda cannot install the [imgaug package](https://github.com/aleju/imgaug) using pip, therefore as a temporary workaround we recommend installing imgaug manually:
 ```bash
@@ -113,7 +113,7 @@ We also recommend installing DeepPoseKit from within Python rather than using th
 import sys
 !{sys.executable} -m pip install --update deepposekit
 ```
-## Contributors and Development  
+# Contributors and Development  
    
 DeepPoseKit was developed by [Jake Graving](https://github.com/jgraving) and [Daniel Chae](https://github.com/dchaebae), and is still being actively developed. .
 
@@ -121,17 +121,17 @@ We welcome community involvement and public contributions to the toolkit. If you
 
 If you'd like to get involved with developing DeepPoseKit, get in touch (jgraving@gmail.com) and check out [our development roadmap](https://github.com/jgraving/DeepPoseKit/blob/master/DEVELOPMENT.md) to see future plans for the package.  
 
-## Issues  
+# Issues  
  
 Please submit bugs or feature requests to the [GitHub issue tracker](https://github.com/jgraving/deepposekit/issues/new). Please limit reported issues to the DeepPoseKit codebase and provide as much detail as you can with a minimal working example if possible.
 
 If you experience problems with [Tensorflow](https://github.com/tensorflow/tensorflow), such as installing CUDA or cuDNN dependencies, then please direct issues to those development teams.
 
-## License
+# License
 
 Released under a Apache 2.0 License. See [LICENSE](https://github.com/jgraving/deepposekit/blob/master/LICENSE) for details.
 
-## References
+# References
 
 If you use DeepPoseKit for your research please cite [our open-access paper](http://paper.deepposekit.org):
 
@@ -143,6 +143,7 @@ If you use DeepPoseKit for your research please cite [our open-access paper](htt
              pages={e47994},
              year={2019},
              publisher={eLife Sciences Publications Limited}
+             url={https://doi.org/10.7554/eLife.47994},
              }
 
 You can also read [our open-access preprint](http://preprint.deepposekit.org):
@@ -154,10 +155,11 @@ You can also read [our open-access preprint](http://preprint.deepposekit.org):
              pages={620245},
              year={2019},
              publisher={Cold Spring Harbor Laboratory}
+             url={https://doi.org/10.1101/620245}
              }
 
 
-## News
+# News
 
 - **October 2019:** Our paper describing DeepPoseKit is published at eLife! (http://paper.deepposekit.org)
 - **September 2019**: 
