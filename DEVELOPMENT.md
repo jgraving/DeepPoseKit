@@ -35,6 +35,7 @@ Examples and Documentation
 - [x] Add example notebook for using custom data sets 
 - [x] Add example notebook for using DeepLabCut formatted data
 - [x] Add example for identifying outliers and appending new images to a training set
+- [x] Add html documentation
 
 Tests (once API has stabilized)
 ------
@@ -50,7 +51,7 @@ Future
 ------
 - [x] Put `deepposekit` on PyPI
 - [x] Update to tf.keras (stand-alone keras will be deprecated)
-- [ ] Update to Tensorflow 2.0
+- [x] Update to Tensorflow 2.0
 - [ ] `deepposekit.visualize` module with functions for making videos and plotting data
 - [ ] `deepposekit.pose3d` module? Does it make sense to support this, or just make the API abstract enough to let others use their own solution for 3D?
 - [ ] `deepposekit.localize` module. Train models that localize individuals using confidence maps. Update and further abstract `deepposekit.annotate`, `deepposekit.models`, etc.
