@@ -26,10 +26,11 @@ import numpy as np
 from tensorflow.keras.layers import Layer
 from tensorflow.keras import backend
 
-from deepposekit.models.layers.deeplabcut_resnet import MODELS as RESNET_MODELS
-from deepposekit.models.layers.deeplabcut_mobile import MODELS as MOBILE_MODELS
-from deepposekit.models.layers.deeplabcut_densenet import MODELS as DENSENET_MODELS
+from deepposekit.models.layers.imagenet_resnet import MODELS as RESNET_MODELS
+from deepposekit.models.layers.imagenet_mobile import MODELS as MOBILE_MODELS
+from deepposekit.models.layers.imagenet_densenet import MODELS as DENSENET_MODELS
 from deepposekit.models.layers.deeplabcut_xception import MODELS as XCEPTION_MODELS
+from deepposekit.models.layers.imagenet_xception import MODELS as XCEPTION_MODELS
 
 from functools import partial
 

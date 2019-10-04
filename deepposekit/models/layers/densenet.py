@@ -23,7 +23,7 @@ from deepposekit.models.layers.convolutional import (
     SubPixelDownscaling,
     SubPixelUpscaling,
 )
-from deepposekit.models.layers.deeplabcut_densenet import DenseNet121
+from deepposekit.models.layers.imagenet_densenet import DenseNet121
 
 
 __all__ = [
