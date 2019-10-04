@@ -27,7 +27,7 @@ MAINTAINER_EMAIL = "jgraving@gmail.com"
 URL = "https://github.com/jgraving/deepposekit"
 LICENSE = "Apache 2.0"
 DOWNLOAD_URL = "https://github.com/jgraving/deepposekit.git"
-VERSION = '0.3.2.dev'
+VERSION = "0.3.3.dev"
 
 
 if __name__ == "__main__":
@@ -39,8 +39,8 @@ if __name__ == "__main__":
         maintainer=MAINTAINER,
         maintainer_email=MAINTAINER_EMAIL,
         description=DESCRIPTION,
-        long_description=open('README.md').read(),
-        long_description_content_type='text/markdown',
+        long_description=open("README.md").read(),
+        long_description_content_type="text/markdown",
         license=LICENSE,
         url=URL,
         version=VERSION,
