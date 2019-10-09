@@ -120,7 +120,7 @@ def initialize_dataset(
     elif images.dtype != np.uint8:
         raise TypeError("`images` must be ndarray with dtype np.uint8")
 
-    if keypoints:
+    if keypoints is not None:
         if not isinstance(keypoints, np.ndarray):
             raise TypeError(
                 "keypoints must be None or ndarray with shape (n_images, n_keypoints, 2)"
@@ -151,7 +151,7 @@ def initialize_dataset(
             data=images,
             maxshape=(None,) + images.shape[1:],
         )
-        data = keypoints or -np.ones((n_images, n_keypoints, 2))
+        data = keypoints if keypoints is not None else -np.ones((n_images, n_keypoints, 2))
         h5file.create_dataset(
             "annotations",
             (n_images, n_keypoints, 2),
