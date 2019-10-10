@@ -91,10 +91,11 @@ class LEAP(BaseModel):
 
         References
         ----------
-        1.  Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
-            M., Wang, S. S. H., Murthy, M., & Shaevitz, J. W. (2018).
+        1.  Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin, M.,
+            Wang, S. S. H., Murthy, M., & Shaevitz, J. W. (2019).
             Fast animal pose estimation using deep neural networks.
-            bioRxiv, 331181.
+            Nature methods, 16(1), 117.
+
 
         """
         self.filters = filters
