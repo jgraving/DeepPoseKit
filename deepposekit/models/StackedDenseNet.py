@@ -44,8 +44,9 @@ class StackedDenseNet(BaseModel):
         **kwargs
     ):
         """
-        Define a Stacked DenseNet model
-        for pose estimation from Graving et al. [1].
+        Define a Stacked DenseNet model from Graving et al. [1]
+        for pose estimation.
+        This model combines elements from [2-5]
         See `References` for details on the model architecture.
 
         Parameters

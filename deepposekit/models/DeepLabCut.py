@@ -23,7 +23,8 @@ from functools import partial
 
 
 __docstring__ = """
-    Define a DeepLabCut model from Mathis et al., 2018 [1–3]
+    Define a DeepLabCut model from Mathis et al., 2018 [1–4]
+    including MobileNetV2 backend from [4].
     See `References` for details on the model architecture.
 
     Parameters
@@ -59,15 +60,18 @@ __docstring__ = """
 
     References
     ----------
-    1.  Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
+    1.  Insafutdinov, E., Pishchulin, L., Andres, B., Andriluka, M., & Schiele, B.
+        (2016). Deepercut: A deeper, stronger, and faster multi-person pose estimation
+        model. In European Conference on Computer Vision (pp. 34-50). Springer, Cham.
+    2.  Mathis, A., Mamidanna, P., Cury, K. M., Abe, T., Murthy, V. N.,
         Mathis, M. W., & Bethge, M. (2018). DeepLabCut: markerless pose
         estimation of user-defined body parts with deep learning (p. 1).
         Nature Publishing Group.
-    2.  Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
+    3.  Nath, T., Mathis, A., Chen, A. C., Patel, A., Bethge, M.,
         & Mathis, M. W. (2019). Using DeepLabCut for 3D markerless
         pose estimation across species and behaviors. Nature protocols,
         14(7), 2152-2176.
-    3.  Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
+    4.  Mathis, A., Yuksekgonol, M., Rogers, B., Bethge, M., Mathis, M. (2019).
         Pretraining boosts out-of-domain-robustness for pose estimation.
         arXiv cs.CV https://arxiv.org/abs/1909.11229
 
