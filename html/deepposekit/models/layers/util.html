@@ -42,28 +42,7 @@
 from tensorflow.python.keras.engine import Layer
 import tensorflow.keras.backend as K
 
-__all__ = [&#34;Float&#34;, &#34;ImageNormalization&#34;]
-
-
-class Float(Layer):
-    &#34;&#34;&#34;
-    Cast the input tensor to K.floatx()
-    # Input shape
-        Arbitrary. Use the keyword argument `input_shape`
-        (tuple of integers, does not include the samples axis)
-        when using this layer as the first layer in a model.
-    # Output shape
-        Same shape as input.
-    &#34;&#34;&#34;
-
-    def __init__(self, **kwargs):
-        super(Float, self).__init__(**kwargs)
-
-    def call(self, inputs):
-        return K.cast(inputs, K.floatx())
-
-    def compute_output_shape(self, input_shape):
-        return input_shape
+__all__ = [&#34;ImageNormalization&#34;]
 
 
 class ImageNormalization(Layer):
@@ -96,103 +75,6 @@ class ImageNormalization(Layer):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="deepposekit.models.layers.util.Float"><code class="flex name class">
-<span>class <span class="ident">Float</span></span>
-<span>(</span><span>**kwargs)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Cast the input tensor to K.floatx()</p>
-<h1 id="input-shape">Input shape</h1>
-<pre><code>Arbitrary. Use the keyword argument `input_shape`
-(tuple of integers, does not include the samples axis)
-when using this layer as the first layer in a model.
-</code></pre>
-<h1 id="output-shape">Output shape</h1>
-<pre><code>Same shape as input.
-</code></pre></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Float(Layer):
-    &#34;&#34;&#34;
-    Cast the input tensor to K.floatx()
-    # Input shape
-        Arbitrary. Use the keyword argument `input_shape`
-        (tuple of integers, does not include the samples axis)
-        when using this layer as the first layer in a model.
-    # Output shape
-        Same shape as input.
-    &#34;&#34;&#34;
-
-    def __init__(self, **kwargs):
-        super(Float, self).__init__(**kwargs)
-
-    def call(self, inputs):
-        return K.cast(inputs, K.floatx())
-
-    def compute_output_shape(self, input_shape):
-        return input_shape</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>tensorflow.python.keras.engine.base_layer.Layer</li>
-<li>tensorflow.python.module.module.Module</li>
-<li>tensorflow.python.training.tracking.tracking.AutoTrackable</li>
-<li>tensorflow.python.training.tracking.base.Trackable</li>
-</ul>
-<h3>Methods</h3>
-<dl>
-<dt id="deepposekit.models.layers.util.Float.call"><code class="name flex">
-<span>def <span class="ident">call</span></span>(<span>self, inputs)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>This is where the layer's logic lives.</p>
-<h2 id="arguments">Arguments</h2>
-<dl>
-<dt><strong><code>inputs</code></strong></dt>
-<dd>Input tensor, or list/tuple of input tensors.</dd>
-<dt><strong><code>**kwargs</code></strong></dt>
-<dd>Additional keyword arguments.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A tensor or list/tuple of tensors.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def call(self, inputs):
-    return K.cast(inputs, K.floatx())</code></pre>
-</details>
-</dd>
-<dt id="deepposekit.models.layers.util.Float.compute_output_shape"><code class="name flex">
-<span>def <span class="ident">compute_output_shape</span></span>(<span>self, input_shape)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Computes the output shape of the layer.</p>
-<p>If the layer has not been built, this method will call <code>build</code> on the
-layer. This assumes that the layer will later be used with inputs that
-match the input shape provided here.</p>
-<h2 id="arguments">Arguments</h2>
-<dl>
-<dt><strong><code>input_shape</code></strong></dt>
-<dd>Shape tuple (tuple of integers)
-or list of shape tuples (one per output tensor of the layer).
-Shape tuples can include None for free dimensions,
-instead of an integer.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>An input shape tuple.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def compute_output_shape(self, input_shape):
-    return input_shape</code></pre>
-</details>
-</dd>
-</dl>
-</dd>
 <dt id="deepposekit.models.layers.util.ImageNormalization"><code class="flex name class">
 <span>class <span class="ident">ImageNormalization</span></span>
 <span>(</span><span>**kwargs)</span>
@@ -268,9 +150,8 @@ when using this layer as the first layer in a model.
 </code></dt>
 <dd>
 <section class="desc"><p>Computes the output shape of the layer.</p>
-<p>If the layer has not been built, this method will call <code>build</code> on the
-layer. This assumes that the layer will later be used with inputs that
-match the input shape provided here.</p>
+<p>Assumes that the layer will be built
+to match that input shape provided.</p>
 <h2 id="arguments">Arguments</h2>
 <dl>
 <dt><strong><code>input_shape</code></strong></dt>
@@ -307,13 +188,6 @@ instead of an integer.</dd>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="deepposekit.models.layers.util.Float" href="#deepposekit.models.layers.util.Float">Float</a></code></h4>
-<ul class="">
-<li><code><a title="deepposekit.models.layers.util.Float.call" href="#deepposekit.models.layers.util.Float.call">call</a></code></li>
-<li><code><a title="deepposekit.models.layers.util.Float.compute_output_shape" href="#deepposekit.models.layers.util.Float.compute_output_shape">compute_output_shape</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="deepposekit.models.layers.util.ImageNormalization" href="#deepposekit.models.layers.util.ImageNormalization">ImageNormalization</a></code></h4>
 <ul class="">

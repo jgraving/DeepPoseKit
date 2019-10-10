@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.0" />
-<title>deepposekit.models.layers.deeplabcut_resnet API documentation</title>
+<title>deepposekit.models.layers.imagenet_resnet API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>deepposekit.models.layers.deeplabcut_resnet</code></h1>
+<h1 class="title">Module <code>deepposekit.models.layers.imagenet_resnet</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -419,7 +419,7 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="deepposekit.models.layers.deeplabcut_resnet.ResNet"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_resnet.ResNet"><code class="name flex">
 <span>def <span class="ident">ResNet</span></span>(<span>stack_fn, preact, use_bias, model_name=&#39;resnet&#39;, include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, **kwargs)</span>
 </code></dt>
 <dd>
@@ -617,7 +617,7 @@ classes: optional number of classes to classify images
     return model</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_resnet.ResNet101"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_resnet.ResNet101"><code class="name flex">
 <span>def <span class="ident">ResNet101</span></span>(<span>include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, **kwargs)</span>
 </code></dt>
 <dd>
@@ -657,7 +657,7 @@ classes: optional number of classes to classify images
     )</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_resnet.ResNet152"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_resnet.ResNet152"><code class="name flex">
 <span>def <span class="ident">ResNet152</span></span>(<span>include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, **kwargs)</span>
 </code></dt>
 <dd>
@@ -697,7 +697,7 @@ classes: optional number of classes to classify images
     )</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_resnet.ResNet50"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_resnet.ResNet50"><code class="name flex">
 <span>def <span class="ident">ResNet50</span></span>(<span>include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, **kwargs)</span>
 </code></dt>
 <dd>
@@ -737,7 +737,7 @@ classes: optional number of classes to classify images
     )</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_resnet.block1"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_resnet.block1"><code class="name flex">
 <span>def <span class="ident">block1</span></span>(<span>x, filters, kernel_size=3, stride=1, conv_shortcut=True, name=None, dilation=1)</span>
 </code></dt>
 <dd>
@@ -813,7 +813,7 @@ name: string, block label.
     return x</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_resnet.stack1"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_resnet.stack1"><code class="name flex">
 <span>def <span class="ident">stack1</span></span>(<span>x, filters, blocks, stride1=2, name=None, dilation=1)</span>
 </code></dt>
 <dd>
@@ -873,12 +873,12 @@ name: string, stack label.
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
-<li><code><a title="deepposekit.models.layers.deeplabcut_resnet.ResNet" href="#deepposekit.models.layers.deeplabcut_resnet.ResNet">ResNet</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_resnet.ResNet101" href="#deepposekit.models.layers.deeplabcut_resnet.ResNet101">ResNet101</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_resnet.ResNet152" href="#deepposekit.models.layers.deeplabcut_resnet.ResNet152">ResNet152</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_resnet.ResNet50" href="#deepposekit.models.layers.deeplabcut_resnet.ResNet50">ResNet50</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_resnet.block1" href="#deepposekit.models.layers.deeplabcut_resnet.block1">block1</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_resnet.stack1" href="#deepposekit.models.layers.deeplabcut_resnet.stack1">stack1</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_resnet.ResNet" href="#deepposekit.models.layers.imagenet_resnet.ResNet">ResNet</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_resnet.ResNet101" href="#deepposekit.models.layers.imagenet_resnet.ResNet101">ResNet101</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_resnet.ResNet152" href="#deepposekit.models.layers.imagenet_resnet.ResNet152">ResNet152</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_resnet.ResNet50" href="#deepposekit.models.layers.imagenet_resnet.ResNet50">ResNet50</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_resnet.block1" href="#deepposekit.models.layers.imagenet_resnet.block1">block1</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_resnet.stack1" href="#deepposekit.models.layers.imagenet_resnet.stack1">stack1</a></code></li>
 </ul>
 </li>
 </ul>

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.0" />
 <title>deepposekit.models.layers.deeplabcut API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Utilities for ImageNet data preprocessing &amp; prediction decoding." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,12 +20,17 @@
 <h1 class="title">Module <code>deepposekit.models.layers.deeplabcut</code></h1>
 </header>
 <section id="section-intro">
+<p>Utilities for ImageNet data preprocessing &amp; prediction decoding.</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python"># -*- coding: utf-8 -*-
-# Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
+&#34;&#34;&#34;Utilities for ImageNet data preprocessing &amp; prediction decoding.
+&#34;&#34;&#34;
+# Modified from
+# https://github.com/keras-team/keras-applications/blob/master/keras_applications/imagenet_utils.py
+# All Modifications Copyright 2018-2019 Jacob M. Graving &lt;jgraving@gmail.com&gt;
 #
 # Licensed under the Apache License, Version 2.0 (the &#34;License&#34;);
 # you may not use this file except in compliance with the License.
@@ -44,17 +49,102 @@ from __future__ import division
 from __future__ import print_function
 
 import os
+import numpy as np
 from tensorflow.keras.layers import Layer
+from tensorflow.keras import backend
 
-from tensorflow.keras.applications import resnet50 as resnet
-from tensorflow.keras.applications import mobilenet_v2
-from tensorflow.keras.applications import densenet
-from tensorflow.keras.applications import xception
+from deepposekit.models.layers.imagenet_resnet import MODELS as RESNET_MODELS
+from deepposekit.models.layers.imagenet_mobile import MODELS as MOBILE_MODELS
+from deepposekit.models.layers.imagenet_densenet import MODELS as DENSENET_MODELS
+from deepposekit.models.layers.imagenet_xception import MODELS as XCEPTION_MODELS
 
-from deepposekit.models.layers.deeplabcut_resnet import MODELS as RESNET_MODELS
-from deepposekit.models.layers.deeplabcut_mobile import MODELS as MOBILE_MODELS
-from deepposekit.models.layers.deeplabcut_densenet import MODELS as DENSENET_MODELS
-from deepposekit.models.layers.deeplabcut_xception import MODELS as XCEPTION_MODELS
+from functools import partial
+
+
+def _preprocess_symbolic_input(x, data_format, mode, **kwargs):
+    &#34;&#34;&#34;Preprocesses a tensor encoding a batch of images.
+    # Arguments
+        x: Input tensor, 3D or 4D.
+        data_format: Data format of the image tensor.
+        mode: One of &#34;caffe&#34;, &#34;tf&#34; or &#34;torch&#34;.
+            - caffe: will convert the images from RGB to BGR,
+                then will zero-center each color channel with
+                respect to the ImageNet dataset,
+                without scaling.
+            - tf: will scale pixels between -1 and 1,
+                sample-wise.
+            - torch: will scale pixels between 0 and 1 and then
+                will normalize each channel with respect to the
+                ImageNet dataset.
+    # Returns
+        Preprocessed tensor.
+    &#34;&#34;&#34;
+
+    if mode == &#34;tf&#34;:
+        x /= 127.5
+        x -= 1.0
+        return x
+
+    if mode == &#34;torch&#34;:
+        x /= 255.0
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+    else:
+        if data_format == &#34;channels_first&#34;:
+            # &#39;RGB&#39;-&gt;&#39;BGR&#39;
+            if backend.ndim(x) == 3:
+                x = x[::-1, ...]
+            else:
+                x = x[:, ::-1, ...]
+        else:
+            # &#39;RGB&#39;-&gt;&#39;BGR&#39;
+            x = x[..., ::-1]
+        mean = [103.939, 116.779, 123.68]
+        std = None
+
+    mean_tensor = backend.constant(-np.array(mean))
+
+    # Zero-center by mean pixel
+    if backend.dtype(x) != backend.dtype(mean_tensor):
+        x = backend.bias_add(
+            x, backend.cast(mean_tensor, backend.dtype(x)), data_format=data_format
+        )
+    else:
+        x = backend.bias_add(x, mean_tensor, data_format)
+    if std is not None:
+        x /= std
+    return x
+
+
+def preprocess_input(x, data_format=None, mode=&#34;caffe&#34;, **kwargs):
+    &#34;&#34;&#34;Preprocesses a tensor or Numpy array encoding a batch of images.
+    # Arguments
+        x: Input Numpy or symbolic tensor, 3D or 4D.
+            The preprocessed data is written over the input data
+            if the data types are compatible. To avoid this
+            behaviour, `numpy.copy(x)` can be used.
+        data_format: Data format of the image tensor/array.
+        mode: One of &#34;caffe&#34;, &#34;tf&#34; or &#34;torch&#34;.
+            - caffe: will convert the images from RGB to BGR,
+                then will zero-center each color channel with
+                respect to the ImageNet dataset,
+                without scaling.
+            - tf: will scale pixels between -1 and 1,
+                sample-wise.
+            - torch: will scale pixels between 0 and 1 and then
+                will normalize each channel with respect to the
+                ImageNet dataset.
+    # Returns
+        Preprocessed tensor or Numpy array.
+    # Raises
+        ValueError: In case of unknown `data_format` argument.
+    &#34;&#34;&#34;
+
+    if data_format is None:
+        data_format = backend.image_data_format()
+    if data_format not in {&#34;channels_first&#34;, &#34;channels_last&#34;}:
+        raise ValueError(&#34;Unknown data_format &#34; + str(data_format))
+    return _preprocess_symbolic_input(x, data_format=data_format, mode=mode, **kwargs)
 
 
 class ImageNetPreprocess(Layer):
@@ -74,20 +164,14 @@ class ImageNetPreprocess(Layer):
     &#34;&#34;&#34;
 
     def __init__(self, network, **kwargs):
-        self.network = network
-        if network.startswith(&#34;mobile&#34;):
-            self.preprocess_input = mobilenet_v2.preprocess_input
-        elif network.startswith(&#34;resnet&#34;):
-            self.preprocess_input = resnet.preprocess_input
-        elif network.startswith(&#34;densenet&#34;):
-            self.preprocess_input = densenet.preprocess_input
-        elif network.startswith(&#34;xception&#34;):
-            self.preprocess_input = xception.preprocess_input
-
         super(ImageNetPreprocess, self).__init__(**kwargs)
-
-    def compute_output_shape(self, input_shape):
-        return input_shape
+        self.network = network
+        if network.lower().startswith((&#34;mobile&#34;, &#34;xception&#34;)):
+            self.preprocess_input = partial(preprocess_input, mode=&#34;tf&#34;)
+        elif network.lower().startswith(&#34;resnet&#34;):
+            self.preprocess_input = partial(preprocess_input, mode=&#34;caffe&#34;)
+        elif network.lower().startswith(&#34;densenet&#34;):
+            self.preprocess_input = partial(preprocess_input, mode=&#34;torch&#34;)
 
     def call(self, inputs):
         return self.preprocess_input(inputs)
@@ -124,6 +208,72 @@ if __name__ == &#34;__main__&#34;:
 <section>
 </section>
 <section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="deepposekit.models.layers.deeplabcut.preprocess_input"><code class="name flex">
+<span>def <span class="ident">preprocess_input</span></span>(<span>x, data_format=None, mode=&#39;caffe&#39;, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Preprocesses a tensor or Numpy array encoding a batch of images.</p>
+<h1 id="arguments">Arguments</h1>
+<pre><code>x: Input Numpy or symbolic tensor, 3D or 4D.
+    The preprocessed data is written over the input data
+    if the data types are compatible. To avoid this
+    behaviour, `numpy.copy(x)` can be used.
+data_format: Data format of the image tensor/array.
+mode: One of "caffe", "tf" or "torch".
+    - caffe: will convert the images from RGB to BGR,
+        then will zero-center each color channel with
+        respect to the ImageNet dataset,
+        without scaling.
+    - tf: will scale pixels between -1 and 1,
+        sample-wise.
+    - torch: will scale pixels between 0 and 1 and then
+        will normalize each channel with respect to the
+        ImageNet dataset.
+</code></pre>
+<h1 id="returns">Returns</h1>
+<pre><code>Preprocessed tensor or Numpy array.
+</code></pre>
+<h1 id="raises">Raises</h1>
+<pre><code>ValueError: In case of unknown `data_format` argument.
+</code></pre></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def preprocess_input(x, data_format=None, mode=&#34;caffe&#34;, **kwargs):
+    &#34;&#34;&#34;Preprocesses a tensor or Numpy array encoding a batch of images.
+    # Arguments
+        x: Input Numpy or symbolic tensor, 3D or 4D.
+            The preprocessed data is written over the input data
+            if the data types are compatible. To avoid this
+            behaviour, `numpy.copy(x)` can be used.
+        data_format: Data format of the image tensor/array.
+        mode: One of &#34;caffe&#34;, &#34;tf&#34; or &#34;torch&#34;.
+            - caffe: will convert the images from RGB to BGR,
+                then will zero-center each color channel with
+                respect to the ImageNet dataset,
+                without scaling.
+            - tf: will scale pixels between -1 and 1,
+                sample-wise.
+            - torch: will scale pixels between 0 and 1 and then
+                will normalize each channel with respect to the
+                ImageNet dataset.
+    # Returns
+        Preprocessed tensor or Numpy array.
+    # Raises
+        ValueError: In case of unknown `data_format` argument.
+    &#34;&#34;&#34;
+
+    if data_format is None:
+        data_format = backend.image_data_format()
+    if data_format not in {&#34;channels_first&#34;, &#34;channels_last&#34;}:
+        raise ValueError(&#34;Unknown data_format &#34; + str(data_format))
+    return _preprocess_symbolic_input(x, data_format=data_format, mode=mode, **kwargs)</code></pre>
+</details>
+</dd>
+</dl>
 </section>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
@@ -169,20 +319,14 @@ if __name__ == &#34;__main__&#34;:
     &#34;&#34;&#34;
 
     def __init__(self, network, **kwargs):
-        self.network = network
-        if network.startswith(&#34;mobile&#34;):
-            self.preprocess_input = mobilenet_v2.preprocess_input
-        elif network.startswith(&#34;resnet&#34;):
-            self.preprocess_input = resnet.preprocess_input
-        elif network.startswith(&#34;densenet&#34;):
-            self.preprocess_input = densenet.preprocess_input
-        elif network.startswith(&#34;xception&#34;):
-            self.preprocess_input = xception.preprocess_input
-
         super(ImageNetPreprocess, self).__init__(**kwargs)
-
-    def compute_output_shape(self, input_shape):
-        return input_shape
+        self.network = network
+        if network.lower().startswith((&#34;mobile&#34;, &#34;xception&#34;)):
+            self.preprocess_input = partial(preprocess_input, mode=&#34;tf&#34;)
+        elif network.lower().startswith(&#34;resnet&#34;):
+            self.preprocess_input = partial(preprocess_input, mode=&#34;caffe&#34;)
+        elif network.lower().startswith(&#34;densenet&#34;):
+            self.preprocess_input = partial(preprocess_input, mode=&#34;torch&#34;)
 
     def call(self, inputs):
         return self.preprocess_input(inputs)
@@ -221,32 +365,6 @@ if __name__ == &#34;__main__&#34;:
 </summary>
 <pre><code class="python">def call(self, inputs):
     return self.preprocess_input(inputs)</code></pre>
-</details>
-</dd>
-<dt id="deepposekit.models.layers.deeplabcut.ImageNetPreprocess.compute_output_shape"><code class="name flex">
-<span>def <span class="ident">compute_output_shape</span></span>(<span>self, input_shape)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Computes the output shape of the layer.</p>
-<p>If the layer has not been built, this method will call <code>build</code> on the
-layer. This assumes that the layer will later be used with inputs that
-match the input shape provided here.</p>
-<h2 id="arguments">Arguments</h2>
-<dl>
-<dt><strong><code>input_shape</code></strong></dt>
-<dd>Shape tuple (tuple of integers)
-or list of shape tuples (one per output tensor of the layer).
-Shape tuples can include None for free dimensions,
-instead of an integer.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>An input shape tuple.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def compute_output_shape(self, input_shape):
-    return input_shape</code></pre>
 </details>
 </dd>
 <dt id="deepposekit.models.layers.deeplabcut.ImageNetPreprocess.get_config"><code class="name flex">
@@ -289,13 +407,17 @@ by <code>Network</code> (one layer of abstraction above).</p>
 <li><code><a title="deepposekit.models.layers" href="index.html">deepposekit.models.layers</a></code></li>
 </ul>
 </li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="deepposekit.models.layers.deeplabcut.preprocess_input" href="#deepposekit.models.layers.deeplabcut.preprocess_input">preprocess_input</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
 <h4><code><a title="deepposekit.models.layers.deeplabcut.ImageNetPreprocess" href="#deepposekit.models.layers.deeplabcut.ImageNetPreprocess">ImageNetPreprocess</a></code></h4>
 <ul class="">
 <li><code><a title="deepposekit.models.layers.deeplabcut.ImageNetPreprocess.call" href="#deepposekit.models.layers.deeplabcut.ImageNetPreprocess.call">call</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut.ImageNetPreprocess.compute_output_shape" href="#deepposekit.models.layers.deeplabcut.ImageNetPreprocess.compute_output_shape">compute_output_shape</a></code></li>
 <li><code><a title="deepposekit.models.layers.deeplabcut.ImageNetPreprocess.get_config" href="#deepposekit.models.layers.deeplabcut.ImageNetPreprocess.get_config">get_config</a></code></li>
 </ul>
 </li>

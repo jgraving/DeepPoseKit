@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.0" />
-<title>deepposekit.models.layers.deeplabcut_densenet API documentation</title>
+<title>deepposekit.models.layers.imagenet_densenet API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>deepposekit.models.layers.deeplabcut_densenet</code></h1>
+<h1 class="title">Module <code>deepposekit.models.layers.imagenet_densenet</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -248,15 +248,16 @@ def DenseNet(
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name=&#34;conv1/conv&#34;)(x)
     x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=&#34;conv1/bn&#34;)(x)
     x = layers.Activation(&#34;relu&#34;, name=&#34;conv1/relu&#34;)(x)
-    res_outputs.append(x)
     x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)))(x)
     x = layers.MaxPooling2D(3, strides=2, name=&#34;pool1&#34;)(x)
 
     x = dense_block(x, blocks[0], name=&#34;conv2&#34;)
-    res_outputs.append(x)
+    if residuals == 2:
+        res_outputs = x
     x = transition_block(x, 0.5, name=&#34;pool2&#34;)
     x = dense_block(x, blocks[1], name=&#34;conv3&#34;)
-    res_outputs.append(x)
+    if residuals == 3:
+        res_outputs = x
     x = transition_block(x, 0.5, name=&#34;pool3&#34;)
     x = dense_block(x, blocks[2], name=&#34;conv4&#34;)
     x = transition_block(x, 0.5, name=&#34;pool4&#34;, pool=False)
@@ -435,7 +436,7 @@ if __name__ == &#34;__main__&#34;:
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.DenseNet"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.DenseNet"><code class="name flex">
 <span>def <span class="ident">DenseNet</span></span>(<span>blocks, include_top=True, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, residuals=False, **kwargs)</span>
 </code></dt>
 <dd>
@@ -577,15 +578,16 @@ classes: optional number of classes to classify images
     x = layers.Conv2D(64, 7, strides=2, use_bias=False, name=&#34;conv1/conv&#34;)(x)
     x = layers.BatchNormalization(axis=bn_axis, epsilon=1.001e-5, name=&#34;conv1/bn&#34;)(x)
     x = layers.Activation(&#34;relu&#34;, name=&#34;conv1/relu&#34;)(x)
-    res_outputs.append(x)
     x = layers.ZeroPadding2D(padding=((1, 1), (1, 1)))(x)
     x = layers.MaxPooling2D(3, strides=2, name=&#34;pool1&#34;)(x)
 
     x = dense_block(x, blocks[0], name=&#34;conv2&#34;)
-    res_outputs.append(x)
+    if residuals == 2:
+        res_outputs = x
     x = transition_block(x, 0.5, name=&#34;pool2&#34;)
     x = dense_block(x, blocks[1], name=&#34;conv3&#34;)
-    res_outputs.append(x)
+    if residuals == 3:
+        res_outputs = x
     x = transition_block(x, 0.5, name=&#34;pool3&#34;)
     x = dense_block(x, blocks[2], name=&#34;conv4&#34;)
     x = transition_block(x, 0.5, name=&#34;pool4&#34;, pool=False)
@@ -674,7 +676,7 @@ classes: optional number of classes to classify images
     return model</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.DenseNet121"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.DenseNet121"><code class="name flex">
 <span>def <span class="ident">DenseNet121</span></span>(<span>include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, residuals=False, **kwargs)</span>
 </code></dt>
 <dd>
@@ -706,7 +708,7 @@ classes: optional number of classes to classify images
     )</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.DenseNet169"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.DenseNet169"><code class="name flex">
 <span>def <span class="ident">DenseNet169</span></span>(<span>include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, **kwargs)</span>
 </code></dt>
 <dd>
@@ -736,7 +738,7 @@ classes: optional number of classes to classify images
     )</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.DenseNet201"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.DenseNet201"><code class="name flex">
 <span>def <span class="ident">DenseNet201</span></span>(<span>include_top=False, weights=&#39;imagenet&#39;, input_tensor=None, input_shape=None, pooling=None, classes=1000, **kwargs)</span>
 </code></dt>
 <dd>
@@ -766,7 +768,7 @@ classes: optional number of classes to classify images
     )</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.conv_block"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.conv_block"><code class="name flex">
 <span>def <span class="ident">conv_block</span></span>(<span>x, growth_rate, name, dilation=1)</span>
 </code></dt>
 <dd>
@@ -814,7 +816,7 @@ name: string, block label.
     return x</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.dense_block"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.dense_block"><code class="name flex">
 <span>def <span class="ident">dense_block</span></span>(<span>x, blocks, name, dilation=1)</span>
 </code></dt>
 <dd>
@@ -845,7 +847,7 @@ name: string, block label.
     return x</code></pre>
 </details>
 </dd>
-<dt id="deepposekit.models.layers.deeplabcut_densenet.transition_block"><code class="name flex">
+<dt id="deepposekit.models.layers.imagenet_densenet.transition_block"><code class="name flex">
 <span>def <span class="ident">transition_block</span></span>(<span>x, reduction, name, pool=True)</span>
 </code></dt>
 <dd>
@@ -903,13 +905,13 @@ name: string, block label.
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="two-column">
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.DenseNet" href="#deepposekit.models.layers.deeplabcut_densenet.DenseNet">DenseNet</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.DenseNet121" href="#deepposekit.models.layers.deeplabcut_densenet.DenseNet121">DenseNet121</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.DenseNet169" href="#deepposekit.models.layers.deeplabcut_densenet.DenseNet169">DenseNet169</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.DenseNet201" href="#deepposekit.models.layers.deeplabcut_densenet.DenseNet201">DenseNet201</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.conv_block" href="#deepposekit.models.layers.deeplabcut_densenet.conv_block">conv_block</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.dense_block" href="#deepposekit.models.layers.deeplabcut_densenet.dense_block">dense_block</a></code></li>
-<li><code><a title="deepposekit.models.layers.deeplabcut_densenet.transition_block" href="#deepposekit.models.layers.deeplabcut_densenet.transition_block">transition_block</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.DenseNet" href="#deepposekit.models.layers.imagenet_densenet.DenseNet">DenseNet</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.DenseNet121" href="#deepposekit.models.layers.imagenet_densenet.DenseNet121">DenseNet121</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.DenseNet169" href="#deepposekit.models.layers.imagenet_densenet.DenseNet169">DenseNet169</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.DenseNet201" href="#deepposekit.models.layers.imagenet_densenet.DenseNet201">DenseNet201</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.conv_block" href="#deepposekit.models.layers.imagenet_densenet.conv_block">conv_block</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.dense_block" href="#deepposekit.models.layers.imagenet_densenet.dense_block">dense_block</a></code></li>
+<li><code><a title="deepposekit.models.layers.imagenet_densenet.transition_block" href="#deepposekit.models.layers.imagenet_densenet.transition_block">transition_block</a></code></li>
 </ul>
 </li>
 </ul>

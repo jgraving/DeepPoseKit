@@ -41,6 +41,7 @@
 
 import numpy as np
 from tensorflow.keras import Model
+from tensorflow.keras.layers import Input
 import warnings
 
 from deepposekit.models.layers.subpixel import SubpixelMaxima2D
@@ -56,11 +57,12 @@ class BaseModel:
         self.train_generator = train_generator
         self.subpixel = subpixel
         if &#34;skip_init&#34; not in kwargs:
+            config = self.train_generator.get_config()
             if self.train_model is NotImplemented:
+                self.__init_input__(config[&#34;image_shape&#34;])
                 self.__init_model__()
                 self.__init_train_model__()
             if self.train_generator is not None:
-                config = self.train_generator.get_config()
                 if self.subpixel:
                     output_sigma = config[&#34;output_sigma&#34;]
                 else:
@@ -73,6 +75,10 @@ class BaseModel:
                 )
 
     train_model = NotImplemented
+
+    def __init_input__(self, image_shape):
+        self.input_shape = image_shape
+        self.inputs = Input(self.input_shape)
 
     def __init_train_model__(self):
         if isinstance(self.train_model, Model):
@@ -95,7 +101,9 @@ class BaseModel:
         **kwargs
     ):
 
-        output = self.train_model.outputs[-1]
+        outputs = self.train_model(self.inputs)
+        if isinstance(outputs, list):
+            outputs = outputs[-1]
         if self.subpixel:
             kernel_size = np.min(output_shape)
             kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
@@ -107,18 +115,21 @@ class BaseModel:
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.0,
-            )(output)
+            )(outputs)
         else:
             keypoints = Maxima2D(
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.0,
-            )(output)
-        input_layer = self.train_model.inputs[0]
-        self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
+            )(outputs)
+        self.predict_model = Model(self.inputs, keypoints, name=self.train_model.name)
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
+
+        # Fix for passing model to callbacks.ModelCheckpoint
+        if hasattr(self.train_model, &#34;_in_multi_worker_mode&#34;):
+            self._in_multi_worker_mode = self.train_model._in_multi_worker_mode
 
     def fit(
         self,
@@ -244,8 +255,8 @@ class BaseModel:
 
         return evaluation_dict
 
-    def save(self, path, optimizer=True):
-        save_model(self, path, optimizer)
+    def save(self, path, overwrite=True):
+        save_model(self, path)
 
     def get_config(self):
         config = {}
@@ -281,11 +292,12 @@ class BaseModel:
         self.train_generator = train_generator
         self.subpixel = subpixel
         if &#34;skip_init&#34; not in kwargs:
+            config = self.train_generator.get_config()
             if self.train_model is NotImplemented:
+                self.__init_input__(config[&#34;image_shape&#34;])
                 self.__init_model__()
                 self.__init_train_model__()
             if self.train_generator is not None:
-                config = self.train_generator.get_config()
                 if self.subpixel:
                     output_sigma = config[&#34;output_sigma&#34;]
                 else:
@@ -298,6 +310,10 @@ class BaseModel:
                 )
 
     train_model = NotImplemented
+
+    def __init_input__(self, image_shape):
+        self.input_shape = image_shape
+        self.inputs = Input(self.input_shape)
 
     def __init_train_model__(self):
         if isinstance(self.train_model, Model):
@@ -320,7 +336,9 @@ class BaseModel:
         **kwargs
     ):
 
-        output = self.train_model.outputs[-1]
+        outputs = self.train_model(self.inputs)
+        if isinstance(outputs, list):
+            outputs = outputs[-1]
         if self.subpixel:
             kernel_size = np.min(output_shape)
             kernel_size = (kernel_size // largest_factor(kernel_size)) + 1
@@ -332,18 +350,21 @@ class BaseModel:
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.0,
-            )(output)
+            )(outputs)
         else:
             keypoints = Maxima2D(
                 index=keypoints_shape[0],
                 coordinate_scale=2 ** downsample_factor,
                 confidence_scale=255.0,
-            )(output)
-        input_layer = self.train_model.inputs[0]
-        self.predict_model = Model(input_layer, keypoints, name=self.train_model.name)
+            )(outputs)
+        self.predict_model = Model(self.inputs, keypoints, name=self.train_model.name)
         self.predict = self.predict_model.predict
         self.predict_generator = self.predict_model.predict_generator
         self.predict_on_batch = self.predict_model.predict_on_batch
+
+        # Fix for passing model to callbacks.ModelCheckpoint
+        if hasattr(self.train_model, &#34;_in_multi_worker_mode&#34;):
+            self._in_multi_worker_mode = self.train_model._in_multi_worker_mode
 
     def fit(
         self,
@@ -469,8 +490,8 @@ class BaseModel:
 
         return evaluation_dict
 
-    def save(self, path, optimizer=True):
-        save_model(self, path, optimizer)
+    def save(self, path, overwrite=True):
+        save_model(self, path)
 
     def get_config(self):
         config = {}
@@ -689,7 +710,7 @@ based on the size of the dataset.</dd>
 </details>
 </dd>
 <dt id="deepposekit.models.engine.BaseModel.save"><code class="name flex">
-<span>def <span class="ident">save</span></span>(<span>self, path, optimizer=True)</span>
+<span>def <span class="ident">save</span></span>(<span>self, path, overwrite=True)</span>
 </code></dt>
 <dd>
 <section class="desc"></section>
@@ -697,8 +718,8 @@ based on the size of the dataset.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def save(self, path, optimizer=True):
-    save_model(self, path, optimizer)</code></pre>
+<pre><code class="python">def save(self, path, overwrite=True):
+    save_model(self, path)</code></pre>
 </details>
 </dd>
 </dl>

@@ -45,7 +45,7 @@ import h5py
 import json
 import inspect
 
-from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.util import ImageNormalization
 from deepposekit.models.layers.convolutional import (
     UpSampling2D,
     SubPixelDownscaling,
@@ -68,7 +68,6 @@ MODELS = {
 
 
 CUSTOM_LAYERS = {
-    &#34;Float&#34;: Float,
     &#34;ImageNormalization&#34;: ImageNormalization,
     &#34;UpSampling2D&#34;: UpSampling2D,
     &#34;SubPixelDownscaling&#34;: SubPixelDownscaling,
@@ -148,6 +147,7 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None):
     model = Model(**kwargs)
     model.train_model = train_model
     model.__init_train_model__()
+    model.__init_input__(model_config[&#34;image_shape&#34;])
 
     kwargs = {}
     kwargs[&#34;output_shape&#34;] = model_config[&#34;output_shape&#34;]
@@ -248,6 +248,7 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None):
     model = Model(**kwargs)
     model.train_model = train_model
     model.__init_train_model__()
+    model.__init_input__(model_config[&#34;image_shape&#34;])
 
     kwargs = {}
     kwargs[&#34;output_shape&#34;] = model_config[&#34;output_shape&#34;]

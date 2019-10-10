@@ -43,7 +43,7 @@ from tensorflow.keras import Input, Model
 from tensorflow.keras.layers import Conv2D, Conv2DTranspose, BatchNormalization
 
 from deepposekit.models.layers.convolutional import UpSampling2D
-from deepposekit.models.layers.util import ImageNormalization, Float
+from deepposekit.models.layers.util import ImageNormalization
 from deepposekit.models.layers.leap import ConvBlock2D, ConvPool2D
 from deepposekit.models.engine import BaseModel
 
@@ -64,7 +64,7 @@ class LEAP(BaseModel):
         **kwargs
     ):
         &#34;&#34;&#34;
-        Define a LEAP model from Perrera et al., 2018 [1]
+        Define a LEAP model from Pereira et al., 2018 [1]
         See `References` for details on the model architecture.
 
         Parameters
@@ -117,7 +117,7 @@ class LEAP(BaseModel):
 
         References
         ----------
-        [1] Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
+        1.  Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
             M., Wang, S. S. H., Murthy, M., &amp; Shaevitz, J. W. (2018).
             Fast animal pose estimation using deep neural networks.
             bioRxiv, 331181.
@@ -142,16 +142,7 @@ class LEAP(BaseModel):
     def __init_model__(self):
         if self.train_generator.downsample_factor is not 0:
             raise ValueError(&#34;LEAP is only compatible with a downsample_factor of 0&#34;)
-        batch_shape = (
-            None,
-            self.train_generator.height,
-            self.train_generator.width,
-            self.train_generator.n_channels,
-        )
-
-        input_layer = Input(batch_shape=batch_shape, dtype=&#34;uint8&#34;)
-        to_float = Float()(input_layer)
-        normalized = ImageNormalization()(to_float)
+        normalized = ImageNormalization()(self.inputs)
 
         x1 = ConvPool2D(
             n_layers=3,
@@ -226,7 +217,7 @@ class LEAP(BaseModel):
                 kernel_initializer=&#34;glorot_normal&#34;,
             )(x4)
 
-        self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
+        self.train_model = Model(self.inputs, x_out, name=self.__class__.__name__)
 
     def get_config(self):
         config = {
@@ -259,7 +250,7 @@ class LEAP(BaseModel):
 <span>(</span><span>train_generator, filters=64, upsampling=False, activation='relu', batchnorm=False, use_bias=True, pooling='max', interpolation='bilinear', subpixel=False, initializer='glorot_uniform', **kwargs)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Define a LEAP model from Perrera et al., 2018 [1]
+<section class="desc"><p>Define a LEAP model from Pereira et al., 2018 [1]
 See <code>References</code> for details on the model architecture.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -309,10 +300,12 @@ SubpixelMaxima2D layers at the output of the network.</dd>
 <p>Both of these models share the same computational graph,
 so training train_model updates the weights of predict_model</p>
 <h2 id="references">References</h2>
-<p>[1] Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
+<ol>
+<li>Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
 M., Wang, S. S. H., Murthy, M., &amp; Shaevitz, J. W. (2018).
 Fast animal pose estimation using deep neural networks.
-bioRxiv, 331181.</p></section>
+bioRxiv, 331181.</li>
+</ol></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -333,7 +326,7 @@ bioRxiv, 331181.</p></section>
         **kwargs
     ):
         &#34;&#34;&#34;
-        Define a LEAP model from Perrera et al., 2018 [1]
+        Define a LEAP model from Pereira et al., 2018 [1]
         See `References` for details on the model architecture.
 
         Parameters
@@ -386,7 +379,7 @@ bioRxiv, 331181.</p></section>
 
         References
         ----------
-        [1] Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
+        1.  Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
             M., Wang, S. S. H., Murthy, M., &amp; Shaevitz, J. W. (2018).
             Fast animal pose estimation using deep neural networks.
             bioRxiv, 331181.
@@ -411,16 +404,7 @@ bioRxiv, 331181.</p></section>
     def __init_model__(self):
         if self.train_generator.downsample_factor is not 0:
             raise ValueError(&#34;LEAP is only compatible with a downsample_factor of 0&#34;)
-        batch_shape = (
-            None,
-            self.train_generator.height,
-            self.train_generator.width,
-            self.train_generator.n_channels,
-        )
-
-        input_layer = Input(batch_shape=batch_shape, dtype=&#34;uint8&#34;)
-        to_float = Float()(input_layer)
-        normalized = ImageNormalization()(to_float)
+        normalized = ImageNormalization()(self.inputs)
 
         x1 = ConvPool2D(
             n_layers=3,
@@ -495,7 +479,7 @@ bioRxiv, 331181.</p></section>
                 kernel_initializer=&#34;glorot_normal&#34;,
             )(x4)
 
-        self.train_model = Model(input_layer, x_out, name=self.__class__.__name__)
+        self.train_model = Model(self.inputs, x_out, name=self.__class__.__name__)
 
     def get_config(self):
         config = {
