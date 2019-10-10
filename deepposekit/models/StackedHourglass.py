@@ -34,7 +34,7 @@ class StackedHourglass(BaseModel):
         **kwargs
     ):
         """
-        Define a Stacked Hourglass model for pose estimation.
+        Define a Stacked Hourglass model for pose estimation from [1].
         See `References` for details on the model architecture.
 
         Parameters
@@ -79,7 +79,7 @@ class StackedHourglass(BaseModel):
 
         References
         ----------
-        [1] Newell, A., Yang, K., & Deng, J. (2016). Stacked hourglass networks
+        1.  Newell, A., Yang, K., & Deng, J. (2016). Stacked hourglass networks
             for human pose estimation. In European Conference on Computer
             Vision (pp. 483-499). Springer, Cham.
         """

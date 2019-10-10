@@ -38,7 +38,7 @@ class LEAP(BaseModel):
         **kwargs
     ):
         """
-        Define a LEAP model from Perrera et al., 2018 [1]
+        Define a LEAP model from Pereira et al., 2018 [1]
         See `References` for details on the model architecture.
 
         Parameters
@@ -91,7 +91,7 @@ class LEAP(BaseModel):
 
         References
         ----------
-        [1] Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
+        1.  Pereira, T. D., Aldarondo, D. E., Willmore, L., Kislin,
             M., Wang, S. S. H., Murthy, M., & Shaevitz, J. W. (2018).
             Fast animal pose estimation using deep neural networks.
             bioRxiv, 331181.

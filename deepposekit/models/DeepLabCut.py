@@ -23,7 +23,7 @@ from functools import partial
 
 
 __docstring__ = """
-    Define a DeepLabCut model from Mathis et al., 2018 [1][2]
+    Define a DeepLabCut model from Mathis et al., 2018 [1–3]
     See `References` for details on the model architecture.
 
     Parameters
