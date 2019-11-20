@@ -48,7 +48,13 @@ if __name__ == '__main__':
         print("INFO: output file not found. Load model and predict positions...")
 
         oc_reader = VideoReader(s_input_video_fname, batch_size=50, gray=True)
-        oc_model = load_model(s_trained_model_fname)
+
+        if os.name == 'nt':
+            b_compile_model = False
+        else:
+            b_compile_model = True
+        oc_model = load_model(s_trained_model_fname, compile=b_compile_model)
+
         predictions = oc_model.predict(oc_reader, verbose=1)
         oc_reader.close()
         np.save(s_out_predict_fname, predictions)

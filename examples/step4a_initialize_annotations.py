@@ -31,9 +31,11 @@ if __name__ == '__main__':
     # # Load the trained model
     # This loads the trained model into memory for making predictions
 
-    print("Loading model...")
-    model = load_model(s_trained_model_fname)
-    print("Loading model: done!")
+    if os.name == 'nt':
+        b_compile_model = False
+    else:
+        b_compile_model = True
+    model = load_model(s_trained_model_fname, compile=b_compile_model)
 
     # Let's initialize our `example_annotation_set.h5` from Step 1
     data_generator = DataGenerator(s_inout_annot_fname, mode='unannotated')

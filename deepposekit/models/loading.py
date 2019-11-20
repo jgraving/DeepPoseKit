@@ -50,7 +50,7 @@ CUSTOM_LAYERS = {
 }
 
 
-def load_model(path, generator=None, augmenter=None, custom_objects=None):
+def load_model(path, generator=None, augmenter=None, custom_objects=None, compile=True):
     """
     Load the model
 
@@ -76,7 +76,7 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None):
     else:
         raise TypeError("file must be type `str`")
 
-    train_model = saving.load_model(filepath, custom_objects=custom_objects)
+    train_model = saving.load_model(filepath, custom_objects=custom_objects, compile=compile)
 
     with h5py.File(filepath, "r") as h5file:
         train_generator_config = h5file.attrs.get("train_generator_config")
