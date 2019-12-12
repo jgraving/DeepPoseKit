@@ -29,9 +29,8 @@ LICENSE = "Apache 2.0"
 DOWNLOAD_URL = "https://github.com/jgraving/deepposekit.git"
 VERSION = "0.3.4.dev"
 
-# read the contents of your README file
-this_directory = os.path.abspath(os.path.dirname(__file__))
-with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+directory = os.path.abspath(os.path.dirname(__file__))
+with open(os.path.join(directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 if __name__ == "__main__":
