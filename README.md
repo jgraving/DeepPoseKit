@@ -22,8 +22,6 @@ Localization (without tracking) can also be achieved with deep learning software
 
 [Check out our paper](https://doi.org/10.7554/eLife.47994) to find out more.
 
-**NOTE:** This software is still in early-release development. *Expect some adventures.*
-
 <p align="center">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/zebra.gif" height="256px">
 <img src="https://github.com/jgraving/jgraving.github.io/blob/master/files/images/locust.gif" height="256px">
@@ -144,17 +142,7 @@ If you use DeepPoseKit for your research please cite [our open-access paper](htt
              url={https://doi.org/10.7554/eLife.47994},
              }
 
-You can also read [our open-access preprint](http://preprint.deepposekit.org):
-
-    @article{graving2019preprint,
-             title={DeepPoseKit, a software toolkit for fast and robust animal pose estimation using deep learning},
-             author={Graving, Jacob M and Chae, Daniel and Naik, Hemal and Li, Liang and Koger, Benjamin and Costelloe, Blair R and Couzin, Iain D},
-             journal={bioRxiv},
-             pages={620245},
-             year={2019},
-             publisher={Cold Spring Harbor Laboratory}
-             url={https://doi.org/10.1101/620245}
-             }
+You can also read [our open-access preprint](http://preprint.deepposekit.org).
 
 If you use the [imgaug package](https://github.com/aleju/imgaug) for data augmentation, please also consider [citing it](https://github.com/aleju/imgaug/blob/master/README.md#citation).
 
@@ -163,7 +151,6 @@ If you [use data](https://github.com/jgraving/DeepPoseKit#i-already-have-annotat
 Please also consider citing the relevant references for the pose estimation model(s) used in your research, which can be found in the documentation (i.e., [`StackedDenseNet`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/StackedDenseNet.html#references), [`StackedHourglass`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/StackedHourglass.html#references), [`DeepLabCut`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/DeepLabCut.html#references), [`LEAP`](http://jakegraving.com/DeepPoseKit/html/deepposekit/models/LEAP.html#references)).
 
 # News
-
 - **October 2019:** Our paper describing DeepPoseKit is published at eLife! (http://paper.deepposekit.org)
 - **September 2019**: 
     - Nature News covers DeepPoseKit: [Deep learning powers a motion-tracking revolution](http://doi.org/10.1038/d41586-019-02942-5)

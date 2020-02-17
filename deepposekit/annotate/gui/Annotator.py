@@ -307,6 +307,11 @@ class Annotator(GUI):
             self.skeleton["annotated"] = False
         elif self.key is keys.F:
             self.skeleton["annotated"] = True
+        elif self.key is keys.V:
+            if self.skeleton.loc[self.idx, ["x", "y"]].isnull()[0]:
+                self.skeleton.loc[self.idx, ["x", "y"]] = -1
+            else:
+                self.skeleton.loc[self.idx, ["x", "y"]] = np.nan
         elif self.key in [keys.Q, keys.ESC]:
             self._save()
             print("Saved")
