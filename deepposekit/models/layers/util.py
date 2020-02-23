@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tensorflow.python.keras.engine import Layer
+from tensorflow.keras.layers import Layer
 import tensorflow.keras.backend as K
 
 __all__ = ["ImageNormalization"]

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tensorflow.python.keras.utils import Sequence
+from tensorflow.keras.utils import Sequence
 import cv2
 import numpy as np
 import os
