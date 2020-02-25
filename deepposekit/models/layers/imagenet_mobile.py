@@ -84,7 +84,7 @@ from tensorflow.python.keras.applications import imagenet_utils
 from tensorflow.python.keras.applications.imagenet_utils import decode_predictions
 from tensorflow.keras.layers import Layer
 from tensorflow.python.keras.applications import keras_applications
-from tensorflow.python.keras.applications.mobilenet_v2 import preprocess_input
+from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
 
 correct_pad = keras_applications.correct_pad
 _obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape

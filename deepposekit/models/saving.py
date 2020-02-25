@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tensorflow.python.keras.engine import saving
+from tensorflow.python.keras.saving import save
 import h5py
 import json
 from deepposekit.utils.io import get_json_type
@@ -29,7 +29,7 @@ def save_model(model, path, optimizer=True):
     else:
         raise TypeError("file must be type `str`")
 
-    saving.save_model(model.train_model, path, include_optimizer=optimizer)
+    save.save_model(model.train_model, path, include_optimizer=optimizer)
 
     with h5py.File(filepath, "r+") as h5file:
 
