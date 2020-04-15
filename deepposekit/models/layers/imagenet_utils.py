@@ -7,6 +7,7 @@ from __future__ import print_function
 import json
 import warnings
 import numpy as np
+import tensorflow.keras as keras
 
 CLASS_INDEX = None
 CLASS_INDEX_PATH = ('https://storage.googleapis.com/download.tensorflow.org/'
