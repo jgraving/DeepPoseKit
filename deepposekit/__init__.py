@@ -28,4 +28,4 @@ from deepposekit.io.video import VideoReader, VideoWriter
 
 
 __doc__ = """ """  # open('README.md').read()
-__version__ = "0.3.7"
+__version__ = "0.3.8"
