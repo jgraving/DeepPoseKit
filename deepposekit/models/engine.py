@@ -234,7 +234,7 @@ class BaseModel:
 
     def get_config(self):
         config = {}
-        if self.train_generator:
+        if self.train_generator is not None:
             base_config = self.train_generator.get_config()
             return dict(list(base_config.items()) + list(config.items()))
         else:

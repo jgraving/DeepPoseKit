@@ -237,7 +237,7 @@ class TrainingGenerator(Sequence):
         self.confidence = confidence
         self.on_epoch_end()
         self_copy = copy.deepcopy(self)
-        if self.augmenter:
+        if self.augmenter is not None:
             self_copy.augmenter.reseed()
         return self_copy
 
@@ -289,7 +289,7 @@ class TrainingGenerator(Sequence):
     def generate_batch(self, indexes):
         """Generates data containing batch_size samples"""
         X, y = self.load_batch(indexes)
-        if self.augmenter and not self.validation:
+        if self.augmenter is not None and not self.validation:
             X, y = self.augment(X, y)
         if self.confidence:
             y = draw_confidence_maps(
@@ -309,7 +309,7 @@ class TrainingGenerator(Sequence):
         return X, y
 
     def get_config(self):
-        if self.augmenter:
+        if self.augmenter is not None:
             augmenter = True
         else:
             augmenter = False

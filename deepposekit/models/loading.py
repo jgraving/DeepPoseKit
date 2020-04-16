@@ -92,7 +92,7 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None, compil
         model_name = json.loads(model_config.decode("utf-8"))["class_name"]
         model_config = json.loads(model_config.decode("utf-8"))["config"]
 
-    if generator:
+    if generator is not None:
         signature = inspect.signature(TrainingGenerator.__init__)
         keys = [key for key in signature.parameters.keys()]
         keys.remove("self")
