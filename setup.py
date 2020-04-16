@@ -27,7 +27,7 @@ MAINTAINER_EMAIL = "jgraving@gmail.com"
 URL = "https://github.com/jgraving/deepposekit"
 LICENSE = "Apache 2.0"
 DOWNLOAD_URL = "https://github.com/jgraving/deepposekit.git"
-VERSION = "0.3.8"
+VERSION = "0.3.9"
 
 directory = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(directory, 'README.md'), encoding='utf-8') as f:
