@@ -74,7 +74,7 @@ class BaseGenerator(Sequence):
         Takes a list or array of indexes corresponding
         to image-keypoint pairs in the dataset.
         Returns a numpy array of images with the shape:
-        (n_indexes, height, width, n_channels)
+        (n_samples, height, width, n_channels)
         """
         raise NotImplementedError()
 
