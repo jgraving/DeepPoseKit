@@ -113,7 +113,7 @@ class Logger(Callback):
         euclidean = evaluation_dict["euclidean"]
         confidence = evaluation_dict["confidence"]
         if self.filepath is not None:
-            with h5py.File(self.filepath) as h5file:
+            with h5py.File(self.filepath, 'r+') as h5file:
                 values = {
                     "val_loss": np.array([logs.get("val_loss")]).reshape(1),
                     "loss": np.array([logs.get("loss")]).reshape(1),
