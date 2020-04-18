@@ -125,8 +125,8 @@ class Logger(Callback):
                 for key, value in values.items():
                     data = h5file["logs"][key]
                     value = np.array(value)
-                    data.resize(tuple(value.shape))
                     if data.shape[0] == 0:
+                        data.resize(tuple(value.shape))
                         data[:] = value
                     else:
                         data.resize(data.shape[0] + 1, axis=0)
@@ -150,15 +150,6 @@ class Logger(Callback):
         euclidean_mean = euclidean.mean()
         confidence_perc = np.percentile(confidence, [0, 5, 25, 50, 75, 95, 100])
         confidence_mean = confidence.mean()
-        # keypoint_percentile = np.percentile(
-        #     [euclidean, confidence], [0, 5, 25, 50, 75, 95, 100], axis=1
-        # ).T
-        # euclidean_perc, confidence_perc = keypoint_percentile
-
-        # euclidean_mean, confidence_mean = np.mean([euclidean, confidence], axis=1)
-
-        logs["euclidean"] = euclidean_mean
-        logs["confidence"] = confidence_mean
 
         if self.verbose:
             print(
