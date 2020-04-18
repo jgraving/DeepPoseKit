@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tensorflow.python.keras.engine import saving
+from tensorflow.python.keras.saving import save
 
 import h5py
 import json
@@ -76,7 +76,7 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None, compil
     else:
         raise TypeError("file must be type `str`")
 
-    train_model = saving.load_model(filepath, custom_objects=custom_objects, compile=compile)
+    train_model = save.load_model(filepath, custom_objects=custom_objects, compile=compile)
 
     with h5py.File(filepath, "r") as h5file:
         train_generator_config = h5file.attrs.get("train_generator_config")
@@ -92,7 +92,7 @@ def load_model(path, generator=None, augmenter=None, custom_objects=None, compil
         model_name = json.loads(model_config.decode("utf-8"))["class_name"]
         model_config = json.loads(model_config.decode("utf-8"))["config"]
 
-    if generator:
+    if generator is not None:
         signature = inspect.signature(TrainingGenerator.__init__)
         keys = [key for key in signature.parameters.keys()]
         keys.remove("self")

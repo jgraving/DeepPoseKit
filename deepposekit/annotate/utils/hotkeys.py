@@ -20,6 +20,8 @@ W = ord("w")
 A = ord("a")
 S = ord("s")
 D = ord("d")
+V = ord("v")
+
 SPACE = ord(" ")
 
 

@@ -324,6 +324,9 @@ class GUI:
                 else:
                     color = self.colors[self.idx]  # (34, 87, 255)
                     border_color = np.bitwise_not(color)
+                if self.skeleton.loc[self.idx, ["x", "y"]].isnull()[0]:
+                    color = (127, 127, 127)
+
                 # color = (3, 255, 118)
                 thickness = 8
 
@@ -332,8 +335,11 @@ class GUI:
                     color = (254, 79, 48)
                 else:
                     color = self.colors[idx]  # (34, 87, 255)
+                if self.skeleton.loc[text_idx, ["x", "y"]].isnull()[0]:
+                    color = (127, 127, 127)
                 thickness = 2
                 border_color = (0, 0, 0)
+            
 
             text = self.skeleton.loc[text_idx, "name"]
             loc = self.text_locs[(idx + len(self.text_locs) // 4) % len(self.text_locs)]
@@ -447,29 +453,31 @@ class GUI:
         """
         for idx in self.keypoint_index:
             if idx != self.idx:
-                if np.all(self.skeleton.loc[:, "annotated"]):
-                    color = self.colors[idx]
-                    inv_color = (254, 79, 48)
-                    # inv_color = None
-                else:
-                    # color = (34, 87, 255)
-                    color = self.colors[idx]
-                    inv_color = self.inv_colors[idx]
-                center = self._get_scaled_coords(idx)
-                radius = 5
-                if inv_color is not None:
-                    self._draw_point(center, radius, inv_color, 2)
-                self._draw_point(center, radius, color)
-
-        center = self._get_scaled_coords(self.idx)
-        radius = 8
-        # color = (3, 255, 118)
-        color = self.colors[self.idx]
-        inv_color = self.inv_colors[self.idx]
-        self._draw_point(center, radius, inv_color, 2)
-        self._draw_crosshairs(center, radius + 3, inv_color, 2)
-        self._draw_point(center, radius, color)
-        self._draw_crosshairs(center, radius + 3, color, 1)
+                if not self.skeleton.loc[idx, ["x", "y"]].isnull()[0]:
+                    if np.all(self.skeleton.loc[:, "annotated"]):
+                        color = self.colors[idx]
+                        inv_color = (254, 79, 48)
+                        # inv_color = None
+                    else:
+                        # color = (34, 87, 255)
+                        color = self.colors[idx]
+                        inv_color = self.inv_colors[idx]
+                    center = self._get_scaled_coords(idx)
+                    radius = 5
+                    if inv_color is not None:
+                        self._draw_point(center, radius, inv_color, 2)
+                    self._draw_point(center, radius, color)
+        
+        if not self.skeleton.loc[self.idx, ["x", "y"]].isnull()[0]:
+            center = self._get_scaled_coords(self.idx)
+            radius = 8
+            # color = (3, 255, 118)
+            color = self.colors[self.idx]
+            inv_color = self.inv_colors[self.idx]
+            self._draw_point(center, radius, inv_color, 2)
+            self._draw_crosshairs(center, radius + 3, inv_color, 2)
+            self._draw_point(center, radius, color)
+            self._draw_crosshairs(center, radius + 3, color, 1)
 
     def _draw_lines(self):
         """ Draw lines
@@ -483,7 +491,9 @@ class GUI:
             color = (34, 87, 255)
         for idx in self.keypoint_index:
             tree = self.skeleton.loc[idx, "tree"]
-            if tree >= 0:
+            if (tree >= 0 and
+                not self.skeleton.loc[tree, ["x", "y"]].isnull()[0] and
+                not self.skeleton.loc[idx, ["x", "y"]].isnull()[0]):
                 pt1 = self._get_scaled_coords(idx)
                 pt2 = self._get_scaled_coords(tree)
                 cv2.line(

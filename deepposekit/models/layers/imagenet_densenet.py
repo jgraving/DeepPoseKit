@@ -27,12 +27,11 @@ import warnings
 import numpy as np
 import tensorflow.keras as keras
 
-from tensorflow.python.keras.applications import imagenet_utils
-from tensorflow.python.keras.applications.imagenet_utils import decode_predictions
+from deepposekit.models.layers import imagenet_utils
+from deepposekit.models.layers.imagenet_utils import decode_predictions
 from tensorflow.keras.layers import Layer
-from tensorflow.python.keras.applications import keras_applications
 
-_obtain_input_shape = imagenet_utils.imagenet_utils._obtain_input_shape
+_obtain_input_shape = imagenet_utils._obtain_input_shape
 
 backend = keras.backend
 layers = keras.layers
