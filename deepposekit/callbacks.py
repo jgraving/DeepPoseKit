@@ -134,18 +134,28 @@ class Logger(Callback):
 
         euclidean = euclidean.flatten()
         confidence = confidence.flatten()
+        y_visible = ~np.isnan(y_error[...,0].flatten())
 
         if self.confidence_threshold:
             mask = confidence >= confidence_threshold
             euclidean = euclidean[mask]
             confidence = confidence[mask]
+            y_visible = y_visible[mask]
+            
+        if ~y_visible.all():
+            euclidean = euclidean[y_visible]
+            confidence[~y_visible] = 1-confidence[~y_visible]
 
-        keypoint_percentile = np.percentile(
-            [euclidean, confidence], [0, 5, 25, 50, 75, 95, 100], axis=1
-        ).T
-        euclidean_perc, confidence_perc = keypoint_percentile
+        euclidean_perc = np.percentile(euclidean, [0, 5, 25, 50, 75, 95, 100])
+        euclidean_mean = euclidean.mean()
+        confidence_perc = np.percentile(confidence, [0, 5, 25, 50, 75, 95, 100])
+        confidence_mean = confidence.mean()
+        # keypoint_percentile = np.percentile(
+        #     [euclidean, confidence], [0, 5, 25, 50, 75, 95, 100], axis=1
+        # ).T
+        # euclidean_perc, confidence_perc = keypoint_percentile
 
-        euclidean_mean, confidence_mean = np.mean([euclidean, confidence], axis=1)
+        # euclidean_mean, confidence_mean = np.mean([euclidean, confidence], axis=1)
 
         logs["euclidean"] = euclidean_mean
         logs["confidence"] = confidence_mean
