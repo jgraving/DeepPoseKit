@@ -73,19 +73,20 @@ def draw_graph(keypoints, height, width, output_shape, graph, sigma=1, linewidth
             if line >= 0:
                 pt1 = keypoints[line_idx]
                 pt2 = keypoints[line]
-                line_map = cv2.line(
-                    zeros.copy(),
-                    (int(pt1[0]), int(pt1[1])),
-                    (int(pt2[0]), int(pt2[1])),
-                    1,
-                    linewidth,
-                    lineType=cv2.LINE_AA,
-                )
-                blurred = cv2.GaussianBlur(
-                    line_map.astype(np.float64), (height + 1, width + 1), sigma
-                )
-                resized = cv2.resize(blurred, (out_width, out_height)) + MACHINE_EPSILON
-                edge_confidence[..., jdx] = resized
+                if np.all(pt1>=0) and np.all(pt2>=0):  # make sure we don't draw edge for features that are not labelled within the frame
+                    line_map = cv2.line(
+                        zeros.copy(),
+                        (int(pt1[0]), int(pt1[1])),
+                        (int(pt2[0]), int(pt2[1])),
+                        1,
+                        linewidth,
+                        lineType=cv2.LINE_AA,
+                    )
+                    blurred = cv2.GaussianBlur(
+                        line_map.astype(np.float64), (height + 1, width + 1), sigma
+                    )
+                    resized = cv2.resize(blurred, (out_width, out_height)) + MACHINE_EPSILON
+                    edge_confidence[..., jdx] = resized
         edge_confidence = edge_confidence[..., 1:]
         edge_confidence_list.append(edge_confidence)
         confidence[..., idx] = edge_confidence.sum(-1)
