@@ -23,7 +23,7 @@ from deepposekit.io.BaseGenerator import BaseGenerator
 __all__ = ["FlipAxis"]
 
 
-class FlipAxis(iaa.Flipud):
+class FlipAxis(iaa.Fliplr):
     """ Flips the input image and keypoints across an axis.
 
     A generalized class for flipping images and keypoints
