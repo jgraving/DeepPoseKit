@@ -185,6 +185,7 @@ def imgaug_to_numpy(keypoints):
 
 
 def keypoint_errors(y_true, y_pred):
+    y_true[y_true<-100] = np.NaN # Non-visible points have keypoint location -99999 before augmentation
     y_error = y_true - y_pred
 
     euclidean = np.sqrt(np.sum(y_error ** 2, axis=-1))

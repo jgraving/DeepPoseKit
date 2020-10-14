@@ -113,7 +113,7 @@ class Logger(Callback):
         euclidean = evaluation_dict["euclidean"]
         confidence = evaluation_dict["confidence"]
         if self.filepath is not None:
-            with h5py.File(self.filepath) as h5file:
+            with h5py.File(self.filepath, 'r+') as h5file:
                 values = {
                     "val_loss": np.array([logs.get("val_loss")]).reshape(1),
                     "loss": np.array([logs.get("loss")]).reshape(1),
@@ -125,8 +125,8 @@ class Logger(Callback):
                 for key, value in values.items():
                     data = h5file["logs"][key]
                     value = np.array(value)
-                    data.resize(tuple(value.shape))
                     if data.shape[0] == 0:
+                        data.resize(tuple(value.shape))
                         data[:] = value
                     else:
                         data.resize(data.shape[0] + 1, axis=0)
@@ -134,21 +134,22 @@ class Logger(Callback):
 
         euclidean = euclidean.flatten()
         confidence = confidence.flatten()
+        y_visible = ~np.isnan(y_error[...,0].flatten())
 
         if self.confidence_threshold:
             mask = confidence >= confidence_threshold
             euclidean = euclidean[mask]
             confidence = confidence[mask]
+            y_visible = y_visible[mask]
+            
+        if ~y_visible.all():
+            euclidean = euclidean[y_visible]
+            confidence[~y_visible] = 1-confidence[~y_visible]
 
-        keypoint_percentile = np.percentile(
-            [euclidean, confidence], [0, 5, 25, 50, 75, 95, 100], axis=1
-        ).T
-        euclidean_perc, confidence_perc = keypoint_percentile
-
-        euclidean_mean, confidence_mean = np.mean([euclidean, confidence], axis=1)
-
-        logs["euclidean"] = euclidean_mean
-        logs["confidence"] = confidence_mean
+        euclidean_perc = np.percentile(euclidean, [0, 5, 25, 50, 75, 95, 100])
+        euclidean_mean = euclidean.mean()
+        confidence_perc = np.percentile(confidence, [0, 5, 25, 50, 75, 95, 100])
+        confidence_mean = confidence.mean()
 
         if self.verbose:
             print(
