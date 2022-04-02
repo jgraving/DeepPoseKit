@@ -182,7 +182,8 @@ class Annotator(GUI):
                 )
 
             # Unpack the images from the file
-            self.image_idx = np.sum(np.all(h5file["annotated"].value, axis=1)) - 1
+            # self.image_idx = np.sum(np.all(h5file["annotated"].value, axis=1)) - 1
+            self.image_idx = np.sum(np.all(h5file["annotated"][()], axis=1)) - 1 # h5py version 3.x
 
             self.image = h5file[self.dataset][self.image_idx]
             self._check_grayscale()
@@ -196,7 +197,7 @@ class Annotator(GUI):
         using 'ctrl + s' keys.
 
         """
-        with h5py.File(self.datapath) as h5file:
+        with h5py.File(self.datapath, "r+") as h5file:
 
             h5file["annotations"][self.image_idx] = self.skeleton.loc[
                 :, ["x", "y"]
