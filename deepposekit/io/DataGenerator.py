@@ -78,7 +78,7 @@ class DataGenerator(BaseGenerator):
                 raise ValueError("mode must be 'full', 'annotated', or 'unannotated'")
             else:
                 self.mode = mode
-            self.annotated = np.all(h5file["annotated"].value, axis=1)
+            self.annotated = np.all(h5file["annotated"].value[()], axis=1)
             self.annotated_index = np.where(self.annotated)[0]
             self.n_annotated = self.annotated_index.shape[0]
             if self.n_annotated == 0 and self.mode not in ["full", "unannotated"]:
